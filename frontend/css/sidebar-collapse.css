@@ -1,0 +1,122 @@
+/* Collapsible sidebar — reduces width on toggle, no blur overlay */
+
+.sidebar-overlay {
+  display: none !important;
+}
+
+:root {
+  --sidebar-expanded-w: 240px;
+  --sidebar-collapsed-w: 68px;
+}
+
+.app,
+.app-layout {
+  --sidebar-w: var(--sidebar-expanded-w);
+}
+
+.app.sidebar-collapsed,
+.app-layout.sidebar-collapsed {
+  --sidebar-w: var(--sidebar-collapsed-w);
+}
+
+/* Demo pages (.app) */
+.app .sidebar {
+  width: var(--sidebar-w);
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-x: hidden;
+}
+
+.app .main {
+  margin-left: var(--sidebar-w);
+  transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Legacy pages (.app-layout) */
+.app-layout .sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-x: hidden;
+}
+
+.app-layout {
+  --sidebar-expanded-w: 260px;
+  --sidebar-collapsed-w: 68px;
+}
+
+/* Hide labels when collapsed */
+.app.sidebar-collapsed .sidebar-brand-text,
+.app.sidebar-collapsed .nav-section-label,
+.app.sidebar-collapsed .nav-item > span:not(.nav-badge),
+.app.sidebar-collapsed .sidebar-user-name,
+.app.sidebar-collapsed .sidebar-user-level,
+.app.sidebar-collapsed .nav-badge,
+.app.sidebar-collapsed .sidebar-brand > a:not(.sidebar-brand-icon),
+.app-layout.sidebar-collapsed .sidebar-brand span,
+.app-layout.sidebar-collapsed .nav-item span {
+  display: none;
+}
+
+.app.sidebar-collapsed .sidebar-brand,
+.app-layout.sidebar-collapsed .sidebar-brand {
+  justify-content: center;
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+.app.sidebar-collapsed .nav-item,
+.app-layout.sidebar-collapsed .nav-item {
+  justify-content: center;
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+.app.sidebar-collapsed .nav-item.active::before {
+  display: none;
+}
+
+.app.sidebar-collapsed .sidebar-user {
+  justify-content: center;
+}
+
+/* Chart containers — prevent Chart.js height glitching */
+.chart-container {
+  position: relative;
+  height: 220px;
+  width: 100%;
+}
+
+.chart-container canvas {
+  display: block;
+}
+
+/* Show hamburger on all screen sizes */
+.topbar-hamburger,
+.hamburger {
+  display: flex !important;
+}
+
+@media (max-width: 768px) {
+  .app.sidebar-collapsed,
+  .app-layout.sidebar-collapsed {
+    --sidebar-w: 0px;
+    --sidebar-collapsed-w: 0px;
+  }
+
+  .app.sidebar-collapsed .sidebar,
+  .app-layout.sidebar-collapsed .sidebar {
+    width: 0 !important;
+    min-width: 0 !important;
+    overflow: hidden;
+    border-right: none;
+  }
+
+  .app:not(.sidebar-collapsed) .sidebar {
+    width: var(--sidebar-expanded-w) !important;
+  }
+
+  .app-layout:not(.sidebar-collapsed) .sidebar {
+    width: var(--sidebar-expanded-w) !important;
+    min-width: var(--sidebar-expanded-w) !important;
+  }
+}

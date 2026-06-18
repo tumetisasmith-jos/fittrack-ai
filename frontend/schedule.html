@@ -1,0 +1,412 @@
+<!DOCTYPE html><html lang="en" data-theme="dark"><head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule | FitTrack AI</title>
+  <meta name="description" content="Plan and manage upcoming workout sessions with FitTrack AI smart scheduling.">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800;900&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root{--green:#c4f135;--green-dim:rgba(196,241,53,.07);--green-glow:rgba(196,241,53,.22);--purple:#7c3aed;--purple-l:#a78bfa;--cyan:#06b6d4;--orange:#f97316;--red:#ef4444;--bg:#080808;--bg2:#0d0d0d;--sidebar-bg:#090909;--card:rgba(255,255,255,.04);--card-border:rgba(255,255,255,.07);--border:rgba(255,255,255,.05);--hover:rgba(255,255,255,.06);--text:#f8fafc;--text-muted:#a1a1aa;--text-dim:#52525b;--sidebar-w:240px;--header-h:64px;--radius:14px;--transition:all .22s cubic-bezier(.4,0,.2,1);}
+    [data-theme=light]{--bg:#f0f4f8;--bg2:#e6ecf2;--sidebar-bg:#fff;--card:rgba(255,255,255,.9);--card-border:rgba(0,0,0,.07);--border:rgba(0,0,0,.05);--hover:rgba(0,0,0,.03);--text:#09090b;--text-muted:#52525b;--text-dim:#a1a1aa;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+    a{text-decoration:none;color:inherit;}button{font-family:inherit;cursor:pointer;border:none;background:none;}
+    .app{display:flex;min-height:100vh;}
+    .sidebar{width:var(--sidebar-w);background:var(--sidebar-bg);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:200;overflow-y:auto;scrollbar-width:none;transition:transform .3s;}
+    .sidebar::-webkit-scrollbar{display:none;}
+    .sidebar-brand{display:flex;align-items:center;gap:10px;padding:20px 20px 14px;border-bottom:1px solid var(--border);}
+    .sidebar-brand-icon{width:36px;height:36px;border-radius:10px;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:.95rem;color:#080808;box-shadow:0 0 14px var(--green-glow);flex-shrink:0;}
+    .sidebar-brand-text{font-family:'Outfit',sans-serif;font-size:1rem;font-weight:900;letter-spacing:-.03em;color:var(--text);}
+    .sidebar-brand-text span{color:var(--green);}
+    .sidebar-nav{flex:1;padding:12px 10px;display:flex;flex-direction:column;gap:2px;}
+    .nav-section-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim);padding:12px 10px 4px;}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;font-size:.85rem;font-weight:500;color:var(--text-muted);transition:var(--transition);position:relative;width:100%;text-align:left;}
+    .nav-item:hover{background:var(--hover);color:var(--text);}
+    .nav-item.active{background:var(--green-dim);color:var(--green);font-weight:700;}
+    .nav-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;border-radius:0 3px 3px 0;background:var(--green);}
+    .nav-item i{width:18px;text-align:center;font-size:.88rem;}
+    .sidebar-footer{padding:10px;border-top:1px solid var(--border);}
+    .sidebar-user{display:flex;align-items:center;gap:10px;padding:12px;margin-top:4px;}
+    .sidebar-user-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--green),#84cc16);display:flex;align-items:center;justify-content:center;font-family:'Outfit';font-size:.78rem;font-weight:900;color:#080808;}
+    .sidebar-user-name{font-size:.82rem;font-weight:700;}
+    .sidebar-user-level{font-size:.65rem;color:var(--text-dim);}
+    .sidebar-demo-tag{font-size:.58rem;font-weight:700;color:var(--text-dim);background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:4px;padding:1px 5px;text-transform:uppercase;margin-top:2px;width:fit-content;}
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:199;}
+    .sidebar-overlay.show{display:block;}
+    .main{flex:1;margin-left:var(--sidebar-w);display:flex;flex-direction:column;}
+    .topbar{position:sticky;top:0;height:var(--header-h);background:rgba(8,8,8,.9);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:14px;z-index:100;backdrop-filter:blur(12px);}
+    [data-theme=light] .topbar{background:rgba(240,244,248,.9);}
+    .topbar-hamburger{display:none;width:36px;height:36px;border-radius:9px;border:1px solid var(--card-border);background:var(--card);color:var(--text-muted);align-items:center;justify-content:center;font-size:.9rem;}
+    .topbar-title{font-family:'Outfit';font-size:1.05rem;font-weight:800;letter-spacing:-.02em;}
+    .demo-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;background:var(--green-dim);border:1px solid rgba(196,241,53,.18);border-radius:100px;font-size:.65rem;font-weight:700;color:var(--green);letter-spacing:.06em;text-transform:uppercase;}
+    .topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+    .topbar-btn{width:36px;height:36px;border-radius:9px;border:1px solid var(--card-border);background:var(--card);color:var(--text-muted);display:flex;align-items:center;justify-content:center;font-size:.88rem;transition:var(--transition);cursor:pointer;}
+    .topbar-btn:hover{background:var(--hover);color:var(--text);}
+    .topbar-user-btn{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 5px;border-radius:100px;border:1px solid var(--card-border);background:var(--card);}
+    .topbar-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--green),#84cc16);display:flex;align-items:center;justify-content:center;font-family:'Outfit';font-size:.68rem;font-weight:900;color:#080808;}
+    .topbar-username{font-size:.82rem;font-weight:700;}
+    .page{padding:24px;flex:1;padding-bottom:50px;}
+    /* KPI ROW */
+    .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+    .kpi-card{background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:18px;display:flex;align-items:center;gap:14px;}
+    .kpi-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+    .kpi-val{font-family:'Outfit';font-size:1.6rem;font-weight:900;line-height:1;}
+    .kpi-label{font-size:.7rem;color:var(--text-muted);margin-top:2px;}
+    /* GRID */
+    .sched-grid{display:grid;grid-template-columns:1fr 360px;gap:20px;}
+    /* WEEK VIEW */
+    .week-card{background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:20px;margin-bottom:20px;}
+    .week-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+    .week-nav-title{font-family:'Outfit';font-size:1rem;font-weight:800;}
+    .week-nav-btns{display:flex;gap:6px;}
+    .week-nav-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--card-border);background:var(--card);color:var(--text-muted);display:flex;align-items:center;justify-content:center;transition:var(--transition);cursor:pointer;}
+    .week-nav-btn:hover{background:var(--hover);color:var(--text);}
+    .week-days{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
+    .week-day{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:12px;padding:10px 6px;text-align:center;min-height:100px;}
+    .week-day.today{border-color:var(--green);background:var(--green-dim);}
+    .week-day-name{font-size:.65rem;color:var(--text-dim);text-transform:uppercase;font-weight:700;letter-spacing:.06em;}
+    .week-day-num{font-family:'Outfit';font-size:1.1rem;font-weight:800;margin:4px 0;}
+    .week-day.today .week-day-num{color:var(--green);}
+    .event-chip{font-size:.58rem;font-weight:700;padding:2px 6px;border-radius:6px;margin-top:4px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    /* UPCOMING LIST */
+    .upcoming-card{background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:20px;}
+    .section-title{font-family:'Outfit';font-size:1rem;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+    .section-title i{color:var(--green);}
+    .sched-item{display:flex;gap:14px;padding:14px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;transition:var(--transition);}
+    .sched-item:hover{border-color:rgba(196,241,53,.12);background:rgba(196,241,53,.02);}
+    .sched-item.completed{opacity:.6;}
+    .sched-date-block{text-align:center;min-width:44px;}
+    .sched-day-num{font-family:'Outfit';font-size:1.3rem;font-weight:900;line-height:1;}
+    .sched-month{font-size:.62rem;color:var(--text-dim);text-transform:uppercase;}
+    .sched-body{flex:1;}
+    .sched-title-text{font-size:.88rem;font-weight:700;}
+    .sched-meta{font-size:.72rem;color:var(--text-muted);margin-top:3px;display:flex;gap:10px;flex-wrap:wrap;}
+    .sched-meta span{display:flex;align-items:center;gap:4px;}
+    .sched-actions-row{display:flex;gap:6px;margin-top:8px;}
+    .sched-btn{padding:4px 10px;border-radius:8px;font-size:.7rem;font-weight:700;border:1px solid var(--card-border);background:var(--card);color:var(--text-muted);transition:var(--transition);cursor:pointer;}
+    .sched-btn:hover{background:var(--hover);color:var(--text);}
+    .sched-btn.complete{border-color:rgba(196,241,53,.2);color:var(--green);}
+    .sched-btn.complete:hover{background:var(--green-dim);}
+    .sched-btn.cancel{border-color:rgba(239,68,68,.15);color:#f87171;}
+    .status-pill{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:100px;}
+    .status-upcoming{background:rgba(196,241,53,.08);color:var(--green);}
+    .status-completed{background:rgba(16,185,129,.08);color:#10b981;}
+    .status-cancelled{background:rgba(239,68,68,.08);color:#f87171;}
+    /* ADD BUTTON */
+    .add-btn{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:10px;background:var(--green);color:#080808;font-size:.84rem;font-weight:700;transition:var(--transition);cursor:pointer;}
+    .add-btn:hover{background:#d4f535;transform:translateY(-1px);}
+    /* MODAL */
+    .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+    .modal-bg.open{display:flex;}
+    .modal-box{background:#111;border:1px solid var(--card-border);border-radius:18px;padding:28px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
+    [data-theme=light] .modal-box{background:#fff;}
+    .modal-title{font-family:'Outfit';font-size:1.1rem;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+    .modal-title i{color:var(--green);}
+    .form-group{margin-bottom:14px;}
+    .form-label{display:block;font-size:.78rem;font-weight:600;color:var(--text-muted);margin-bottom:5px;}
+    .form-input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--card-border);border-radius:9px;padding:9px 12px;font-size:.88rem;color:var(--text);font-family:'Inter';transition:var(--transition);}
+    [data-theme=light] .form-input{background:rgba(0,0,0,.03);}
+    .form-input:focus{outline:none;border-color:rgba(196,241,53,.4);box-shadow:0 0 0 3px rgba(196,241,53,.08);}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+    .btn-cancel{padding:9px 18px;border-radius:10px;border:1px solid var(--card-border);background:var(--card);color:var(--text-muted);font-size:.84rem;font-weight:700;cursor:pointer;}
+    .data-note{display:flex;align-items:center;gap:6px;padding:8px 14px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;font-size:.68rem;color:var(--text-dim);margin-top:24px;}
+    .data-note i{color:var(--green);}
+    /* RESPONSIVE */
+    @media(max-width:960px){.sched-grid{grid-template-columns:1fr;}.kpi-row{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:768px){:root{--sidebar-w:0px;}.sidebar{transform:translateX(-240px);width:240px;}.sidebar.open{transform:translateX(0);}.main{margin-left:0;}.topbar-hamburger{display:flex;}.page{padding:14px;}}
+    @media(max-width:480px){.kpi-row{grid-template-columns:repeat(2,1fr);}.week-days{gap:4px;}.event-chip{display:none;}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <a href="index.html" class="sidebar-brand-icon"><i class="fas fa-heartbeat"></i></a>
+      <a href="index.html" style="text-decoration:none;"><span class="sidebar-brand-text">FitTrack <span>AI</span></span></a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><i class="fas fa-home"></i><span>Dashboard</span></a>
+      <a href="workouts.html" class="nav-item"><i class="fas fa-dumbbell"></i><span>Workouts</span></a>
+      <a href="nutrition.html" class="nav-item"><i class="fas fa-apple-alt"></i><span>Nutrition</span></a>
+      <a href="daily-logs.html" class="nav-item"><i class="fas fa-calendar-check"></i><span>Daily Logs</span></a>
+      <a href="goals.html" class="nav-item"><i class="fas fa-bullseye"></i><span>Goals</span></a>
+      <div class="nav-section-label">Health</div>
+      <a href="heart-rate.html" class="nav-item"><i class="fas fa-heart-pulse"></i><span>Heart Rate</span></a>
+      <a href="bmi.html" class="nav-item"><i class="fas fa-weight"></i><span>BMI Tracker</span></a>
+      <a href="analytics.html" class="nav-item"><i class="fas fa-chart-line"></i><span>Analytics</span></a>
+      <div class="nav-section-label">AI &amp; More</div>
+      <a href="ai-coach.html" class="nav-item"><i class="fas fa-robot"></i><span>AI Coach</span></a>
+      <a href="achievements.html" class="nav-item"><i class="fas fa-trophy"></i><span>Achievements</span></a>
+      <a href="schedule.html" class="nav-item active"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+      <button class="nav-item" onclick="localStorage.removeItem('fittrack-token');window.location.href='login.html'" style="color:var(--text-dim);"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+      
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="topbar-hamburger topbar-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+      <span class="topbar-title">Workout Schedule</span>
+      <div class="demo-badge"><i class="fas fa-flask"></i> Demo Environment</div>
+      <div class="topbar-right">
+        <button class="topbar-btn" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i></button>
+        <a href="profile.html" class="topbar-user-btn">
+          <div class="topbar-avatar" id="userAvatar">U</div>
+        </a>
+      </div>
+    </header>
+
+    <main class="page">
+      <!-- KPI ROW -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background:rgba(196,241,53,.1);color:var(--green);"><i class="fas fa-calendar-check"></i></div>
+          <div><div class="kpi-val">6</div><div class="kpi-label">Upcoming</div></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background:rgba(16,185,129,.1);color:#10b981;"><i class="fas fa-check-circle"></i></div>
+          <div><div class="kpi-val">12</div><div class="kpi-label">Completed</div></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background:rgba(249,115,22,.1);color:var(--orange);"><i class="fas fa-fire"></i></div>
+          <div><div class="kpi-val">5</div><div class="kpi-label">This Week</div></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background:rgba(167,139,250,.1);color:var(--purple-l);"><i class="fas fa-clock"></i></div>
+          <div><div class="kpi-val">4.2h</div><div class="kpi-label">Planned Time</div></div>
+        </div>
+      </div>
+
+      <!-- WEEK VIEW -->
+      <div class="week-card">
+        <div class="week-nav">
+          <div class="week-nav-title" id="weekTitle">Jun 9 – Jun 15, 2026</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="week-nav-btns">
+              <button class="week-nav-btn" onclick="shiftWeek(-1)"><i class="fas fa-chevron-left"></i></button>
+              <button class="week-nav-btn" onclick="shiftWeek(1)"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <button class="add-btn" onclick="openModal()"><i class="fas fa-plus"></i> Add Session</button>
+          </div>
+        </div>
+        <div class="week-days" id="weekDays"></div>
+      </div>
+
+      <!-- GRID -->
+      <div class="sched-grid">
+        <!-- UPCOMING -->
+        <div>
+          <div class="section-title"><i class="fas fa-clock"></i> Upcoming Sessions</div>
+          <div id="upcomingList"></div>
+        </div>
+        <!-- COMPLETED -->
+        <div class="upcoming-card">
+          <div class="section-title"><i class="fas fa-check-circle"></i> Recently Completed</div>
+          <div id="completedList"></div>
+        </div>
+      </div>
+
+      <div class="data-note"><i class="fas fa-info-circle"></i> Schedule data is demo content. Connect backend to manage real planned workout sessions.</div>
+    </main>
+  </div>
+</div>
+
+<!-- ADD SESSION MODAL -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal-box">
+    <div class="modal-title"><i class="fas fa-calendar-plus"></i> Schedule Workout Session</div>
+    <div class="form-group">
+      <label class="form-label">Session Title *</label>
+      <input type="text" class="form-input" id="fTitle" placeholder="e.g. Morning Run">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Workout Type</label>
+        <select class="form-input" id="fType">
+          <option>Running</option><option>Cycling</option><option>Yoga</option>
+          <option>Strength Training</option><option>Swimming</option><option>HIIT</option>
+          <option>Walking</option><option>Pilates</option><option>Boxing</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Duration (min)</label>
+        <input type="number" class="form-input" id="fDuration" value="45" min="5" max="300">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Date *</label>
+        <input type="date" class="form-input" id="fDate">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Time</label>
+        <input type="time" class="form-input" id="fTime" value="07:00">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notes</label>
+      <textarea class="form-input" id="fNotes" rows="2" placeholder="Any notes for this session..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="add-btn" onclick="saveSession()"><i class="fas fa-check"></i> Schedule</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TYPE_COLORS = {
+  'Running':'#c4f135','Cycling':'#10b981','Yoga':'#06b6d4','Strength Training':'#a78bfa',
+  'Swimming':'#06b6d4','HIIT':'#f97316','Walking':'#10b981','Pilates':'#a78bfa','Boxing':'#f97316','Other':'#a1a1aa'
+};
+
+let sessions = [
+  {id:1,title:'Morning Run',type:'Running',date:'2026-06-10',time:'06:30',dur:45,status:'upcoming'},
+  {id:2,title:'Upper Body Strength',type:'Strength Training',date:'2026-06-11',time:'18:00',dur:60,status:'upcoming'},
+  {id:3,title:'Yoga Flow',type:'Yoga',date:'2026-06-12',time:'07:00',dur:30,status:'upcoming'},
+  {id:4,title:'HIIT Blast',type:'HIIT',date:'2026-06-13',time:'17:30',dur:35,status:'upcoming'},
+  {id:5,title:'Long Ride',type:'Cycling',date:'2026-06-14',time:'08:00',dur:75,status:'upcoming'},
+  {id:6,title:'Evening Yoga',type:'Yoga',date:'2026-06-15',time:'19:00',dur:30,status:'upcoming'},
+  {id:7,title:'Swimming Laps',type:'Swimming',date:'2026-06-08',time:'07:00',dur:40,status:'completed'},
+  {id:8,title:'Leg Day',type:'Strength Training',date:'2026-06-07',time:'18:00',dur:55,status:'completed'},
+  {id:9,title:'5K Run',type:'Running',date:'2026-06-05',time:'06:30',dur:30,status:'completed'},
+  {id:10,title:'HIIT Circuit',type:'HIIT',date:'2026-06-03',time:'17:00',dur:40,status:'completed'},
+];
+
+let weekOffset = 0;
+
+function getWeekDates(offset=0) {
+  const today = new Date('2026-06-10');
+  const dow = today.getDay();
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - ((dow+6)%7) + offset*7);
+  return Array.from({length:7}, (_,i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return d;
+  });
+}
+
+function formatDate(d){return d.toISOString().split('T')[0];}
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function renderWeek() {
+  const dates = getWeekDates(weekOffset);
+  const todayStr = '2026-06-10';
+  document.getElementById('weekTitle').textContent =
+    `${MONTHS[dates[0].getMonth()]} ${dates[0].getDate()} – ${MONTHS[dates[6].getMonth()]} ${dates[6].getDate()}, ${dates[0].getFullYear()}`;
+  document.getElementById('weekDays').innerHTML = dates.map((d,i) => {
+    const ds = formatDate(d);
+    const dayEvts = sessions.filter(s => s.date === ds && s.status === 'upcoming');
+    const isToday = ds === todayStr;
+    return `<div class="week-day ${isToday?'today':''}">
+      <div class="week-day-name">${DAYS[i]}</div>
+      <div class="week-day-num">${d.getDate()}</div>
+      ${dayEvts.map(e => `<span class="event-chip" style="background:${TYPE_COLORS[e.type]||'#a1a1aa'}22;color:${TYPE_COLORS[e.type]||'#a1a1aa'};">${e.title}</span>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+function shiftWeek(dir) { weekOffset += dir; renderWeek(); }
+
+function renderUpcoming() {
+  const upcoming = sessions.filter(s => s.status === 'upcoming').sort((a,b)=>a.date.localeCompare(b.date));
+  document.getElementById('upcomingList').innerHTML = upcoming.map(s => {
+    const d = new Date(s.date);
+    return `<div class="sched-item" id="item-${s.id}">
+      <div class="sched-date-block">
+        <div class="sched-day-num" style="color:${TYPE_COLORS[s.type]||'#a1a1aa'};">${d.getDate()}</div>
+        <div class="sched-month">${MONTHS[d.getMonth()]}</div>
+      </div>
+      <div class="sched-body">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="sched-title-text">${s.title}</span>
+          <span class="status-pill status-upcoming">Upcoming</span>
+        </div>
+        <div class="sched-meta">
+          <span><i class="fas fa-dumbbell"></i> ${s.type}</span>
+          <span><i class="fas fa-clock"></i> ${s.dur} min</span>
+          <span><i class="fas fa-clock"></i> ${s.time}</span>
+        </div>
+        <div class="sched-actions-row">
+          <button class="sched-btn complete" onclick="markComplete(${s.id})"><i class="fas fa-check"></i> Complete</button>
+          <button class="sched-btn cancel" onclick="cancelSession(${s.id})"><i class="fas fa-times"></i> Cancel</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('') || '<p style="color:var(--text-dim);font-size:.82rem;text-align:center;padding:20px;">No upcoming sessions.</p>';
+}
+
+function renderCompleted() {
+  const done = sessions.filter(s => s.status === 'completed').sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
+  document.getElementById('completedList').innerHTML = done.map(s => {
+    const d = new Date(s.date);
+    return `<div class="sched-item completed">
+      <div class="sched-date-block">
+        <div class="sched-day-num" style="color:#10b981;">${d.getDate()}</div>
+        <div class="sched-month">${MONTHS[d.getMonth()]}</div>
+      </div>
+      <div class="sched-body">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="sched-title-text">${s.title}</span>
+          <span class="status-pill status-completed">Done ✓</span>
+        </div>
+        <div class="sched-meta">
+          <span><i class="fas fa-dumbbell"></i> ${s.type}</span>
+          <span><i class="fas fa-clock"></i> ${s.dur} min</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function markComplete(id) {
+  const s = sessions.find(x=>x.id===id);
+  if(s){ s.status='completed'; renderAll(); }
+}
+function cancelSession(id) {
+  sessions = sessions.filter(x=>x.id!==id);
+  renderAll();
+}
+function renderAll() { renderWeek(); renderUpcoming(); renderCompleted(); }
+
+function openModal() {
+  document.getElementById('fDate').value = '2026-06-16';
+  document.getElementById('modalBg').classList.add('open');
+}
+function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
+
+function saveSession() {
+  const title = document.getElementById('fTitle').value.trim();
+  if(!title){ alert('Please enter a title.'); return; }
+  sessions.push({
+    id: Date.now(), title,
+    type: document.getElementById('fType').value,
+    date: document.getElementById('fDate').value,
+    time: document.getElementById('fTime').value,
+    dur:  parseInt(document.getElementById('fDuration').value)||30,
+    status: 'upcoming'
+  });
+  closeModal();
+  renderAll();
+  document.getElementById('fTitle').value='';
+}
+
+// Theme
+function toggleTheme(){const c=document.documentElement.getAttribute('data-theme');const n=c==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('fittrack-theme',n);document.getElementById('themeIcon').className=n==='light'?'fas fa-sun':'fas fa-moon';}
+function applyTheme(){const s=localStorage.getItem('fittrack-theme')||'dark';document.documentElement.setAttribute('data-theme',s);const i=document.getElementById('themeIcon');if(i)i.className=s==='light'?'fas fa-sun':'fas fa-moon';}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('show');}
+
+document.addEventListener('DOMContentLoaded',()=>{ applyTheme(); renderAll(); });
+</script>
+
+
+<script src="js/storage.js"></script>
+</body></html>

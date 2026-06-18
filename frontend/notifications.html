@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications | FitTrack AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/main.css"><link rel="stylesheet" href="css/components.css"><link rel="stylesheet" href="css/dashboard.css">
+  <style>
+    .notif-page-item { display:flex; align-items:flex-start; gap:14px; padding:16px 18px; background:var(--bg-card); border:1px solid var(--glass-border); border-radius:12px; margin-bottom:10px; transition:var(--transition); cursor:pointer; }
+    .notif-page-item:hover { border-color:var(--accent-purple); transform:translateX(2px); }
+    .notif-page-item.unread { border-left:3px solid var(--accent-purple); background:rgba(124,58,237,0.05); }
+    .notif-icon-wrap { width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+    .notif-body { flex:1; }
+    .notif-title-p { font-weight:600; font-size:0.92rem; margin-bottom:3px; }
+    .notif-msg-p { font-size:0.82rem; color:var(--text-muted); line-height:1.5; }
+    .notif-time-p { font-size:0.72rem; color:var(--text-muted); margin-top:4px; }
+    .notif-type-filter { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+    .type-colors { achievement:'#f59e0b', goal:'#10b981', reminder:'#06b6d4', milestone:'#7c3aed', tip:'#ec4899', system:'#94a3b8' }
+    .notif-empty-page { text-align:center; padding:60px 20px; }
+    .notif-empty-page .empty-icon { font-size:4rem; margin-bottom:12px; }
+    .unread-indicator { width:8px; height:8px; border-radius:50%; background:var(--accent-purple); flex-shrink:0; margin-top:6px; }
+    .notif-stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:24px; }
+    .notif-stat { background:var(--bg-card); border:1px solid var(--glass-border); border-radius:12px; padding:16px; text-align:center; }
+    .notif-stat-val { font-size:1.8rem; font-weight:700; font-family:'Outfit',sans-serif; }
+    .notif-stat-label { font-size:0.72rem; color:var(--text-muted); margin-top:4px; text-transform:uppercase; }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand"><i class="fas fa-heartbeat"></i><span>FitTrack AI</span></div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item"><i class="fas fa-home"></i><span>Dashboard</span></a>
+      <a href="workouts.html" class="nav-item"><i class="fas fa-dumbbell"></i><span>Workouts</span></a>
+      <a href="nutrition.html" class="nav-item"><i class="fas fa-utensils"></i><span>Nutrition</span></a>
+      <a href="daily-logs.html" class="nav-item"><i class="fas fa-calendar-check"></i><span>Daily Logs</span></a>
+      <a href="goals.html" class="nav-item"><i class="fas fa-bullseye"></i><span>Goals</span></a>
+      <a href="heart-rate.html" class="nav-item"><i class="fas fa-heart-pulse"></i><span>Heart Rate</span></a>
+      <a href="exercise-library.html" class="nav-item"><i class="fas fa-book-open"></i><span>Exercises</span></a>
+      <a href="schedule.html" class="nav-item"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+      <a href="analytics.html" class="nav-item"><i class="fas fa-chart-line"></i><span>Analytics</span></a>
+      <a href="ai-coach.html" class="nav-item"><i class="fas fa-robot"></i><span>AI Coach</span></a>
+    </nav>
+    <div class="sidebar-bottom">
+      
+      <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+      <button class="nav-item logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+  <div class="main-area">
+    <header class="top-header">
+      <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+      <div class="header-center"><h1 class="page-title">🔔 Notifications</h1></div>
+      <div class="header-right">
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+        <button class="btn btn-secondary" style="font-size:0.8rem;padding:6px 14px;" onclick="markAllRead()"><i class="fas fa-check-double"></i> Mark All Read</button>
+        <div class="user-avatar" id="userAvatar">U</div>
+      </div>
+    </header>
+    <main class="main-content">
+      <!-- Stats -->
+      <div class="notif-stats-row" id="notifStats">
+        <div class="notif-stat"><div class="notif-stat-val" id="totalNotifs">—</div><div class="notif-stat-label">Total</div></div>
+        <div class="notif-stat"><div class="notif-stat-val" id="unreadNotifs" style="color:var(--accent-purple)">—</div><div class="notif-stat-label">Unread</div></div>
+        <div class="notif-stat"><div class="notif-stat-val" id="todayNotifs" style="color:#10b981">—</div><div class="notif-stat-label">Today</div></div>
+      </div>
+      <!-- Filters -->
+      <div class="notif-type-filter" id="typeFilters">
+        <button class="filter-tab active" onclick="setTypeFilter('all',this)">All</button>
+        <button class="filter-tab" onclick="setTypeFilter('achievement',this)">🏆 Achievements</button>
+        <button class="filter-tab" onclick="setTypeFilter('goal',this)">🎯 Goals</button>
+        <button class="filter-tab" onclick="setTypeFilter('reminder',this)">💧 Reminders</button>
+        <button class="filter-tab" onclick="setTypeFilter('milestone',this)">🎉 Milestones</button>
+        <button class="filter-tab" onclick="setTypeFilter('tip',this)">💡 Tips</button>
+      </div>
+      <div id="notifList"><div class="loading-spinner"><div class="spinner"></div></div></div>
+    </main>
+  </div>
+</div>
+<script src="js/notifications-center.js"></script>
+</body>
+</html>

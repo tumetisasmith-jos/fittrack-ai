@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Sign in to FitTrack AI — AI-powered health and fitness tracking platform by Team Vitalis." />
+  <title>Sign In — FitTrack AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/auth2.css" />
+</head>
+<body>
+
+  <!-- Animated BG -->
+  <div class="auth-bg" aria-hidden="true">
+    <div class="auth-bg-orb auth-bg-orb-1"></div>
+    <div class="auth-bg-orb auth-bg-orb-2"></div>
+    <div class="auth-bg-orb auth-bg-orb-3"></div>
+  </div>
+
+  <!-- Theme toggle -->
+  <button class="auth-theme-btn" onclick="toggleTheme()" aria-label="Toggle theme" id="themeToggle">
+    <i class="fas fa-moon" id="themeIcon"></i>
+  </button>
+
+  <div class="auth-page">
+
+    <!-- ══ LEFT PANEL ══ -->
+    <div class="auth-left" aria-hidden="true">
+      <a href="index.html" class="auth-logo">
+        <div class="auth-logo-icon"><i class="fas fa-heartbeat"></i></div>
+        <span class="auth-logo-text">FitTrack <span>AI</span></span>
+      </a>
+
+      <div class="auth-left-body">
+        <div class="auth-left-tag"><i class="fas fa-robot"></i> AI-Powered Fitness</div>
+        <h2 class="auth-left-title">
+          Your journey<br />continues <span>here.</span>
+        </h2>
+        <p class="auth-left-subtitle">
+          Pick up right where you left off. Your workouts, health logs, nutrition data, and AI insights are all waiting for you.
+        </p>
+
+        <div class="auth-features-list">
+          <div class="auth-feature-row">
+            <div class="auth-feature-icon" style="background:rgba(196,241,53,0.1);color:#c4f135;">
+              <i class="fas fa-robot"></i>
+            </div>
+            <div class="auth-feature-text"><strong>AI Fitness Coach</strong> — personalised advice 24/7</div>
+          </div>
+          <div class="auth-feature-row">
+            <div class="auth-feature-icon" style="background:rgba(6,182,212,0.1);color:#06b6d4;">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="auth-feature-text"><strong>Advanced Analytics</strong> — trends, patterns, insights</div>
+          </div>
+          <div class="auth-feature-row">
+            <div class="auth-feature-icon" style="background:rgba(167,139,250,0.1);color:#a78bfa;">
+              <i class="fas fa-bullseye"></i>
+            </div>
+            <div class="auth-feature-text"><strong>Goal Tracking</strong> — milestones and XP rewards</div>
+          </div>
+          <div class="auth-feature-row">
+            <div class="auth-feature-icon" style="background:rgba(249,115,22,0.1);color:#f97316;">
+              <i class="fas fa-apple-alt"></i>
+            </div>
+            <div class="auth-feature-text"><strong>Nutrition Monitoring</strong> — calories, macros, hydration</div>
+          </div>
+          <div class="auth-feature-row">
+            <div class="auth-feature-icon" style="background:rgba(16,185,129,0.1);color:#10b981;">
+              <i class="fas fa-sparkles fa-star"></i>
+            </div>
+            <div class="auth-feature-text"><strong>Personalised Recommendations</strong> — built for your body</div>
+          </div>
+        </div>
+
+        <!-- Live metric cards -->
+        <div class="auth-metric-cards">
+          <div class="auth-metric-card">
+            <div class="amc-label">Today's Steps</div>
+            <div class="amc-val" id="metricSteps">0</div>
+            <div class="amc-sub">Goal: 10,000</div>
+          </div>
+          <div class="auth-metric-card">
+            <div class="amc-label">Calories Burned</div>
+            <div class="amc-val" id="metricCals">0</div>
+            <div class="amc-sub">kcal today</div>
+          </div>
+          <div class="auth-metric-card">
+            <div class="amc-label">Recovery</div>
+            <div class="amc-val" style="color:#a78bfa;">85%</div>
+            <div class="amc-sub">Ready to train</div>
+          </div>
+          <div class="auth-metric-card">
+            <div class="amc-label">Active Streak</div>
+            <div class="amc-val" style="color:#f97316;">14</div>
+            <div class="amc-sub">days in a row 🔥</div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+    <!-- ══ RIGHT PANEL — FORM ══ -->
+    <div class="auth-right">
+      <div class="auth-right-inner">
+
+        <div class="auth-form-eyebrow">Welcome back</div>
+        <h1 class="auth-form-title">Sign in to FitTrack</h1>
+
+
+
+
+        <!-- Error alert -->
+        <div class="auth-alert error" id="loginError" role="alert">
+          <i class="fas fa-exclamation-circle"></i>
+          <span id="loginErrorMsg">Invalid email or password. Please try again.</span>
+        </div>
+
+        <form class="auth-form" id="loginForm" novalidate>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label class="form-label" for="loginEmail">
+              <i class="fas fa-envelope"></i> Email Address
+            </label>
+            <div class="form-input-wrap">
+              <input
+                type="email"
+                class="form-input has-toggle"
+                id="email"
+                placeholder="you@example.com"
+                required
+                autocomplete="email"
+                oninput="validateEmail(this)"
+                aria-describedby="loginEmailMsg"
+              />
+              <i class="form-validate-icon no-toggle" id="loginEmailIcon"></i>
+            </div>
+            <div class="form-validate-msg" id="loginEmailMsg"></div>
+          </div>
+
+          <!-- Password -->
+          <div class="form-group">
+            <label class="form-label" for="loginPassword">
+              <i class="fas fa-lock"></i> Password
+            </label>
+            <div class="form-input-wrap">
+              <input
+                type="password"
+                class="form-input has-toggle"
+                id="password"
+                placeholder="Your password"
+                required
+                autocomplete="current-password"
+                aria-describedby="loginPwMsg"
+              />
+              <i class="form-validate-icon" id="loginPwIcon"></i>
+              <button type="button" class="input-eye-btn" onclick="togglePwd('password', this)" aria-label="Toggle password visibility">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            <div class="form-validate-msg" id="loginPwMsg"></div>
+          </div>
+
+          <!-- Forgot Password -->
+          <div class="form-extras" style="justify-content: flex-end;">
+            <a href="forgot-password.html" class="form-forgot">Forgot password?</a>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="btn-auth btn-auth-primary" id="loginBtn">
+            <div class="spinner" aria-hidden="true"></div>
+            <i class="fas fa-sign-in-alt btn-icon"></i>
+            <span class="btn-text">Sign In</span>
+          </button>
+
+        </form>
+
+        <div class="auth-divider">or</div>
+
+        <div class="auth-switch-row">
+          New to FitTrack AI? <a href="signup.html">Create a free account</a>
+        </div>
+
+        <div style="text-align:center;margin-top:20px;">
+          <a href="index.html" class="auth-back"><i class="fas fa-arrow-left"></i> Back to home</a>
+        </div>
+
+        <div style="text-align:center;margin-top:28px;font-size:0.7rem;color:var(--text-dim);">
+          Built by <strong style="color:var(--green)">Team Vitalis</strong> · Health &amp; Fitness Tracking System
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Toast -->
+  <div class="auth-toast" id="authToast" role="status" aria-live="polite">
+    <i class="fas fa-check-circle"></i>
+    <span id="toastMsg"></span>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script>
+    // Theme
+    function toggleTheme() {
+      const cur = document.documentElement.getAttribute('data-theme');
+      const next = cur === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('fittrack-theme', next);
+      document.getElementById('themeIcon').className = next === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+    }
+    (function(){
+      const saved = localStorage.getItem('fittrack-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', saved);
+      const icon = document.getElementById('themeIcon');
+      if (icon) icon.className = saved === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+    })();
+
+    // Fill demo credentials
+    function fillDemo(email, pw) {
+      document.getElementById('loginEmail').value = email;
+      document.getElementById('loginPassword').value = pw;
+      validateEmail(document.getElementById('loginEmail'));
+      showToast('Demo credentials filled — click Sign In!', 'success');
+    }
+
+    // Email validation
+    function validateEmail(el) {
+      const val = el.value.trim();
+      const icon = document.getElementById('loginEmailIcon');
+      const msg  = document.getElementById('loginEmailMsg');
+      if (!val) { resetValidation(el, icon, msg); return; }
+      const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+      setValidation(el, icon, msg, ok, ok ? '✓ Valid email' : 'Please enter a valid email address');
+    }
+
+    function setValidation(input, icon, msg, ok, text) {
+      input.className = input.className.replace(/\b(valid|invalid)\b/g, '').trim() + (ok ? ' valid' : ' invalid');
+      if (icon) {
+        icon.className = `form-validate-icon no-toggle show ${ok ? 'valid' : 'invalid'}`;
+        icon.innerHTML = ok ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-circle"></i>';
+      }
+      if (msg) {
+        msg.className = `form-validate-msg show ${ok ? 'valid' : 'invalid'}`;
+        msg.textContent = text;
+      }
+    }
+    function resetValidation(input, icon, msg) {
+      input.className = input.className.replace(/\b(valid|invalid)\b/g, '').trim();
+      if (icon) { icon.className = 'form-validate-icon no-toggle'; icon.innerHTML = ''; }
+      if (msg)  { msg.className = 'form-validate-msg'; msg.textContent = ''; }
+    }
+
+    // Toggle password
+    function togglePwd(id, btn) {
+      const input = document.getElementById(id);
+      const isText = input.type === 'text';
+      input.type = isText ? 'password' : 'text';
+      btn.querySelector('i').className = isText ? 'fas fa-eye' : 'fas fa-eye-slash';
+    }
+
+    // Toast helper
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('authToast');
+      t.querySelector('span').textContent = msg;
+      t.querySelector('i').className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+      t.className = 'auth-toast show ' + type;
+      setTimeout(() => { t.className = 'auth-toast'; }, 3500);
+    }
+
+    // Animate metric counters
+    function animateNum(id, target, suffix = '') {
+      let cur = 0;
+      const el = document.getElementById(id);
+      const step = Math.ceil(target / 60);
+      const interval = setInterval(() => {
+        cur = Math.min(cur + step, target);
+        el.textContent = cur.toLocaleString() + suffix;
+        if (cur >= target) clearInterval(interval);
+      }, 20);
+    }
+    setTimeout(() => { animateNum('metricSteps', 11240); animateNum('metricCals', 2840); }, 500);
+  </script>
+</body>
+</html>

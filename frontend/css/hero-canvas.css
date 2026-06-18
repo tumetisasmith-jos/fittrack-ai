@@ -1,0 +1,66 @@
+/* ═══════════════════════════════════════════════════
+   FitTrack AI — Interactive Hero Background Canvas
+   Cursor-reactive: blobs, particles, ECG wave
+   ═══════════════════════════════════════════════════ */
+
+/* Dark background fallback before canvas loads */
+body { background: #0a0a1a !important; }
+
+
+/* Canvas sits BEHIND everything */
+#heroCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Cursor glow ring */
+#cursorGlow {
+  position: fixed;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(124,58,237,0.12) 0%, rgba(6,182,212,0.06) 50%, transparent 70%);
+  transition: opacity 0.3s ease;
+  mix-blend-mode: screen;
+}
+
+/* Navbar must stay fixed — only boost z-index */
+.landing-nav {
+  z-index: 1000 !important;
+}
+
+/* Content layers sit above canvas */
+.hero-content,
+.hero-mockup {
+  position: relative;
+  z-index: 10;
+}
+
+/* All other page sections are above canvas */
+.features-section,
+.stats-section,
+.howitworks-section,
+.testimonials-section,
+.faq-section,
+.cta-section,
+.footer {
+  position: relative;
+  z-index: 10;
+  background: inherit;
+}
+
+
+.hero {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hide old CSS particles — canvas replaces them */
+.hero-particles { display: none !important; }

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nutrition – FitTrack AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --green:#c4f135; --green-dim:rgba(196,241,53,0.07); --green-glow:rgba(196,241,53,0.22);
+      --purple:#7c3aed; --purple-l:#a78bfa; --cyan:#06b6d4; --orange:#f97316; --red:#ef4444;
+      --bg:#080808; --bg2:#0d0d0d; --sidebar-bg:#090909;
+      --card:rgba(255,255,255,0.04); --card-border:rgba(255,255,255,0.07);
+      --border:rgba(255,255,255,0.05); --hover:rgba(255,255,255,0.06);
+      --text:#f8fafc; --text-muted:#a1a1aa; --text-dim:#52525b;
+      --sidebar-w:240px; --header-h:64px; --radius:14px;
+      --transition:all 0.22s cubic-bezier(0.4,0,0.2,1);
+    }
+    [data-theme="light"] {
+      --bg:#f0f4f8; --bg2:#e6ecf2; --sidebar-bg:#ffffff;
+      --card:rgba(255,255,255,0.9); --card-border:rgba(0,0,0,0.07);
+      --border:rgba(0,0,0,0.05); --hover:rgba(0,0,0,0.03);
+      --text:#09090b; --text-muted:#52525b; --text-dim:#a1a1aa;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    .app { display: flex; min-height: 100vh; }
+    .sidebar { width: var(--sidebar-w); background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 200; overflow-y: auto; scrollbar-width: none; transition: transform 0.3s; }
+    .sidebar::-webkit-scrollbar { display: none; }
+    .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 20px 20px 14px; border-bottom: 1px solid var(--border); }
+    .sidebar-brand-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--green); display: flex; align-items: center; justify-content: center; font-size: 0.95rem; color: #080808; box-shadow: 0 0 14px var(--green-glow); flex-shrink: 0; }
+    .sidebar-brand-text { font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 900; letter-spacing: -0.03em; color: var(--text); }
+    .sidebar-brand-text span { color: var(--green); }
+    .sidebar-nav { flex: 1; padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; }
+    .nav-section-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); padding: 12px 10px 4px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; color: var(--text-muted); transition: var(--transition); position: relative; width: 100%; text-align: left; }
+    .nav-item:hover { background: var(--hover); color: var(--text); }
+    .nav-item.active { background: var(--green-dim); color: var(--green); font-weight: 700; }
+    .nav-item.active::before { content: ''; position: absolute; left: 0; top: 20%; bottom: 20%; width: 3px; border-radius: 0 3px 3px 0; background: var(--green); }
+    .nav-item i { width: 18px; text-align: center; font-size: 0.88rem; }
+    .sidebar-footer { padding: 10px; border-top: 1px solid var(--border); }
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 199; }
+    .sidebar-overlay.show { display: block; }
+    .main { flex: 1; margin-left: var(--sidebar-w); display: flex; flex-direction: column; }
+    .topbar { position: sticky; top: 0; height: var(--header-h); background: var(--bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; gap: 14px; z-index: 100; backdrop-filter: blur(12px); }
+    .topbar-hamburger { display: none; width: 36px; height: 36px; border-radius: 9px; border: 1px solid var(--card-border); background: var(--card); color: var(--text-muted); align-items: center; justify-content: center; font-size: 0.9rem; }
+    .topbar-title { font-family: 'Outfit'; font-size: 1.05rem; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
+    .demo-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; background: var(--green-dim); border: 1px solid rgba(196,241,53,0.18); border-radius: 100px; font-size: 0.65rem; font-weight: 700; color: var(--green); letter-spacing: 0.06em; text-transform: uppercase; }
+    .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    .topbar-btn { width: 36px; height: 36px; border-radius: 9px; border: 1px solid var(--card-border); background: var(--card); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 0.88rem; transition: var(--transition); cursor: pointer; }
+    .topbar-btn:hover { background: var(--hover); color: var(--text); }
+    .topbar-user-btn { display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 5px; border-radius: 100px; border: 1px solid var(--card-border); background: var(--card); transition: var(--transition); }
+    .topbar-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, var(--green), #84cc16); display: flex; align-items: center; justify-content: center; font-family: 'Outfit'; font-size: 0.68rem; font-weight: 900; color: #080808; }
+    .topbar-username { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+    .page { padding: 24px; flex: 1; padding-bottom: 50px; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 10px; font-size: 0.84rem; font-weight: 700; transition: var(--transition); cursor: pointer; border: none; font-family: 'Inter'; }
+    .btn-green { background: var(--green); color: #080808; }
+    .btn-green:hover { background: #d4f535; transform: translateY(-1px); }
+    .btn-outline { background: transparent; color: var(--text-muted); border: 1px solid var(--card-border); }
+    .btn-outline:hover { background: var(--hover); color: var(--text); }
+    .prog-bar { height: 6px; background: rgba(255,255,255,0.07); border-radius: 100px; overflow: hidden; }
+    .prog-fill { height: 100%; border-radius: 100px; transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+    .data-note { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; font-size: 0.68rem; color: var(--text-dim); margin-top: 24px; }
+    .data-note i { color: var(--green); flex-shrink: 0; }
+    @media (max-width: 768px) {
+      :root { --sidebar-w: 0px; }
+      .sidebar { transform: translateX(-240px); width: 240px; }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; }
+      .topbar-hamburger { display: flex; }
+      .page { padding: 14px; }
+      .macro-row { grid-template-columns: repeat(2,1fr) !important; }
+    }
+    [data-theme='light'] .sidebar { box-shadow: 2px 0 12px rgba(0,0,0,0.08); }
+    [data-theme='light'] .prog-bar { background: rgba(0,0,0,0.07); }
+
+    /* Page */
+    .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+    .page-header h1 { font-family: 'Outfit'; font-size: 1.6rem; font-weight: 900; letter-spacing: -0.03em; }
+    .page-header p { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
+    .calorie-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+    .cal-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .cal-num { font-family: 'Outfit'; font-size: 1.8rem; font-weight: 900; }
+    .cal-goal { font-size: 0.8rem; color: var(--text-muted); }
+    .cal-remaining { font-family: 'Outfit'; font-size: 1.1rem; font-weight: 800; color: var(--green); }
+    .cal-bar { height: 10px; background: rgba(255,255,255,0.07); border-radius: 100px; overflow: hidden; }
+    .cal-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg,var(--green),#84cc16); transition: width 1.5s cubic-bezier(0.4,0,0.2,1); }
+    .macro-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+    .macro-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 14px; text-align: center; }
+    .macro-icon { font-size: 1.2rem; margin-bottom: 6px; }
+    .macro-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 4px; }
+    .macro-value { font-family: 'Outfit'; font-size: 1.15rem; font-weight: 900; margin-bottom: 2px; }
+    .macro-target { font-size: 0.68rem; color: var(--text-dim); margin-bottom: 6px; }
+    .macro-bar { height: 5px; background: rgba(255,255,255,0.07); border-radius: 100px; overflow: hidden; }
+    .macro-fill { height: 100%; border-radius: 100px; }
+    .section-title { font-family: 'Outfit'; font-size: 1rem; font-weight: 800; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; margin-top: 20px; }
+    .section-title i { color: var(--green); font-size: 0.85rem; }
+    .meal-section { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
+    .meal-header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; transition: var(--transition); }
+    .meal-header:hover { background: var(--hover); }
+    .meal-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+    .meal-name { font-family: 'Outfit'; font-size: 0.9rem; font-weight: 800; }
+    .meal-total { font-size: 0.75rem; color: var(--text-muted); }
+    .meal-expand-icon { margin-left: auto; color: var(--text-dim); font-size: 0.75rem; transition: transform 0.2s; }
+    .meal-body { display: none; border-top: 1px solid var(--border); }
+    .meal-body.open { display: block; }
+    .meal-header.open .meal-expand-icon { transform: rotate(180deg); }
+    .food-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    .food-table th { text-align: left; padding: 8px 16px; color: var(--text-dim); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+    .food-table td { padding: 8px 16px; border-top: 1px solid var(--border); color: var(--text-muted); }
+    .food-table td:first-child { color: var(--text); font-weight: 500; }
+    .del-food { width: 24px; height: 24px; border-radius: 6px; background: transparent; border: none; color: var(--text-dim); cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; }
+    .del-food:hover { background: rgba(239,68,68,0.1); color: #f87171; }
+    .chart-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 18px; }
+    .chart-title { font-family: 'Outfit'; font-size: 0.9rem; font-weight: 800; margin-bottom: 14px; }
+    /* Modal */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 500; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+    .modal-overlay.show { display: flex; }
+    .modal { background: var(--bg2); border: 1px solid var(--card-border); border-radius: 18px; padding: 28px; width: 100%; max-width: 440px; position: relative; }
+    .modal-title { font-family: 'Outfit'; font-size: 1.1rem; font-weight: 900; margin-bottom: 20px; }
+    .form-group { margin-bottom: 12px; }
+    .form-label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .form-input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--card-border); border-radius: 10px; color: var(--text); font-family: 'Inter'; font-size: 0.85rem; outline: none; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .close-btn { position: absolute; top: 16px; right: 16px; width: 28px; height: 28px; border-radius: 8px; background: var(--hover); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; cursor: pointer; border: none; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <a href="index.html" class="sidebar-brand-icon"><i class="fas fa-heartbeat"></i></a>
+      <a href="index.html" style="text-decoration:none;"><span class="sidebar-brand-text">FitTrack <span>AI</span></span></a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><i class="fas fa-home"></i><span>Dashboard</span></a>
+      <a href="workouts.html" class="nav-item"><i class="fas fa-dumbbell"></i><span>Workouts</span></a>
+      <a href="nutrition.html" class="nav-item active"><i class="fas fa-apple-alt"></i><span>Nutrition</span></a>
+      <a href="daily-logs.html" class="nav-item"><i class="fas fa-calendar-check"></i><span>Daily Logs</span></a>
+      <a href="goals.html" class="nav-item"><i class="fas fa-bullseye"></i><span>Goals</span></a>
+      <div class="nav-section-label">Health</div>
+      <a href="heart-rate.html" class="nav-item"><i class="fas fa-heart-pulse"></i><span>Heart Rate</span></a>
+      <a href="bmi.html" class="nav-item"><i class="fas fa-weight"></i><span>BMI Tracker</span></a>
+      <a href="analytics.html" class="nav-item"><i class="fas fa-chart-line"></i><span>Analytics</span></a>
+      <div class="nav-section-label">AI &amp; More</div>
+      <a href="ai-coach.html" class="nav-item"><i class="fas fa-robot"></i><span>AI Coach</span></a>
+      <a href="achievements.html" class="nav-item"><i class="fas fa-trophy"></i><span>Achievements</span></a>
+      <a href="schedule.html" class="nav-item"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      
+      <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+      <button class="nav-item" onclick="localStorage.removeItem('fittrack-token');window.location.href='login.html'" style="width:100%;text-align:left;"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="document.getElementById('sidebar').classList.remove('open');this.classList.remove('show');"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="topbar-hamburger" onclick="document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('show');"><i class="fas fa-bars"></i></button>
+      <span class="topbar-title">Nutrition</span>
+      <div class="demo-badge"><i class="fas fa-flask"></i> Demo Environment</div>
+      <div class="topbar-right">
+        <button onclick="toggleTheme()" class="topbar-btn"><i class="fas fa-moon" id="themeIcon"></i></button>
+        <a href="profile.html" class="topbar-user-btn">
+          <div class="topbar-avatar" id="userAvatar">U</div>
+        </a>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <h1>Nutrition Tracker</h1>
+          <p>Wednesday, June 10, 2026</p>
+        </div>
+        <button class="btn btn-green" onclick="document.getElementById('foodModal').classList.add('show')"><i class="fas fa-plus"></i> Add Food</button>
+      </div>
+
+      <!-- Calorie bar -->
+      <div class="calorie-card">
+        <div class="cal-row">
+          <div>
+            <div style="font-size:0.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">Daily Calories</div>
+            <div style="display:flex;align-items:baseline;gap:6px">
+              <span class="cal-num" style="color:var(--green)">1,840</span>
+              <span class="cal-goal">/ 2,100 kcal goal</span>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:2px">Remaining</div>
+            <div class="cal-remaining">260 kcal</div>
+          </div>
+        </div>
+        <div class="cal-bar"><div class="cal-fill" id="calFill" style="width:0"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:var(--text-dim);margin-top:6px">
+          <span>Consumed: 1,840 kcal</span><span>87.6% of goal</span>
+        </div>
+      </div>
+
+      <!-- Macros -->
+      <div class="macro-row">
+        <div class="macro-card">
+          <div class="macro-icon">🥩</div>
+          <div class="macro-label">Protein</div>
+          <div class="macro-value" style="color:#f97316">128g</div>
+          <div class="macro-target">/ 150g goal</div>
+          <div class="macro-bar"><div class="macro-fill" style="width:85%;background:#f97316"></div></div>
+        </div>
+        <div class="macro-card">
+          <div class="macro-icon">🌾</div>
+          <div class="macro-label">Carbs</div>
+          <div class="macro-value" style="color:var(--cyan)">210g</div>
+          <div class="macro-target">/ 250g goal</div>
+          <div class="macro-bar"><div class="macro-fill" style="width:84%;background:var(--cyan)"></div></div>
+        </div>
+        <div class="macro-card">
+          <div class="macro-icon">🥑</div>
+          <div class="macro-label">Fat</div>
+          <div class="macro-value" style="color:var(--purple-l)">62g</div>
+          <div class="macro-target">/ 65g goal</div>
+          <div class="macro-bar"><div class="macro-fill" style="width:95%;background:var(--purple-l)"></div></div>
+        </div>
+        <div class="macro-card">
+          <div class="macro-icon">💧</div>
+          <div class="macro-label">Water</div>
+          <div class="macro-value" style="color:var(--green)">2.8L</div>
+          <div class="macro-target">/ 3.5L goal</div>
+          <div class="macro-bar"><div class="macro-fill" style="width:80%;background:var(--green)"></div></div>
+        </div>
+      </div>
+
+      <div class="section-title"><i class="fas fa-utensils"></i> Today's Meals</div>
+      <div id="mealsContainer"></div>
+
+      <div class="section-title"><i class="fas fa-chart-bar"></i> 7-Day Calorie History</div>
+      <div class="chart-card"><canvas id="calChart" height="120"></canvas></div>
+
+      <div class="data-note"><i class="fas fa-info-circle"></i> All nutrition data is demo data. No actual food tracking occurs.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Food Modal -->
+<div class="modal-overlay" id="foodModal">
+  <div class="modal">
+    <button class="close-btn" onclick="document.getElementById('foodModal').classList.remove('show')"><i class="fas fa-times"></i></button>
+    <div class="modal-title"><i class="fas fa-plus" style="color:var(--green)"></i> Add Food Item</div>
+    <div class="form-group">
+      <label class="form-label">Meal</label>
+      <select class="form-input"><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Food Name</label>
+      <input class="form-input" type="text" placeholder="e.g. Chicken breast"/>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Quantity</label><input class="form-input" type="text" placeholder="e.g. 200g"/></div>
+      <div class="form-group"><label class="form-label">Calories</label><input class="form-input" type="number" placeholder="kcal"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Protein (g)</label><input class="form-input" type="number"/></div>
+      <div class="form-group"><label class="form-label">Carbs (g)</label><input class="form-input" type="number"/></div>
+    </div>
+    <div class="form-group"><label class="form-label">Fat (g)</label><input class="form-input" type="number"/></div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn btn-green" style="flex:1" onclick="document.getElementById('foodModal').classList.remove('show')"><i class="fas fa-check"></i> Add Food</button>
+      <button class="btn btn-outline" onclick="document.getElementById('foodModal').classList.remove('show')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const meals = {
+  breakfast: { icon:'☀️', color:'#f97316', items:[{name:'Oatmeal with berries', qty:'1 bowl', cal:320, p:12, c:58, f:6},{name:'Greek yogurt', qty:'150g', cal:130, p:18, c:8, f:3},{name:'Black coffee', qty:'1 cup', cal:5, p:0, c:0, f:0}] },
+  lunch: { icon:'🥗', color:'#06b6d4', items:[{name:'Grilled chicken breast', qty:'200g', cal:330, p:62, c:0, f:7},{name:'Brown rice', qty:'150g', cal:165, p:3, c:34, f:1},{name:'Steamed broccoli', qty:'100g', cal:35, p:3, c:7, f:0}] },
+  dinner: { icon:'🌙', color:'#a78bfa', items:[{name:'Salmon fillet', qty:'180g', cal:360, p:45, c:0, f:18},{name:'Sweet potato', qty:'1 medium', cal:130, p:2, c:30, f:0},{name:'Spinach salad', qty:'1 bowl', cal:40, p:3, c:6, f:1}] },
+  snack: { icon:'🍎', color:'#c4f135', items:[{name:'Protein bar', qty:'1 bar', cal:200, p:20, c:22, f:6},{name:'Almonds', qty:'30g', cal:170, p:6, c:6, f:15}] }
+};
+const mealNames = { breakfast:'Breakfast', lunch:'Lunch', dinner:'Dinner', snack:'Snack' };
+
+const container = document.getElementById('mealsContainer');
+Object.entries(meals).forEach(([key, meal]) => {
+  const total = meal.items.reduce((s,f)=>s+f.cal,0);
+  const rows = meal.items.map(f=>`<tr><td>${f.name}</td><td>${f.qty}</td><td>${f.cal}</td><td>${f.p}g</td><td>${f.c}g</td><td>${f.f}g</td><td><button class="del-food"><i class="fas fa-times"></i></button></td></tr>`).join('');
+  container.innerHTML += `
+    <div class="meal-section">
+      <div class="meal-header" onclick="toggleMeal('${key}')">
+        <div class="meal-icon" style="background:${meal.color}18;font-size:1.1rem">${meal.icon}</div>
+        <div><div class="meal-name">${mealNames[key]}</div><div class="meal-total">${total} kcal · ${meal.items.length} items</div></div>
+        <i class="fas fa-chevron-down meal-expand-icon" id="chevron-${key}"></i>
+      </div>
+      <div class="meal-body" id="body-${key}">
+        <table class="food-table">
+          <thead><tr><th>Food</th><th>Qty</th><th>kcal</th><th>Protein</th><th>Carbs</th><th>Fat</th><th></th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+});
+
+function toggleMeal(key) {
+  const body = document.getElementById('body-'+key);
+  const chev = document.getElementById('chevron-'+key);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chev.style.transform = isOpen ? '' : 'rotate(180deg)';
+}
+// Open breakfast by default
+toggleMeal('breakfast');
+
+// Animate calorie fill
+setTimeout(()=>{ document.getElementById('calFill').style.width='87.6%'; },200);
+
+// 7-day calorie chart
+const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const cals7=[1980, 2100, 1750, 2050, 1840, 2200, 1600];
+new Chart(document.getElementById('calChart'), {
+  type:'bar',
+  data:{ labels:days, datasets:[{ data:cals7, backgroundColor:cals7.map(v=>v>=2100?'rgba(249,115,22,0.7)':'rgba(196,241,53,0.5)'), borderColor:cals7.map(v=>v>=2100?'#f97316':'#c4f135'), borderWidth:1, borderRadius:6 }] },
+  options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{backgroundColor:'rgba(0,0,0,0.85)',titleColor:'#f8fafc',bodyColor:'#a1a1aa',borderColor:'rgba(255,255,255,0.08)',borderWidth:1}}, scales:{ x:{ticks:{color:'#52525b',font:{size:11}},grid:{color:'rgba(255,255,255,0.04)'}}, y:{ticks:{color:'#52525b',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'},min:1200} } }
+});
+
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('fittrack-theme', next);
+  document.getElementById('themeIcon').className = next === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+}
+(function(){
+  const s = localStorage.getItem('fittrack-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', s);
+  const i = document.getElementById('themeIcon');
+  if(i) i.className = s==='light' ? 'fas fa-sun' : 'fas fa-moon';
+})();
+</script>
+<script src="js/storage.js"></script>
+</body>
+</html>

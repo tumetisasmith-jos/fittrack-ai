@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Analytics – FitTrack AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --green:#c4f135; --green-dim:rgba(196,241,53,0.07); --green-glow:rgba(196,241,53,0.22);
+      --purple:#7c3aed; --purple-l:#a78bfa; --cyan:#06b6d4; --orange:#f97316; --red:#ef4444;
+      --bg:#080808; --bg2:#0d0d0d; --sidebar-bg:#090909;
+      --card:rgba(255,255,255,0.04); --card-border:rgba(255,255,255,0.07);
+      --border:rgba(255,255,255,0.05); --hover:rgba(255,255,255,0.06);
+      --text:#f8fafc; --text-muted:#a1a1aa; --text-dim:#52525b;
+      --sidebar-w:240px; --header-h:64px; --radius:14px;
+      --transition:all 0.22s cubic-bezier(0.4,0,0.2,1);
+    }
+    [data-theme="light"] {
+      --bg:#f0f4f8; --bg2:#e6ecf2; --sidebar-bg:#ffffff;
+      --card:rgba(255,255,255,0.9); --card-border:rgba(0,0,0,0.07);
+      --border:rgba(0,0,0,0.05); --hover:rgba(0,0,0,0.03);
+      --text:#09090b; --text-muted:#52525b; --text-dim:#a1a1aa;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    .app { display: flex; min-height: 100vh; }
+    .sidebar { width: var(--sidebar-w); background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 200; overflow-y: auto; scrollbar-width: none; transition: transform 0.3s; }
+    .sidebar::-webkit-scrollbar { display: none; }
+    .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 20px 20px 14px; border-bottom: 1px solid var(--border); }
+    .sidebar-brand-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--green); display: flex; align-items: center; justify-content: center; font-size: 0.95rem; color: #080808; box-shadow: 0 0 14px var(--green-glow); flex-shrink: 0; }
+    .sidebar-brand-text { font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 900; letter-spacing: -0.03em; color: var(--text); }
+    .sidebar-brand-text span { color: var(--green); }
+    .sidebar-nav { flex: 1; padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; }
+    .nav-section-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); padding: 12px 10px 4px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; color: var(--text-muted); transition: var(--transition); position: relative; width: 100%; text-align: left; }
+    .nav-item:hover { background: var(--hover); color: var(--text); }
+    .nav-item.active { background: var(--green-dim); color: var(--green); font-weight: 700; }
+    .nav-item.active::before { content: ''; position: absolute; left: 0; top: 20%; bottom: 20%; width: 3px; border-radius: 0 3px 3px 0; background: var(--green); }
+    .nav-item i { width: 18px; text-align: center; font-size: 0.88rem; }
+    .sidebar-footer { padding: 10px; border-top: 1px solid var(--border); }
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 199; }
+    .sidebar-overlay.show { display: block; }
+    .main { flex: 1; margin-left: var(--sidebar-w); display: flex; flex-direction: column; }
+    .topbar { position: sticky; top: 0; height: var(--header-h); background: var(--bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; gap: 14px; z-index: 100; backdrop-filter: blur(12px); }
+    .topbar-hamburger { display: none; width: 36px; height: 36px; border-radius: 9px; border: 1px solid var(--card-border); background: var(--card); color: var(--text-muted); align-items: center; justify-content: center; font-size: 0.9rem; }
+    .topbar-title { font-family: 'Outfit'; font-size: 1.05rem; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
+    .demo-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; background: var(--green-dim); border: 1px solid rgba(196,241,53,0.18); border-radius: 100px; font-size: 0.65rem; font-weight: 700; color: var(--green); letter-spacing: 0.06em; text-transform: uppercase; }
+    .demo-badge i { font-size: 0.58rem; }
+    .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    .topbar-btn { width: 36px; height: 36px; border-radius: 9px; border: 1px solid var(--card-border); background: var(--card); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 0.88rem; transition: var(--transition); cursor: pointer; }
+    .topbar-btn:hover { background: var(--hover); color: var(--text); }
+    .topbar-user-btn { display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 5px; border-radius: 100px; border: 1px solid var(--card-border); background: var(--card); transition: var(--transition); }
+    .topbar-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, var(--green), #84cc16); display: flex; align-items: center; justify-content: center; font-family: 'Outfit'; font-size: 0.68rem; font-weight: 900; color: #080808; }
+    .topbar-username { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+    .page { padding: 24px; flex: 1; padding-bottom: 50px; }
+    .card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 20px; }
+    .data-note { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; font-size: 0.68rem; color: var(--text-dim); margin-top: 24px; }
+    .data-note i { color: var(--green); flex-shrink: 0; }
+    .prog-bar { height: 6px; background: rgba(255,255,255,0.07); border-radius: 100px; overflow: hidden; }
+    .prog-fill { height: 100%; border-radius: 100px; }
+    @media (max-width: 768px) {
+      :root { --sidebar-w: 0px; }
+      .sidebar { transform: translateX(-240px); width: 240px; }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; }
+      .topbar-hamburger { display: flex; }
+      .page { padding: 14px; }
+      .chart-row { grid-template-columns: 1fr !important; }
+      .stats-row { grid-template-columns: repeat(2,1fr) !important; }
+    }
+    [data-theme='light'] .sidebar { box-shadow: 2px 0 12px rgba(0,0,0,0.08); }
+
+    /* Page specific */
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+    .page-header h1 { font-family: 'Outfit'; font-size: 1.6rem; font-weight: 900; letter-spacing: -0.03em; }
+    .page-header p { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
+    .range-btns { display: flex; gap: 6px; }
+    .range-btn { padding: 6px 14px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; background: var(--card); border: 1px solid var(--card-border); color: var(--text-muted); cursor: pointer; transition: var(--transition); }
+    .range-btn.active, .range-btn:hover { background: var(--green-dim); color: var(--green); border-color: rgba(196,241,53,0.3); }
+    .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 24px; }
+    .stat-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 18px; }
+    .stat-label { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .stat-value { font-family: 'Outfit'; font-size: 1.75rem; font-weight: 900; letter-spacing: -0.03em; }
+    .stat-sub { font-size: 0.72rem; color: var(--text-dim); margin-top: 2px; }
+    .stat-change { font-size: 0.72rem; font-weight: 700; margin-top: 4px; }
+    .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .chart-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 18px; }
+    .chart-title { font-family: 'Outfit'; font-size: 0.9rem; font-weight: 800; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+    .chart-title i { font-size: 0.8rem; }
+    .chart-wrap { position: relative; height: 200px; }
+    .bottom-row { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; margin-bottom: 16px; }
+    .donut-wrap { position: relative; height: 200px; display: flex; align-items: center; justify-content: center; }
+    .workout-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    .workout-table th { text-align: left; padding: 6px 10px; color: var(--text-dim); font-weight: 700; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--border); }
+    .workout-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--text-muted); }
+    .workout-table tr:last-child td { border-bottom: none; }
+    .insight-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+    .insight-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 16px; }
+    .insight-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; margin-bottom: 10px; }
+    .insight-title { font-family: 'Outfit'; font-size: 0.88rem; font-weight: 800; margin-bottom: 6px; }
+    .insight-text { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+    .section-label { font-family: 'Outfit'; font-size: 0.9rem; font-weight: 800; color: var(--text); margin-bottom: 12px; margin-top: 24px; display: flex; align-items: center; gap: 6px; }
+    .section-label i { color: var(--green); font-size: 0.8rem; }
+    @media (max-width: 768px) {
+      .bottom-row { grid-template-columns: 1fr; }
+      .insight-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <a href="index.html" class="sidebar-brand-icon"><i class="fas fa-heartbeat"></i></a>
+      <a href="index.html" style="text-decoration:none;"><span class="sidebar-brand-text">FitTrack <span>AI</span></span></a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><i class="fas fa-home"></i><span>Dashboard</span></a>
+      <a href="workouts.html" class="nav-item"><i class="fas fa-dumbbell"></i><span>Workouts</span></a>
+      <a href="nutrition.html" class="nav-item"><i class="fas fa-apple-alt"></i><span>Nutrition</span></a>
+      <a href="daily-logs.html" class="nav-item"><i class="fas fa-calendar-check"></i><span>Daily Logs</span></a>
+      <a href="goals.html" class="nav-item"><i class="fas fa-bullseye"></i><span>Goals</span></a>
+      <div class="nav-section-label">Health</div>
+      <a href="heart-rate.html" class="nav-item"><i class="fas fa-heart-pulse"></i><span>Heart Rate</span></a>
+      <a href="bmi.html" class="nav-item"><i class="fas fa-weight"></i><span>BMI Tracker</span></a>
+      <a href="analytics.html" class="nav-item active"><i class="fas fa-chart-line"></i><span>Analytics</span></a>
+      <div class="nav-section-label">AI &amp; More</div>
+      <a href="ai-coach.html" class="nav-item"><i class="fas fa-robot"></i><span>AI Coach</span></a>
+      <a href="achievements.html" class="nav-item"><i class="fas fa-trophy"></i><span>Achievements</span></a>
+      <a href="schedule.html" class="nav-item"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      
+      <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+      <button class="nav-item" onclick="localStorage.removeItem('fittrack-token');window.location.href='login.html'" style="width:100%;text-align:left;"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="document.getElementById('sidebar').classList.remove('open');this.classList.remove('show');"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="topbar-hamburger" onclick="document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('show');"><i class="fas fa-bars"></i></button>
+      <span class="topbar-title">Analytics</span>
+      <div class="demo-badge"><i class="fas fa-flask"></i> Demo Environment</div>
+      <div class="topbar-right">
+        <button onclick="toggleTheme()" class="topbar-btn"><i class="fas fa-moon" id="themeIcon"></i></button>
+        <a href="profile.html" class="topbar-user-btn">
+          <div class="topbar-avatar" id="userAvatar">U</div>
+        </a>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <h1>Performance Analytics</h1>
+          <p>Your health and fitness trends at a glance</p>
+        </div>
+        <div class="range-btns">
+          <button class="range-btn">7D</button>
+          <button class="range-btn active">30D</button>
+          <button class="range-btn">90D</button>
+          <button class="range-btn">All</button>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label"><i class="fas fa-dumbbell" style="color:var(--green)"></i> Total Workouts</div>
+          <div class="stat-value" style="color:var(--green)">28</div>
+          <div class="stat-sub">This month</div>
+          <div class="stat-change" style="color:var(--green)">↑ 4 vs last month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><i class="fas fa-shoe-prints" style="color:var(--orange)"></i> Avg Daily Steps</div>
+          <div class="stat-value" style="color:var(--orange)">9,240</div>
+          <div class="stat-sub">Daily average</div>
+          <div class="stat-change" style="color:var(--green)">↑ 8.2% vs last month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><i class="fas fa-moon" style="color:var(--purple-l)"></i> Avg Sleep</div>
+          <div class="stat-value" style="color:var(--purple-l)">7.4h</div>
+          <div class="stat-sub">Per night</div>
+          <div class="stat-change" style="color:#f87171">↓ 0.2h vs last month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><i class="fas fa-fire" style="color:var(--cyan)"></i> Calories Burned</div>
+          <div class="stat-value" style="color:var(--cyan)">42,180</div>
+          <div class="stat-sub">This month</div>
+          <div class="stat-change" style="color:var(--green)">↑ 12% vs last month</div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-title"><i class="fas fa-shoe-prints" style="color:var(--orange)"></i> Steps Trend</div>
+          <div class="chart-wrap"><canvas id="stepsChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title"><i class="fas fa-fire" style="color:var(--cyan)"></i> Calories Burned</div>
+          <div class="chart-wrap"><canvas id="calsChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-title"><i class="fas fa-moon" style="color:var(--purple-l)"></i> Sleep Duration</div>
+          <div class="chart-wrap"><canvas id="sleepChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title"><i class="fas fa-weight" style="color:var(--green)"></i> Weight Progress</div>
+          <div class="chart-wrap"><canvas id="weightChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="section-label"><i class="fas fa-chart-pie"></i> Workout Breakdown</div>
+      <div class="bottom-row">
+        <div class="chart-card">
+          <div class="donut-wrap"><canvas id="donutChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <table class="workout-table">
+            <thead><tr><th>Type</th><th>Sessions</th><th>Avg Duration</th><th>Share</th></tr></thead>
+            <tbody>
+              <tr><td><span style="color:var(--green)">●</span> Strength</td><td>10</td><td>55 min</td><td><div class="prog-bar" style="width:120px"><div class="prog-fill" style="width:36%;background:var(--green)"></div></div></td></tr>
+              <tr><td><span style="color:var(--orange)">●</span> Running</td><td>8</td><td>42 min</td><td><div class="prog-bar" style="width:120px"><div class="prog-fill" style="width:29%;background:var(--orange)"></div></div></td></tr>
+              <tr><td><span style="color:var(--cyan)">●</span> HIIT</td><td>5</td><td>35 min</td><td><div class="prog-bar" style="width:120px"><div class="prog-fill" style="width:18%;background:var(--cyan)"></div></div></td></tr>
+              <tr><td><span style="color:var(--purple-l)">●</span> Yoga</td><td>3</td><td>40 min</td><td><div class="prog-bar" style="width:120px"><div class="prog-fill" style="width:11%;background:var(--purple-l)"></div></div></td></tr>
+              <tr><td><span style="color:#10b981">●</span> Cycling</td><td>2</td><td>65 min</td><td><div class="prog-bar" style="width:120px"><div class="prog-fill" style="width:7%;background:#10b981"></div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section-label"><i class="fas fa-lightbulb"></i> Performance Insights</div>
+      <div class="insight-cards">
+        <div class="insight-card">
+          <div class="insight-icon" style="background:rgba(196,241,53,0.1)"><i class="fas fa-trending-up" style="color:var(--green)"></i></div>
+          <div class="insight-title">Step Consistency Up</div>
+          <div class="insight-text">You've hit your 10K step goal 18 out of 30 days this month — a 20% improvement from last month. Keep it up!</div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon" style="background:rgba(167,139,250,0.1)"><i class="fas fa-moon" style="color:var(--purple-l)"></i></div>
+          <div class="insight-title">Sleep Slightly Down</div>
+          <div class="insight-text">Your average sleep dropped 0.2h. On workout days you average 7.8h — great recovery. Focus on rest days with earlier bedtimes.</div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-icon" style="background:rgba(6,182,212,0.1)"><i class="fas fa-fire" style="color:var(--cyan)"></i></div>
+          <div class="insight-title">Calorie Burn Peaks</div>
+          <div class="insight-text">Your highest calorie burns happen on HIIT days (avg 520 kcal). Adding one more HIIT session/week could accelerate your weight goal by 2 weeks.</div>
+        </div>
+      </div>
+
+      <div class="data-note"><i class="fas fa-info-circle"></i> All analytics data is simulated demo data. Charts show 30-day hardcoded trends.</div>
+    </div>
+  </div>
+</div>
+<script>
+// Generate 30 days of demo data
+function genSteps() { return Array.from({length:30},(_,i)=>Math.round(7000+Math.sin(i/3)*1800+Math.random()*1500)); }
+function genCals() { return Array.from({length:30},(_,i)=>Math.round(1800+Math.cos(i/4)*300+Math.random()*400)); }
+function genSleep() { return Array.from({length:30},(_,i)=>+(6.5+Math.sin(i/5)*0.8+Math.random()*0.5).toFixed(1)); }
+function genWeight() {
+  let w=76.5; return Array.from({length:30},()=>{w-=Math.random()*0.12; return +w.toFixed(1);});
+}
+function genLabels() {
+  const d=new Date('2026-05-11'); return Array.from({length:30},(_,i)=>{const dd=new Date(d);dd.setDate(d.getDate()+i);return dd.toLocaleDateString('en',{month:'short',day:'numeric'});});
+}
+const labels=genLabels(), steps=genSteps(), cals=genCals(), sleep=genSleep(), weight=genWeight();
+
+const chartDefaults = {
+  responsive:true, maintainAspectRatio:false,
+  plugins:{ legend:{display:false}, tooltip:{backgroundColor:'rgba(0,0,0,0.85)',titleColor:'#f8fafc',bodyColor:'#a1a1aa',borderColor:'rgba(255,255,255,0.08)',borderWidth:1} },
+  scales:{ x:{ticks:{color:'#52525b',font:{size:10},maxRotation:0,maxTicksLimit:6}, grid:{color:'rgba(255,255,255,0.04)'}}, y:{ticks:{color:'#52525b',font:{size:10}}, grid:{color:'rgba(255,255,255,0.04)'}} }
+};
+
+// Steps
+new Chart(document.getElementById('stepsChart'), {
+  type:'line', data:{ labels, datasets:[{ data:steps, borderColor:'#f97316', backgroundColor:'rgba(249,115,22,0.08)', fill:true, tension:0.4, pointRadius:0, borderWidth:2 }] },
+  options:{...chartDefaults}
+});
+// Calories
+new Chart(document.getElementById('calsChart'), {
+  type:'bar', data:{ labels, datasets:[{ data:cals, backgroundColor:'rgba(6,182,212,0.5)', borderColor:'#06b6d4', borderWidth:1, borderRadius:4 }] },
+  options:{...chartDefaults}
+});
+// Sleep
+new Chart(document.getElementById('sleepChart'), {
+  type:'line', data:{ labels, datasets:[{ data:sleep, borderColor:'#a78bfa', backgroundColor:'rgba(167,139,250,0.1)', fill:true, tension:0.4, pointRadius:0, borderWidth:2 }] },
+  options:{...chartDefaults, scales:{...chartDefaults.scales, y:{...chartDefaults.scales.y, min:4, max:10}}}
+});
+// Weight
+new Chart(document.getElementById('weightChart'), {
+  type:'line', data:{ labels, datasets:[{ data:weight, borderColor:'#c4f135', backgroundColor:'rgba(196,241,53,0.06)', fill:true, tension:0.4, pointRadius:2, pointBackgroundColor:'#c4f135', borderWidth:2 }] },
+  options:{...chartDefaults}
+});
+// Donut
+new Chart(document.getElementById('donutChart'), {
+  type:'doughnut',
+  data:{ labels:['Strength','Running','HIIT','Yoga','Cycling'], datasets:[{ data:[10,8,5,3,2], backgroundColor:['#c4f135','#f97316','#06b6d4','#a78bfa','#10b981'], borderWidth:0, hoverOffset:6 }] },
+  options:{ responsive:true, maintainAspectRatio:false, cutout:'72%', plugins:{ legend:{display:false}, tooltip:{backgroundColor:'rgba(0,0,0,0.85)',titleColor:'#f8fafc',bodyColor:'#a1a1aa'} } }
+});
+
+document.querySelectorAll('.range-btn').forEach(b=>b.addEventListener('click',function(){
+  document.querySelectorAll('.range-btn').forEach(x=>x.classList.remove('active'));
+  this.classList.add('active');
+}));
+
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('fittrack-theme', next);
+  document.getElementById('themeIcon').className = next === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+}
+(function(){
+  const s = localStorage.getItem('fittrack-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', s);
+  const i = document.getElementById('themeIcon');
+  if(i) i.className = s==='light' ? 'fas fa-sun' : 'fas fa-moon';
+})();
+</script>
+<script src="js/storage.js"></script>
+</body>
+</html>

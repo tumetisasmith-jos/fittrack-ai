@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Heart Rate – FitTrack AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/sidebar-collapse.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --green:#c4f135; --green-dim:rgba(196,241,53,0.07); --green-glow:rgba(196,241,53,0.22);
+      --purple:#7c3aed; --purple-l:#a78bfa; --cyan:#06b6d4; --orange:#f97316; --red:#ef4444;
+      --bg:#080808; --bg2:#0d0d0d; --sidebar-bg:#090909;
+      --card:rgba(255,255,255,0.04); --card-border:rgba(255,255,255,0.07);
+      --border:rgba(255,255,255,0.05); --hover:rgba(255,255,255,0.06);
+      --text:#f8fafc; --text-muted:#a1a1aa; --text-dim:#52525b;
+      --sidebar-w:240px; --header-h:64px; --radius:14px;
+      --transition:all 0.22s cubic-bezier(0.4,0,0.2,1);
+    }
+    [data-theme="light"] {
+      --bg:#f0f4f8; --bg2:#e6ecf2; --sidebar-bg:#ffffff;
+      --card:rgba(255,255,255,0.9); --card-border:rgba(0,0,0,0.07);
+      --border:rgba(0,0,0,0.05); --hover:rgba(0,0,0,0.03);
+      --text:#09090b; --text-muted:#52525b; --text-dim:#a1a1aa;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    .app { display: flex; min-height: 100vh; }
+    .sidebar { width: var(--sidebar-w); background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 200; overflow-y: auto; scrollbar-width: none; transition: transform 0.3s; }
+    .sidebar::-webkit-scrollbar { display: none; }
+    .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 20px 20px 14px; border-bottom: 1px solid var(--border); }
+    .sidebar-brand-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--green); display: flex; align-items: center; justify-content: center; font-size: 0.95rem; color: #080808; box-shadow: 0 0 14px var(--green-glow); flex-shrink: 0; }
+    .sidebar-brand-text { font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 900; letter-spacing: -0.03em; color: var(--text); }
+    .sidebar-brand-text span { color: var(--green); }
+    .sidebar-nav { flex: 1; padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; }
+    .nav-section-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); padding: 12px 10px 4px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; color: var(--text-muted); transition: var(--transition); position: relative; width: 100%; text-align: left; }
+    .nav-item:hover { background: var(--hover); color: var(--text); }
+    .nav-item.active { background: var(--green-dim); color: var(--green); font-weight: 700; }
+    .nav-item.active::before { content: ''; position: absolute; left: 0; top: 20%; bottom: 20%; width: 3px; border-radius: 0 3px 3px 0; background: var(--green); }
+    .nav-item i { width: 18px; text-align: center; font-size: 0.88rem; }
+    .sidebar-footer { padding: 10px; border-top: 1px solid var(--border); }
+    .sidebar-overlay { display: none; }
+    .main { flex: 1; margin-left: var(--sidebar-w); display: flex; flex-direction: column; }
+    .topbar { position: sticky; top: 0; height: var(--header-h); background: var(--bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; gap: 14px; z-index: 100; backdrop-filter: blur(12px); }
+    .topbar-hamburger { display: none; width: 36px; height: 36px; border-radius: 9px; border: 1px solid var(--card-border); background: var(--card); color: var(--text-muted); align-items: center; justify-content: center; font-size: 0.9rem; }
+    .topbar-title { font-family: 'Outfit'; font-size: 1.05rem; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
+    .demo-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; background: var(--green-dim); border: 1px solid rgba(196,241,53,0.18); border-radius: 100px; font-size: 0.65rem; font-weight: 700; color: var(--green); letter-spacing: 0.06em; text-transform: uppercase; }
+    .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    .topbar-btn { width: 36px; height: 36px; border-radius: 9px; border: 1px solid var(--card-border); background: var(--card); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 0.88rem; transition: var(--transition); cursor: pointer; }
+    .topbar-btn:hover { background: var(--hover); color: var(--text); }
+    .topbar-user-btn { display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 5px; border-radius: 100px; border: 1px solid var(--card-border); background: var(--card); transition: var(--transition); }
+    .topbar-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, var(--green), #84cc16); display: flex; align-items: center; justify-content: center; font-family: 'Outfit'; font-size: 0.68rem; font-weight: 900; color: #080808; }
+    .topbar-username { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+    .page { padding: 24px; flex: 1; padding-bottom: 50px; }
+    .data-note { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; font-size: 0.68rem; color: var(--text-dim); margin-top: 24px; }
+    .data-note i { color: var(--green); flex-shrink: 0; }
+    .chart-container { position: relative; height: 220px; width: 100%; }
+    @media (max-width: 768px) {
+      .page { padding: 14px; }
+      .stats-row { grid-template-columns: 1fr 1fr !important; }
+      .hr-layout { grid-template-columns: 1fr !important; }
+    }
+    [data-theme='light'] .sidebar { box-shadow: 2px 0 12px rgba(0,0,0,0.08); }
+
+    /* Page */
+    .page-title { font-family: 'Outfit'; font-size: 1.6rem; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 4px; }
+    .page-sub { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 20px; }
+    .stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 20px; }
+    .stat-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 18px; }
+    .stat-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+    .stat-value { font-family: 'Outfit'; font-size: 2rem; font-weight: 900; }
+    .stat-unit { font-size: 0.8rem; font-weight: 500; color: var(--text-muted); margin-left: 2px; }
+    .stat-sub { font-size: 0.7rem; color: var(--text-dim); margin-top: 3px; }
+    .hr-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; margin-bottom: 16px; }
+    /* Live HR display */
+    .live-hr-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 24px; text-align: center; }
+    .pulse-heart { font-size: 3.5rem; display: block; animation: heartbeat 1.2s ease-in-out infinite; color: #ef4444; line-height:1; }
+    @keyframes heartbeat { 0%,100%{transform:scale(1)} 14%{transform:scale(1.15)} 28%{transform:scale(1)} 42%{transform:scale(1.12)} 70%{transform:scale(1)} }
+    .live-bpm { font-family: 'Outfit'; font-size: 3rem; font-weight: 900; color: #ef4444; margin-top: 6px; }
+    .live-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-top: 4px; }
+    .live-trend { font-size: 0.75rem; color: var(--text-dim); margin-top: 8px; }
+    /* Zones */
+    .zones-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 18px; }
+    .zones-title { font-family: 'Outfit'; font-size: 0.88rem; font-weight: 800; margin-bottom: 14px; }
+    .zone-row { margin-bottom: 12px; }
+    .zone-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .zone-name { font-size: 0.78rem; font-weight: 700; }
+    .zone-range { font-size: 0.68rem; color: var(--text-dim); }
+    .zone-pct { font-size: 0.78rem; font-weight: 700; }
+    .zone-bar { height: 8px; background: rgba(255,255,255,0.07); border-radius: 100px; overflow: hidden; }
+    .zone-fill { height: 100%; border-radius: 100px; transition: width 1.4s cubic-bezier(0.4,0,0.2,1); }
+    .chart-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 18px; margin-bottom: 16px; }
+    .chart-title { font-family: 'Outfit'; font-size: 0.9rem; font-weight: 800; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+    .chart-title i { font-size: 0.8rem; color: #ef4444; }
+    .section-title { font-family: 'Outfit'; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+    .section-title i { color: var(--green); font-size: 0.85rem; }
+    .sessions-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); overflow: hidden; }
+    .sessions-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    .sessions-table th { text-align: left; padding: 8px 16px; color: var(--text-dim); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--border); }
+    .sessions-table td { padding: 10px 16px; border-bottom: 1px solid var(--border); color: var(--text-muted); }
+    .sessions-table td:first-child { color: var(--text); font-weight: 600; }
+    .sessions-table tr:last-child td { border-bottom: none; }
+    .zone-badge { display: inline-flex; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <a href="index.html" class="sidebar-brand-icon"><i class="fas fa-heartbeat"></i></a>
+      <a href="index.html" style="text-decoration:none;"><span class="sidebar-brand-text">FitTrack <span>AI</span></span></a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><i class="fas fa-home"></i><span>Dashboard</span></a>
+      <a href="workouts.html" class="nav-item"><i class="fas fa-dumbbell"></i><span>Workouts</span></a>
+      <a href="nutrition.html" class="nav-item"><i class="fas fa-apple-alt"></i><span>Nutrition</span></a>
+      <a href="daily-logs.html" class="nav-item"><i class="fas fa-calendar-check"></i><span>Daily Logs</span></a>
+      <a href="goals.html" class="nav-item"><i class="fas fa-bullseye"></i><span>Goals</span></a>
+      <div class="nav-section-label">Health</div>
+      <a href="heart-rate.html" class="nav-item active"><i class="fas fa-heart-pulse"></i><span>Heart Rate</span></a>
+      <a href="bmi.html" class="nav-item"><i class="fas fa-weight"></i><span>BMI Tracker</span></a>
+      <a href="analytics.html" class="nav-item"><i class="fas fa-chart-line"></i><span>Analytics</span></a>
+      <div class="nav-section-label">AI &amp; More</div>
+      <a href="ai-coach.html" class="nav-item"><i class="fas fa-robot"></i><span>AI Coach</span></a>
+      <a href="achievements.html" class="nav-item"><i class="fas fa-trophy"></i><span>Achievements</span></a>
+      <a href="schedule.html" class="nav-item"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      
+      <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+      <button class="nav-item" onclick="clearAuth();window.location.href='login.html'" style="width:100%;text-align:left;"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="document.getElementById('sidebar').classList.remove('open');this.classList.remove('show');"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="topbar-hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+      <span class="topbar-title">Heart Rate</span>
+      <div class="demo-badge"><i class="fas fa-flask"></i> Demo Environment</div>
+      <div class="topbar-right">
+        <button onclick="toggleTheme()" class="topbar-btn"><i class="fas fa-moon" id="themeIcon"></i></button>
+        <a href="profile.html" class="topbar-user-btn">
+          <div class="topbar-avatar" id="userAvatar">U</div>
+        </a>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="page-title">Heart Rate Monitor</div>
+      <div class="page-sub">Real-time cardiac monitoring and training zones</div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label"><i class="fas fa-heart" style="color:#ef4444"></i> Resting HR</div>
+          <div class="stat-value" style="color:#ef4444">72 <span class="stat-unit">bpm</span></div>
+          <div class="stat-sub">Excellent range for age 28</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><i class="fas fa-bolt" style="color:var(--orange)"></i> Max HR Today</div>
+          <div class="stat-value" style="color:var(--orange)">158 <span class="stat-unit">bpm</span></div>
+          <div class="stat-sub">During HIIT session</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><i class="fas fa-wave-square" style="color:var(--cyan)"></i> HRV</div>
+          <div class="stat-value" style="color:var(--cyan)">45 <span class="stat-unit">ms</span></div>
+          <div class="stat-sub">Good recovery status</div>
+        </div>
+      </div>
+
+      <div class="hr-layout">
+        <!-- Live HR -->
+        <div class="live-hr-card">
+          <i class="fas fa-heart pulse-heart"></i>
+          <div class="live-bpm" id="liveBPM">72</div>
+          <div class="live-label">BPM · Live Reading</div>
+          <div class="live-trend">▲ +2 from last hour</div>
+          <div style="margin-top:14px;display:flex;align-items:center;gap:6px;justify-content:center">
+            <span style="width:8px;height:8px;border-radius:50%;background:#ef4444;animation:pulse2 1.5s infinite;display:inline-block"></span>
+            <span style="font-size:0.72rem;color:var(--text-muted)">Live monitoring active</span>
+          </div>
+        </div>
+
+        <!-- Zones -->
+        <div class="zones-card">
+          <div class="zones-title"><i class="fas fa-layer-group" style="color:#ef4444"></i> Heart Rate Zones Today</div>
+          <div class="zone-row">
+            <div class="zone-header">
+              <span class="zone-name" style="color:#4ade80">Zone 1 — Rest</span>
+              <span class="zone-range">50-60% · &lt;115 bpm</span>
+              <span class="zone-pct" style="color:#4ade80">35%</span>
+            </div>
+            <div class="zone-bar"><div class="zone-fill" style="width:0;background:#4ade80" data-w="35%"></div></div>
+          </div>
+          <div class="zone-row">
+            <div class="zone-header">
+              <span class="zone-name" style="color:var(--green)">Zone 2 — Fat Burn</span>
+              <span class="zone-range">60-70% · 115-134 bpm</span>
+              <span class="zone-pct" style="color:var(--green)">28%</span>
+            </div>
+            <div class="zone-bar"><div class="zone-fill" style="width:0;background:var(--green)" data-w="28%"></div></div>
+          </div>
+          <div class="zone-row">
+            <div class="zone-header">
+              <span class="zone-name" style="color:var(--orange)">Zone 3 — Cardio</span>
+              <span class="zone-range">70-80% · 134-154 bpm</span>
+              <span class="zone-pct" style="color:var(--orange)">22%</span>
+            </div>
+            <div class="zone-bar"><div class="zone-fill" style="width:0;background:var(--orange)" data-w="22%"></div></div>
+          </div>
+          <div class="zone-row">
+            <div class="zone-header">
+              <span class="zone-name" style="color:#f97316">Zone 4 — Peak</span>
+              <span class="zone-range">80-90% · 154-173 bpm</span>
+              <span class="zone-pct" style="color:#f97316">12%</span>
+            </div>
+            <div class="zone-bar"><div class="zone-fill" style="width:0;background:#f97316" data-w="12%"></div></div>
+          </div>
+          <div class="zone-row" style="margin-bottom:0">
+            <div class="zone-header">
+              <span class="zone-name" style="color:#ef4444">Zone 5 — Max</span>
+              <span class="zone-range">90-100% · &gt;173 bpm</span>
+              <span class="zone-pct" style="color:#ef4444">3%</span>
+            </div>
+            <div class="zone-bar"><div class="zone-fill" style="width:0;background:#ef4444" data-w="3%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HR Chart -->
+      <div class="chart-card">
+        <div class="chart-title"><i class="fas fa-chart-line"></i> 24-Hour Heart Rate Trend</div>
+        <div class="chart-container">
+          <canvas id="hrChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Sessions table -->
+      <div class="section-title"><i class="fas fa-dumbbell"></i> Recent Workout HR Sessions</div>
+      <div class="sessions-card">
+        <table class="sessions-table">
+          <thead><tr><th>Date</th><th>Type</th><th>Avg HR</th><th>Max HR</th><th>Duration</th><th>Zone</th></tr></thead>
+          <tbody id="sessionsBody"></tbody>
+        </table>
+      </div>
+
+      <div class="data-note"><i class="fas fa-info-circle"></i> Heart rate data is simulated. Live BPM values fluctuate using demo animation only.</div>
+    </div>
+  </div>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/sidebar.js"></script>
+<script>
+const hrData = [68,72,70,74,71,69,73,75,78,82,88,95,102,118,135,148,155,158,145,128,108,92,78,72];
+const hours = Array.from({length:24},(_,i)=>`${i}:00`);
+const sessions = [
+  { date:'2026-06-09', type:'HIIT', avg:142, max:168, duration:'35 min', zone:'Peak', zc:'#f97316' },
+  { date:'2026-06-07', type:'Running', avg:128, max:152, duration:'45 min', zone:'Cardio', zc:'#f97316' },
+  { date:'2026-06-05', type:'Strength', avg:108, max:135, duration:'60 min', zone:'Fat Burn', zc:'var(--green)' },
+  { date:'2026-06-03', type:'Yoga', avg:78, max:92, duration:'40 min', zone:'Rest', zc:'#4ade80' },
+  { date:'2026-06-01', type:'Cycling', avg:135, max:162, duration:'50 min', zone:'Peak', zc:'#f97316' },
+];
+
+// Sessions table
+const tbody = document.getElementById('sessionsBody');
+sessions.forEach(s=>{
+  tbody.innerHTML+=`<tr>
+    <td>${s.date}</td><td>${s.type}</td>
+    <td><span style="color:#ef4444;font-weight:700">${s.avg}</span> bpm</td>
+    <td><span style="color:var(--orange);font-weight:700">${s.max}</span> bpm</td>
+    <td>${s.duration}</td>
+    <td><span class="zone-badge" style="background:${s.zc}18;color:${s.zc}">${s.zone}</span></td>
+  </tr>`;
+});
+
+// HR Chart
+let hrChartInstance;
+function buildHrChart() {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  const tickColor = isLight ? '#71717a' : '#52525b';
+  const gridColor = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.04)';
+  if (hrChartInstance) hrChartInstance.destroy();
+  hrChartInstance = new Chart(document.getElementById('hrChart'), {
+  type:'line',
+  data:{ labels:hours, datasets:[{
+    data:hrData, borderColor:'#ef4444', backgroundColor:'rgba(239,68,68,0.08)',
+    fill:true, tension:0.4, pointRadius:3, pointBackgroundColor:'#ef4444', borderWidth:2,
+    pointHoverRadius:5
+  }]},
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{backgroundColor:'rgba(0,0,0,0.85)',titleColor:'#f8fafc',bodyColor:'#a1a1aa',borderColor:'rgba(255,255,255,0.08)',borderWidth:1,callbacks:{label:ctx=>`${ctx.raw} bpm`}} },
+    scales:{
+      x:{ticks:{color:tickColor,font:{size:10},maxRotation:0,maxTicksLimit:8}, grid:{color:gridColor}},
+      y:{ticks:{color:tickColor,font:{size:10},callback:v=>v+' bpm'}, grid:{color:gridColor},min:60,max:170}
+    }
+  }
+});
+}
+buildHrChart();
+
+// Animate zone bars
+setTimeout(()=>{ document.querySelectorAll('.zone-fill').forEach(el=>{ el.style.width=el.dataset.w; }); },200);
+
+// Live BPM fluctuation
+let bpm=72;
+setInterval(()=>{
+  bpm+=Math.round((Math.random()-0.5)*3);
+  bpm=Math.max(68,Math.min(78,bpm));
+  document.getElementById('liveBPM').textContent=bpm;
+},2000);
+
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('fittrack-theme', next);
+  localStorage.setItem('fittrack_theme', next);
+  document.getElementById('themeIcon').className = next === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+  buildHrChart();
+}
+(function(){
+  const s = localStorage.getItem('fittrack-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', s);
+  const i = document.getElementById('themeIcon');
+  if(i) i.className = s==='light' ? 'fas fa-sun' : 'fas fa-moon';
+})();
+</script>
+<style>
+@keyframes pulse2 { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(1.4)} }
+</style>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workouts | FitTrack AI</title>
+  <meta name="description" content="Log, track, and analyze your workouts with FitTrack AI.">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/design-system.css">
+</head>
+<body>
+  <div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <i class="fas fa-heartbeat"></i>
+        <span>FitTrack AI</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Main</div>
+        <a href="dashboard.html" class="nav-item" data-page="dashboard"><i class="fas fa-home"></i><span>Dashboard</span></a>
+        <a href="workouts.html" class="nav-item active" data-page="workouts"><i class="fas fa-dumbbell"></i><span>Workouts</span></a>
+        <a href="nutrition.html" class="nav-item" data-page="nutrition"><i class="fas fa-apple-alt"></i><span>Nutrition</span></a>
+        <a href="daily-logs.html" class="nav-item" data-page="daily-logs"><i class="fas fa-calendar-check"></i><span>Daily Logs</span></a>
+        <a href="goals.html" class="nav-item" data-page="goals"><i class="fas fa-bullseye"></i><span>Goals</span></a>
+
+        <div class="nav-section-label">Health</div>
+        <a href="heart-rate.html" class="nav-item" data-page="heart-rate"><i class="fas fa-heart-pulse"></i><span>Heart Rate</span></a>
+        <a href="bmi.html" class="nav-item" data-page="bmi"><i class="fas fa-weight"></i><span>BMI Tracker</span></a>
+
+        <div class="nav-section-label">AI & More</div>
+        <a href="analytics.html" class="nav-item" data-page="analytics"><i class="fas fa-chart-line"></i><span>Analytics</span></a>
+        <a href="ai-coach.html" class="nav-item" data-page="ai-coach"><i class="fas fa-robot"></i><span>AI Coach</span></a>
+        <a href="achievements.html" class="nav-item" data-page="achievements"><i class="fas fa-trophy"></i><span>Achievements</span></a>
+        <a href="schedule.html" class="nav-item" data-page="schedule"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+      </nav>
+      <div class="sidebar-bottom">
+        <a href="profile.html" class="nav-item" data-page="profile"><i class="fas fa-user"></i><span>Profile</span></a>
+        <button class="nav-item logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+      </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- Main Area -->
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar-hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        <div class="topbar-title">Workouts</div>
+        <div class="topbar-right">
+          <button class="topbar-btn" id="themeToggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+          <div class="topbar-btn" onclick="toggleNotifications()">
+            <i class="fas fa-bell"></i>
+            <span class="topbar-notif-badge hidden" id="notifBadge">0</span>
+          </div>
+          <div class="topbar-user-btn" onclick="window.location.href='profile.html'">
+            <div class="topbar-avatar" id="userAvatar">U</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Notification Panel -->
+      <div class="notif-panel hidden" id="notifPanel" style="position:fixed; top:68px; right:24px;">
+        <div class="notif-header">
+          <span>Notifications</span>
+          <button onclick="markAllRead()">Mark all read</button>
+        </div>
+        <div class="notif-list" id="notifList">
+          <div class="notif-empty">No notifications yet</div>
+        </div>
+      </div>
+
+      <div class="page">
+
+        <!-- Stats Bar -->
+        <div class="workouts-stats-bar" id="workoutsStatsBar">
+          <div class="wk-stat">
+            <div class="wk-stat-icon">🏋️</div>
+            <div class="wk-stat-val" id="wkTotal">—</div>
+            <div class="wk-stat-label">Total Workouts</div>
+          </div>
+          <div class="wk-stat">
+            <div class="wk-stat-icon">⏱️</div>
+            <div class="wk-stat-val" id="wkDuration">—</div>
+            <div class="wk-stat-label">Total Duration (min)</div>
+          </div>
+          <div class="wk-stat">
+            <div class="wk-stat-icon">🔥</div>
+            <div class="wk-stat-val" id="wkCalories">—</div>
+            <div class="wk-stat-label">Calories Burned</div>
+          </div>
+          <div class="wk-stat">
+            <div class="wk-stat-icon">📅</div>
+            <div class="wk-stat-val" id="wkThisWeek">—</div>
+            <div class="wk-stat-label">This Week</div>
+          </div>
+        </div>
+
+        <!-- Page Actions Bar -->
+        <div class="page-actions-bar">
+          <div>
+            <!-- Filter Tabs -->
+            <div class="filter-tabs" id="filterTabs">
+              <button class="filter-tab active" data-filter="all" onclick="setFilter('all', this)">All</button>
+              <button class="filter-tab" data-filter="running" onclick="setFilter('running', this)">🏃 Running</button>
+              <button class="filter-tab" data-filter="cycling" onclick="setFilter('cycling', this)">🚴 Cycling</button>
+              <button class="filter-tab" data-filter="yoga" onclick="setFilter('yoga', this)">🧘 Yoga</button>
+              <button class="filter-tab" data-filter="strength_training" onclick="setFilter('strength_training', this)">💪 Strength</button>
+              <button class="filter-tab" data-filter="swimming" onclick="setFilter('swimming', this)">🏊 Swimming</button>
+              <button class="filter-tab" data-filter="hiit" onclick="setFilter('hiit', this)">⚡ HIIT</button>
+              <button class="filter-tab" data-filter="walking" onclick="setFilter('walking', this)">🚶 Walking</button>
+              <button class="filter-tab" data-filter="other" onclick="setFilter('other', this)">Other</button>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="openAddModal()" style="flex-shrink:0;">
+            <i class="fas fa-plus"></i> Add Workout
+          </button>
+        </div>
+
+        <!-- Workouts List -->
+        <div class="workouts-list" id="workoutsList">
+          <div class="loading-spinner"><div class="spinner"></div> Loading workouts...</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Workout Modal -->
+  <div class="modal-overlay hidden" id="addModal">
+    <div class="modal-box" style="max-width:580px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fas fa-dumbbell" style="color:var(--accent-purple);margin-right:8px;"></i>Log New Workout</h3>
+        <button class="modal-close" onclick="closeAddModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="addWorkoutForm" onsubmit="submitWorkout(event)">
+
+          <!-- Type Selector -->
+          <div class="form-group">
+            <label>Workout Type</label>
+            <div class="type-selector-grid" id="typeSelectorGrid">
+              <div class="type-option selected" data-type="running" onclick="selectType('running', this)">
+                <span class="type-option-icon">🏃</span>
+                <div class="type-option-name">Running</div>
+              </div>
+              <div class="type-option" data-type="cycling" onclick="selectType('cycling', this)">
+                <span class="type-option-icon">🚴</span>
+                <div class="type-option-name">Cycling</div>
+              </div>
+              <div class="type-option" data-type="yoga" onclick="selectType('yoga', this)">
+                <span class="type-option-icon">🧘</span>
+                <div class="type-option-name">Yoga</div>
+              </div>
+              <div class="type-option" data-type="strength_training" onclick="selectType('strength_training', this)">
+                <span class="type-option-icon">💪</span>
+                <div class="type-option-name">Strength</div>
+              </div>
+              <div class="type-option" data-type="swimming" onclick="selectType('swimming', this)">
+                <span class="type-option-icon">🏊</span>
+                <div class="type-option-name">Swimming</div>
+              </div>
+              <div class="type-option" data-type="hiit" onclick="selectType('hiit', this)">
+                <span class="type-option-icon">⚡</span>
+                <div class="type-option-name">HIIT</div>
+              </div>
+              <div class="type-option" data-type="walking" onclick="selectType('walking', this)">
+                <span class="type-option-icon">🚶</span>
+                <div class="type-option-name">Walking</div>
+              </div>
+              <div class="type-option" data-type="pilates" onclick="selectType('pilates', this)">
+                <span class="type-option-icon">🤸</span>
+                <div class="type-option-name">Pilates</div>
+              </div>
+              <div class="type-option" data-type="boxing" onclick="selectType('boxing', this)">
+                <span class="type-option-icon">🥊</span>
+                <div class="type-option-name">Boxing</div>
+              </div>
+              <div class="type-option" data-type="basketball" onclick="selectType('basketball', this)">
+                <span class="type-option-icon">🏀</span>
+                <div class="type-option-name">Basketball</div>
+              </div>
+              <div class="type-option" data-type="other" onclick="selectType('other', this)">
+                <span class="type-option-icon">🏅</span>
+                <div class="type-option-name">Other</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Duration -->
+          <div class="form-group">
+            <label>Duration (minutes)</label>
+            <div class="slider-row">
+              <input type="range" id="durationSlider" min="5" max="180" value="30"
+                     oninput="document.getElementById('durationInput').value=this.value">
+              <input type="number" id="durationInput" class="slider-value" min="1" max="600" value="30"
+                     oninput="document.getElementById('durationSlider').value=Math.min(this.value,180)">
+            </div>
+          </div>
+
+          <!-- Calories + Date Row -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>Calories Burned (optional)</label>
+              <input type="number" id="workoutCalories" placeholder="e.g. 320" min="0" max="5000">
+            </div>
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" id="workoutDate">
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div class="form-group">
+            <label>Notes (optional)</label>
+            <textarea id="workoutNotes" rows="3" placeholder="How did it feel? Any personal records?"></textarea>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeAddModal()">Cancel</button>
+        <button class="btn btn-primary" id="addWorkoutBtn" onclick="submitWorkout(event)">
+          <i class="fas fa-plus"></i> Add Workout
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirm Modal -->
+  <div class="modal-overlay hidden" id="deleteModal">
+    <div class="modal-box" style="max-width:400px;">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color:var(--accent-red);">
+          <i class="fas fa-trash" style="margin-right:8px;"></i>Delete Workout?
+        </h3>
+        <button class="modal-close" onclick="closeDeleteModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text-secondary);margin:0;font-size:0.9rem;line-height:1.5;">
+          Are you sure you want to delete this workout? This action cannot be undone.
+        </p>
+        <div id="deleteWorkoutInfo" style="margin-top:16px;padding:12px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:10px;font-size:0.88rem;color:var(--text-primary);"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+        <button class="btn btn-danger" id="confirmDeleteBtn" onclick="confirmDelete()">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script src="js/workouts.js"></script>
+</body>
+</html>

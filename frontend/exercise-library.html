@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exercise Library | FitTrack AI</title>
+  <meta name="description" content="Browse 40+ exercises with instructions, muscle groups, and difficulty ratings.">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/main.css"><link rel="stylesheet" href="css/components.css"><link rel="stylesheet" href="css/dashboard.css">
+  <style>
+    .exercise-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; }
+    .exercise-card { background:var(--bg-card); border:1px solid var(--glass-border); border-radius:var(--border-radius); padding:20px; cursor:pointer; transition:var(--transition); }
+    .exercise-card:hover { border-color:var(--accent-purple); transform:translateY(-2px); box-shadow:var(--shadow-glow-purple); }
+    .ex-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+    .ex-name { font-size:1rem; font-weight:600; }
+    .ex-category-badge { font-size:0.72rem; padding:3px 10px; border-radius:99px; font-weight:600; text-transform:uppercase; }
+    .ex-muscles { font-size:0.8rem; color:var(--text-muted); margin:6px 0; }
+    .ex-desc { font-size:0.82rem; color:var(--text-secondary); line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .ex-footer { display:flex; gap:12px; margin-top:14px; }
+    .ex-tag { font-size:0.72rem; padding:2px 8px; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:99px; color:var(--text-secondary); }
+    .ex-cal { color:var(--accent-orange); font-weight:600; }
+    .difficulty-badge { display:inline-block; padding:2px 8px; border-radius:99px; font-size:0.72rem; font-weight:600; }
+    .diff-beginner { background:rgba(16,185,129,0.15); color:#10b981; }
+    .diff-intermediate { background:rgba(245,158,11,0.15); color:#f59e0b; }
+    .diff-advanced { background:rgba(239,68,68,0.15); color:#ef4444; }
+    .category-colors { Cardio:'#ef4444', Strength:'#06b6d4', HIIT:'#ec4899', Flexibility:'#8b5cf6', Sports:'#f59e0b', Recovery:'#10b981' }
+    .search-bar { display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; }
+    .search-input-wrap { flex:1; min-width:200px; position:relative; }
+    .search-input-wrap i { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text-muted); }
+    .search-input-wrap input { width:100%; padding-left:40px; }
+    .ex-count { font-size:0.85rem; color:var(--text-muted); margin-bottom:12px; }
+    .modal-detail .detail-row { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px; }
+    .detail-badge { padding:6px 16px; border-radius:99px; font-size:0.82rem; font-weight:600; }
+    .instructions-box { background:var(--bg-tertiary); border-radius:10px; padding:16px; font-size:0.88rem; color:var(--text-secondary); line-height:1.8; }
+  </style>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand"><i class="fas fa-heartbeat"></i><span>FitTrack AI</span></div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item"><i class="fas fa-home"></i><span>Dashboard</span></a>
+      <a href="workouts.html" class="nav-item"><i class="fas fa-dumbbell"></i><span>Workouts</span></a>
+      <a href="nutrition.html" class="nav-item"><i class="fas fa-utensils"></i><span>Nutrition</span></a>
+      <a href="daily-logs.html" class="nav-item"><i class="fas fa-calendar-check"></i><span>Daily Logs</span></a>
+      <a href="goals.html" class="nav-item"><i class="fas fa-bullseye"></i><span>Goals</span></a>
+      <a href="heart-rate.html" class="nav-item"><i class="fas fa-heart-pulse"></i><span>Heart Rate</span></a>
+      <a href="exercise-library.html" class="nav-item active"><i class="fas fa-book-open"></i><span>Exercises</span></a>
+      <a href="schedule.html" class="nav-item"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+      <a href="analytics.html" class="nav-item"><i class="fas fa-chart-line"></i><span>Analytics</span></a>
+      <a href="ai-coach.html" class="nav-item"><i class="fas fa-robot"></i><span>AI Coach</span></a>
+    </nav>
+    <div class="sidebar-bottom">
+      <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+      <button class="nav-item logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+  <div class="main-area">
+    <header class="top-header">
+      <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+      <div class="header-center"><h1 class="page-title">📚 Exercise Library</h1></div>
+      <div class="header-right">
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+        <div class="user-avatar" id="userAvatar">U</div>
+      </div>
+    </header>
+    <main class="main-content">
+      <!-- Filters -->
+      <div class="search-bar">
+        <div class="search-input-wrap"><i class="fas fa-search"></i><input type="text" id="searchInput" class="form-control" placeholder="Search exercises, muscles..." oninput="filterExercises()"></div>
+        <select id="categoryFilter" class="form-control" style="max-width:180px;" onchange="filterExercises()"><option value="all">All Categories</option></select>
+        <select id="difficultyFilter" class="form-control" style="max-width:160px;" onchange="filterExercises()">
+          <option value="all">All Levels</option>
+          <option value="beginner">Beginner</option>
+          <option value="intermediate">Intermediate</option>
+          <option value="advanced">Advanced</option>
+        </select>
+      </div>
+      <div class="ex-count" id="exCount">Loading exercises...</div>
+      <div class="exercise-grid" id="exerciseGrid"><div class="loading-spinner"><div class="spinner"></div></div></div>
+    </main>
+  </div>
+</div>
+
+<!-- Exercise Detail Modal -->
+<div class="modal-overlay hidden" id="exModal">
+  <div class="modal-box modal-detail" style="max-width:600px;">
+    <div class="modal-header">
+      <h3 class="modal-title" id="exModalTitle">Exercise</h3>
+      <button class="modal-close" onclick="closeExModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="exModalBody"></div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeExModal()">Close</button></div>
+  </div>
+</div>
+
+<script src="js/exercise-library.js"></script>
+<script src="js/storage.js"></script>
+</body>
+</html>

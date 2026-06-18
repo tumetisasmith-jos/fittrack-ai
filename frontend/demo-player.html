@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitTrack AI — Auto Demo Player | Team Vitalis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --green:#c4f135;--green-dim:rgba(196,241,53,.1);--green-glow:rgba(196,241,53,.3);
+      --purple:#7c3aed;--bg:#050505;--text:#f8fafc;--muted:#a1a1aa;--dim:#3f3f46;
+    }
+    html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Inter',sans-serif;}
+
+    /* ── PLAYER SHELL ─────────────────────────── */
+    #player{position:relative;width:100vw;height:100vh;background:#000;display:flex;flex-direction:column;}
+
+    /* ── IFRAME STAGE ──────────────────────────── */
+    #stage{position:relative;flex:1;overflow:hidden;background:#080808;}
+    #sceneFrame{width:100%;height:100%;border:none;transition:opacity .6s ease;}
+    #sceneFrame.fade{opacity:0;}
+
+    /* ── CINEMATIC BARS ────────────────────────── */
+    .bar-top,.bar-bot{position:absolute;left:0;right:0;z-index:20;background:#000;transition:height .5s ease;}
+    .bar-top{top:0;height:60px;}
+    .bar-bot{bottom:0;height:60px;}
+    #player.cinema .bar-top{height:80px;}
+    #player.cinema .bar-bot{height:80px;}
+
+    /* ── SCENE TITLE OVERLAY ───────────────────── */
+    #sceneBanner{position:absolute;top:70px;left:50%;transform:translateX(-50%);z-index:30;
+      background:rgba(0,0,0,.7);border:1px solid rgba(196,241,53,.25);border-radius:100px;
+      padding:6px 20px;display:flex;align-items:center;gap:10px;
+      font-family:'Outfit';font-size:.85rem;font-weight:800;color:var(--green);
+      letter-spacing:.04em;text-transform:uppercase;backdrop-filter:blur(8px);
+      opacity:0;transition:opacity .4s ease;white-space:nowrap;}
+    #sceneBanner.show{opacity:1;}
+    #sceneBanner i{font-size:.75rem;}
+
+    /* ── SUBTITLE BOX ─────────────────────────── */
+    #subtitle{position:absolute;bottom:70px;left:50%;transform:translateX(-50%);
+      max-width:800px;width:90%;z-index:30;text-align:center;
+      padding:12px 22px;background:rgba(0,0,0,.82);border-radius:10px;
+      font-size:1rem;font-weight:500;color:#f0f0f0;line-height:1.6;
+      border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(10px);
+      opacity:0;transition:opacity .35s ease;min-height:54px;}
+    #subtitle.show{opacity:1;}
+    #subtitle .highlight{color:var(--green);font-weight:700;}
+
+    /* ── TRANSITION OVERLAY ────────────────────── */
+    #transOverlay{position:absolute;inset:0;z-index:50;background:#000;
+      opacity:0;pointer-events:none;transition:opacity .5s ease;}
+    #transOverlay.active{opacity:1;}
+
+    /* ── SCENE FLASH LABEL ─────────────────────── */
+    #sceneFlash{position:absolute;inset:0;z-index:51;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s;}
+    #sceneFlash.show{opacity:1;}
+    #flashTitle{font-family:'Outfit';font-size:2.4rem;font-weight:900;color:var(--green);letter-spacing:-.02em;text-align:center;}
+    #flashSub{font-size:.9rem;color:var(--muted);margin-top:8px;text-align:center;}
+    .flash-line{width:60px;height:3px;background:var(--green);border-radius:100px;margin:14px auto 0;box-shadow:0 0 12px var(--green-glow);}
+
+    /* ── CONTROLS BAR ─────────────────────────── */
+    #controls{position:absolute;bottom:0;left:0;right:0;height:60px;
+      display:flex;align-items:center;gap:14px;padding:0 20px;
+      background:rgba(5,5,5,.96);border-top:1px solid rgba(255,255,255,.06);z-index:40;}
+
+    /* progress */
+    #progressWrap{flex:1;height:4px;background:rgba(255,255,255,.08);border-radius:100px;
+      cursor:pointer;position:relative;overflow:hidden;}
+    #progressFill{height:100%;background:linear-gradient(90deg,var(--green),#a3e635);
+      border-radius:100px;transition:width .3s linear;width:0%;}
+
+    /* time */
+    #timeDisplay{font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums;
+      white-space:nowrap;min-width:70px;text-align:center;}
+
+    /* buttons */
+    .ctrl-btn{width:34px;height:34px;border-radius:8px;border:1px solid rgba(255,255,255,.1);
+      background:rgba(255,255,255,.05);color:var(--muted);display:flex;align-items:center;
+      justify-content:center;font-size:.82rem;cursor:pointer;transition:all .2s ease;flex-shrink:0;}
+    .ctrl-btn:hover{background:rgba(255,255,255,.1);color:var(--text);}
+    .ctrl-btn.green{background:var(--green);color:#080808;border-color:var(--green);}
+    .ctrl-btn.green:hover{background:#d4f535;}
+
+    #playPauseBtn{width:40px;height:40px;border-radius:10px;font-size:1rem;}
+
+    /* scene indicator dots */
+    #sceneDots{display:flex;gap:5px;align-items:center;}
+    .sdot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);
+      cursor:pointer;transition:all .2s;}
+    .sdot.active{background:var(--green);width:18px;border-radius:100px;box-shadow:0 0 6px var(--green-glow);}
+    .sdot:hover{background:rgba(255,255,255,.4);}
+
+    /* scene label */
+    #sceneLabel{font-size:.72rem;color:var(--muted);white-space:nowrap;min-width:110px;}
+    #sceneNum{color:var(--green);font-weight:700;}
+
+    /* speed */
+    #speedBtn{font-size:.7rem;font-weight:700;padding:0 8px;min-width:38px;}
+
+    /* top control bar */
+    #topbar{position:absolute;top:0;left:0;right:0;height:60px;
+      display:flex;align-items:center;justify-content:space-between;padding:0 20px;
+      background:rgba(5,5,5,.96);border-bottom:1px solid rgba(255,255,255,.06);z-index:40;}
+    .brand{display:flex;align-items:center;gap:10px;}
+    .brand-icon{width:30px;height:30px;border-radius:8px;background:var(--green);
+      display:flex;align-items:center;justify-content:center;color:#080808;font-size:.82rem;
+      box-shadow:0 0 10px var(--green-glow);}
+    .brand-name{font-family:'Outfit';font-size:.92rem;font-weight:900;color:var(--text);}
+    .brand-name span{color:var(--green);}
+    .brand-tag{font-size:.6rem;color:var(--muted);margin-top:1px;}
+    .top-right{display:flex;align-items:center;gap:10px;}
+    .record-hint{display:flex;align-items:center;gap:6px;padding:4px 12px;
+      background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);
+      border-radius:100px;font-size:.65rem;font-weight:700;color:#f87171;letter-spacing:.04em;}
+    .record-dot{width:7px;height:7px;border-radius:50%;background:#ef4444;
+      animation:blink 1.2s ease-in-out infinite;}
+    @keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+    /* start screen */
+    #startScreen{position:absolute;inset:0;z-index:100;background:#050505;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;}
+    .start-icon{width:80px;height:80px;border-radius:22px;background:var(--green);
+      display:flex;align-items:center;justify-content:center;font-size:2rem;color:#080808;
+      box-shadow:0 0 40px var(--green-glow);animation:pulse 2s ease-in-out infinite;}
+    @keyframes pulse{0%,100%{box-shadow:0 0 30px var(--green-glow);}50%{box-shadow:0 0 60px var(--green-glow),0 0 100px rgba(196,241,53,.1));}}
+    .start-title{font-family:'Outfit';font-size:2.5rem;font-weight:900;color:var(--text);letter-spacing:-.03em;text-align:center;}
+    .start-title span{color:var(--green);}
+    .start-sub{font-size:.92rem;color:var(--muted);text-align:center;max-width:440px;line-height:1.6;}
+    .start-meta{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
+    .start-chip{display:flex;align-items:center;gap:6px;padding:5px 14px;
+      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:100px;
+      font-size:.75rem;color:var(--muted);}
+    .start-chip i{color:var(--green);font-size:.7rem;}
+    .start-btn{display:flex;align-items:center;gap:10px;padding:14px 36px;
+      background:var(--green);color:#080808;border-radius:14px;font-family:'Outfit';
+      font-size:1.05rem;font-weight:900;cursor:pointer;border:none;transition:all .2s;
+      box-shadow:0 0 24px var(--green-glow);}
+    .start-btn:hover{background:#d4f535;transform:translateY(-2px);box-shadow:0 4px 32px var(--green-glow);}
+    .start-btn i{font-size:1rem;}
+    .team-tag{font-size:.7rem;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;}
+  </style>
+</head>
+<body>
+
+<!-- ── START SCREEN ─────────────────────────────────────────── -->
+<div id="startScreen">
+  <div class="start-icon"><i class="fas fa-heartbeat"></i></div>
+  <div class="start-title">FitTrack <span>AI</span></div>
+  <div class="start-sub">Automated demo walkthrough — 10 scenes covering every feature of the platform. Press Play and screen-record this tab.</div>
+  <div class="start-meta">
+    <div class="start-chip"><i class="fas fa-film"></i> 10 Scenes</div>
+    <div class="start-chip"><i class="fas fa-clock"></i> ~6 minutes</div>
+    <div class="start-chip"><i class="fas fa-closed-captioning"></i> Auto subtitles</div>
+    <div class="start-chip"><i class="fas fa-play"></i> Self-playing</div>
+  </div>
+  <button class="start-btn" onclick="startDemo()"><i class="fas fa-play"></i> Start Demo</button>
+  <div class="team-tag">Team Vitalis · FitTrack AI</div>
+</div>
+
+<!-- ── PLAYER ───────────────────────────────────────────────── -->
+<div id="player" style="display:none;">
+  <!-- Top bar -->
+  <div id="topbar">
+    <div class="brand">
+      <div class="brand-icon"><i class="fas fa-heartbeat"></i></div>
+      <div>
+        <div class="brand-name">FitTrack <span>AI</span></div>
+        <div class="brand-tag">Team Vitalis · Demo</div>
+      </div>
+    </div>
+    <div class="top-right">
+      <div class="record-hint"><div class="record-dot"></div> SCREEN RECORD THIS</div>
+      <button class="ctrl-btn" onclick="toggleFullscreen()" title="Fullscreen"><i class="fas fa-expand"></i></button>
+    </div>
+  </div>
+
+  <!-- Stage -->
+  <div id="stage">
+    <iframe id="sceneFrame" src="about:blank" allow="autoplay" scrolling="yes"></iframe>
+    <!-- Overlays -->
+    <div id="transOverlay"></div>
+    <div id="sceneFlash">
+      <div id="flashTitle">Scene 1</div>
+      <div id="flashSub">Landing Page</div>
+      <div class="flash-line"></div>
+    </div>
+    <div id="sceneBanner"><i class="fas fa-circle-dot"></i><span id="bannerText">Scene 1</span></div>
+    <div id="subtitle"><span id="subText"></span></div>
+  </div>
+
+  <!-- Controls -->
+  <div id="controls">
+    <button class="ctrl-btn green" id="playPauseBtn" onclick="togglePlay()"><i class="fas fa-pause"></i></button>
+    <button class="ctrl-btn" onclick="prevScene()" title="Previous"><i class="fas fa-backward-step"></i></button>
+    <button class="ctrl-btn" onclick="nextScene()" title="Next"><i class="fas fa-forward-step"></i></button>
+    <div id="sceneDots"></div>
+    <div id="progressWrap" onclick="seekProgress(event)">
+      <div id="progressFill"></div>
+    </div>
+    <div id="timeDisplay">0:00 / 6:00</div>
+    <div id="sceneLabel">Scene <span id="sceneNum">1</span>/10</div>
+    <button class="ctrl-btn" id="speedBtn" onclick="cycleSpeed()" title="Speed">1×</button>
+    <button class="ctrl-btn" onclick="restartDemo()" title="Restart"><i class="fas fa-rotate-left"></i></button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  SCENE DEFINITIONS
+// ═══════════════════════════════════════════════════════════════
+const BASE = './';   // relative path to frontend pages
+
+const SCENES = [
+  {
+    id: 1,
+    title: 'Welcome to FitTrack AI',
+    sub: 'Landing Page',
+    page: 'index.html',
+    duration: 35000,
+    scrollTo: 0,
+    subtitles: [
+      { at:0,    text: 'What if tracking your fitness was as <span class="highlight">smart</span> as having a personal coach — available 24/7?' },
+      { at:6000, text: 'This is <span class="highlight">FitTrack AI</span> — a complete health and fitness tracking platform built by <span class="highlight">Team Vitalis</span>.' },
+      { at:14000,text: 'Combining workout tracking, nutrition monitoring, goal setting, <span class="highlight">AI coaching</span>, and health analytics in one platform.' },
+      { at:23000,text: 'Built with a premium, modern design — <span class="highlight">dark theme</span>, neon green accents, and smooth animations throughout.' },
+    ]
+  },
+  {
+    id: 2,
+    title: 'Features Overview',
+    sub: 'Landing Page — Scrolling',
+    page: 'index.html',
+    duration: 30000,
+    scrollTo: 700,
+    subtitles: [
+      { at:0,    text: 'The landing page walks visitors through every feature — from <span class="highlight">AI coaching</span> to advanced analytics.' },
+      { at:7000, text: 'Here\'s a preview of our <span class="highlight">AI Coach</span> — users ask questions in plain English and get personalized recommendations.' },
+      { at:15000,text: 'The platform is designed for <span class="highlight">every fitness level</span> — from beginners to competitive athletes.' },
+      { at:22000,text: 'Fully <span class="highlight">responsive</span> — works beautifully on mobile, tablet, and desktop.' },
+    ]
+  },
+  {
+    id: 3,
+    title: 'User Registration',
+    sub: 'Sign Up Page',
+    page: 'signup.html',
+    duration: 28000,
+    scrollTo: 0,
+    subtitles: [
+      { at:0,    text: 'Getting started is simple. The <span class="highlight">registration page</span> collects your name, email, and fitness goals.' },
+      { at:7000, text: 'Basic health data — height, weight, age — powers the <span class="highlight">personalized recommendations</span> throughout the app.' },
+      { at:14000,text: 'Notice the <span class="highlight">consistent branding</span> — dark background, neon green accents, premium typography.' },
+      { at:21000,text: 'Once registered, users are taken directly to their <span class="highlight">personalized dashboard</span>.' },
+    ]
+  },
+  {
+    id: 4,
+    title: 'Dashboard',
+    sub: 'Main Command Center',
+    page: 'dashboard.html',
+    duration: 45000,
+    scrollTo: 0,
+    subtitles: [
+      { at:0,    text: 'The <span class="highlight">Dashboard</span> is the command center — showing everything that matters at a glance.' },
+      { at:6000, text: '<span class="highlight">KPI cards</span> show steps, calories burned, water intake, and sleep — with comparison to yesterday.' },
+      { at:13000,text: '<span class="highlight">Chart.js visualizations</span> display weekly trends — steps, calories, and sleep patterns over 7 days.' },
+      { at:21000,text: '<span class="highlight">Goal progress</span> is shown with animated bars — always visible, always motivating.' },
+      { at:28000,text: 'The <span class="highlight">AI Coach widget</span> delivers a daily personalized tip — right on the dashboard.' },
+      { at:35000,text: '<span class="highlight">Achievement badges</span> and the activity feed complete the picture — gamification built in.' },
+    ]
+  },
+  {
+    id: 5,
+    title: 'Goals & Progress',
+    sub: 'Goal Tracking',
+    page: 'goals.html',
+    duration: 30000,
+    scrollTo: 0,
+    subtitles: [
+      { at:0,    text: 'The <span class="highlight">Goals module</span> lets users define exactly what they\'re working towards.' },
+      { at:7000, text: 'Targets for <span class="highlight">weight loss, steps, workouts, sleep, and hydration</span> — each with visual progress bars.' },
+      { at:14000,text: 'When a goal is <span class="highlight">completed</span>, the system automatically awards XP points and unlocks achievement badges.' },
+      { at:21000,text: 'Adding a new goal takes seconds — just choose a type, set a target, and pick a deadline.' },
+    ]
+  },
+  {
+    id: 6,
+    title: 'AI Coach',
+    sub: 'Personalized AI Coaching',
+    page: 'ai-coach.html',
+    duration: 35000,
+    scrollTo: 0,
+    subtitles: [
+      { at:0,    text: 'The <span class="highlight">AI Coach</span> is one of our most exciting features — generating a personalized daily plan.' },
+      { at:7000, text: 'Recommended <span class="highlight">workout, calorie targets, and hydration goals</span> — all based on the user\'s profile.' },
+      { at:14000,text: 'Users can also <span class="highlight">chat directly</span> with the AI Coach — asking any fitness or nutrition question.' },
+      { at:21000,text: 'The AI responds with <span class="highlight">specific, actionable advice</span> — calorie targets, exercise plans, recovery tips.' },
+      { at:28000,text: 'The kind of personalized guidance that used to require a <span class="highlight">human personal trainer</span>.' },
+    ]
+  },
+  {
+    id: 7,
+    title: 'Analytics',
+    sub: 'Health Data Insights',
+    page: 'analytics.html',
+    duration: 28000,
+    scrollTo: 0,
+    subtitles: [
+      { at:0,    text: 'The <span class="highlight">Analytics page</span> gives a deep dive into performance trends over time.' },
+      { at:7000, text: 'Four <span class="highlight">interactive charts</span> — steps, calories, sleep, and water — across 7, 30, or 90 days.' },
+      { at:14000,text: 'Hover over the charts to see <span class="highlight">exact values</span> for any day in the selected range.' },
+      { at:21000,text: '<span class="highlight">Personal bests</span> and milestones are highlighted — showing users how far they\'ve come.' },
+    ]
+  },
+  {
+    id: 8,
+    title: 'Health Features',
+    sub: 'Nutrition · BMI · Heart Rate',
+    page: 'nutrition.html',
+    duration: 35000,
+    scrollTo: 0,
+    subtitles: [
+      { at:0,    text: '<span class="highlight">Nutrition tracking</span> — log every meal and monitor macros: protein, carbs, fat, and fiber.' },
+      { at:8000, text: 'A <span class="highlight">doughnut chart</span> visualizes macro distribution, with the daily calorie budget tracked in real time.' },
+      { at:16000,text: 'The <span class="highlight">BMI Tracker</span> calculates body mass index, shows the category, and charts progress over time.' },
+      { at:24000,text: '<span class="highlight">Heart Rate monitoring</span> — resting BPM, heart rate zones, and HRV metrics for optimized training.' },
+    ]
+  },
+  {
+    id: 9,
+    title: 'Achievements & Schedule',
+    sub: 'Gamification & Planning',
+    page: 'achievements.html',
+    duration: 30000,
+    scrollTo: 0,
+    subtitles: [
+      { at:0,    text: 'The <span class="highlight">Achievements system</span> — our gamification layer — awards badges and XP for hitting milestones.' },
+      { at:7000, text: 'Users <span class="highlight">level up</span> from Beginner to Elite as they earn XP through workouts, goals, and streaks.' },
+      { at:14000,text: 'The <span class="highlight">Workout Schedule</span> lets users plan sessions on a weekly calendar and track completion.' },
+      { at:21000,text: 'Every interaction is designed to <span class="highlight">motivate and reward</span> — keeping users engaged long-term.' },
+    ]
+  },
+  {
+    id: 10,
+    title: 'Backend & Closing',
+    sub: 'PostgreSQL · Node.js · JWT',
+    page: 'dashboard.html',
+    duration: 30000,
+    scrollTo: 0,
+    subtitles: [
+      { at:0,    text: 'Behind the frontend: a <span class="highlight">Node.js + Express REST API</span> connected to PostgreSQL 18.' },
+      { at:7000, text: '<span class="highlight">11 database tables</span>, JWT authentication, bcrypt password hashing, and automated triggers.' },
+      { at:14000,text: 'Built and presented by <span class="highlight">Team Vitalis</span> — a complete, full-stack health and fitness platform.' },
+      { at:21000,text: '20 frontend pages · PostgreSQL backend · AI coaching · Real-time analytics · Gamification. <span class="highlight">Thank you.</span>' },
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════════════════════════
+//  PLAYER STATE
+// ═══════════════════════════════════════════════════════════════
+let currentScene = 0;
+let isPlaying    = false;
+let sceneTimer   = null;
+let subTimer     = null;
+let elapsedMs    = 0;
+let sceneStartMs = 0;
+let rafId        = null;
+let speedMult    = 1;
+const speeds     = [1, 1.5, 2];
+let speedIdx     = 0;
+
+const TOTAL_MS = SCENES.reduce((a,s) => a + s.duration, 0);
+
+// ═══════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════
+function startDemo() {
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('player').style.display      = 'flex';
+  buildDots();
+  loadScene(0, true);
+  isPlaying = true;
+  updatePlayBtn();
+  startTick();
+}
+
+function buildDots() {
+  const wrap = document.getElementById('sceneDots');
+  SCENES.forEach((s,i) => {
+    const d = document.createElement('div');
+    d.className = 'sdot' + (i===0?' active':'');
+    d.title = s.title;
+    d.onclick = () => jumpToScene(i);
+    wrap.appendChild(d);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SCENE LOADING
+// ═══════════════════════════════════════════════════════════════
+function loadScene(idx, initial=false) {
+  clearAllTimers();
+  currentScene = idx;
+  const s = SCENES[idx];
+
+  // Flash transition
+  if (!initial) showFlash(s);
+  else doLoad(s);
+
+  updateDots();
+  document.getElementById('sceneNum').textContent  = idx + 1;
+  document.getElementById('bannerText').textContent = `${s.id}. ${s.title}`;
+}
+
+function showFlash(s) {
+  const overlay = document.getElementById('transOverlay');
+  const flash   = document.getElementById('sceneFlash');
+  document.getElementById('flashTitle').textContent = s.title;
+  document.getElementById('flashSub').textContent   = s.sub;
+
+  overlay.classList.add('active');
+  setTimeout(() => {
+    flash.classList.add('show');
+    setTimeout(() => {
+      doLoad(s);
+      setTimeout(() => {
+        flash.classList.remove('show');
+        overlay.classList.remove('active');
+      }, 600);
+    }, 1200);
+  }, 200);
+}
+
+function doLoad(s) {
+  const frame = document.getElementById('sceneFrame');
+  frame.classList.add('fade');
+  setTimeout(() => {
+    frame.src = BASE + s.page + '?t=' + Date.now();
+    frame.onload = () => {
+      frame.classList.remove('fade');
+      setTimeout(() => {
+        showBanner(s.title);
+        scheduleSubtitles(s);
+        if (isPlaying) scheduleNext(s.duration);
+      }, 400);
+    };
+  }, 300);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SUBTITLES
+// ═══════════════════════════════════════════════════════════════
+function scheduleSubtitles(s) {
+  const box = document.getElementById('subtitle');
+  const txt = document.getElementById('subText');
+  clearSubTimers();
+  s.subtitles.forEach(sub => {
+    const t = setTimeout(() => {
+      txt.innerHTML = sub.text;
+      box.classList.add('show');
+    }, sub.at / speedMult);
+    subTimers.push(t);
+  });
+}
+
+let subTimers = [];
+function clearSubTimers() {
+  subTimers.forEach(clearTimeout);
+  subTimers = [];
+  document.getElementById('subtitle').classList.remove('show');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  BANNER
+// ═══════════════════════════════════════════════════════════════
+function showBanner(text) {
+  const b = document.getElementById('sceneBanner');
+  b.classList.add('show');
+  setTimeout(() => b.classList.remove('show'), 3500);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  TIMING & TICKER
+// ═══════════════════════════════════════════════════════════════
+let nextTimer = null;
+function scheduleNext(dur) {
+  if (nextTimer) clearTimeout(nextTimer);
+  nextTimer = setTimeout(() => {
+    if (currentScene < SCENES.length - 1) {
+      advanceScene();
+    } else {
+      isPlaying = false;
+      updatePlayBtn();
+    }
+  }, dur / speedMult);
+}
+
+function advanceScene() {
+  sceneStartMs += SCENES[currentScene].duration;
+  loadScene(currentScene + 1);
+}
+
+let tickStart = null;
+let baseElapsed = 0;
+
+function startTick() {
+  tickStart = performance.now();
+  rafId = requestAnimationFrame(tick);
+}
+
+function tick(now) {
+  if (isPlaying) {
+    elapsedMs = baseElapsed + (now - tickStart);
+    updateProgress();
+  }
+  rafId = requestAnimationFrame(tick);
+}
+
+function updateProgress() {
+  const pct  = Math.min(elapsedMs / TOTAL_MS * 100, 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  const totalSec = Math.floor(TOTAL_MS / 1000);
+  const curSec   = Math.floor(elapsedMs / 1000);
+  document.getElementById('timeDisplay').textContent =
+    `${fmt(curSec)} / ${fmt(totalSec)}`;
+}
+
+function fmt(sec) {
+  return `${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CONTROLS
+// ═══════════════════════════════════════════════════════════════
+function togglePlay() {
+  isPlaying = !isPlaying;
+  updatePlayBtn();
+  if (isPlaying) {
+    tickStart  = performance.now();
+    const s    = SCENES[currentScene];
+    const remaining = s.duration - (elapsedMs - getSceneStart());
+    scheduleNext(Math.max(remaining, 0));
+    scheduleSubtitles(s);
+  } else {
+    clearAllTimers();
+    baseElapsed = elapsedMs;
+  }
+}
+
+function updatePlayBtn() {
+  const btn = document.getElementById('playPauseBtn');
+  btn.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+}
+
+function prevScene() {
+  if (currentScene > 0) {
+    baseElapsed = getSceneStart(currentScene - 1);
+    elapsedMs   = baseElapsed;
+    tickStart   = performance.now();
+    loadScene(currentScene - 1);
+    if (isPlaying) scheduleNext(SCENES[currentScene-1].duration);
+  }
+}
+
+function nextScene() {
+  if (currentScene < SCENES.length - 1) {
+    baseElapsed = getSceneStart(currentScene + 1);
+    elapsedMs   = baseElapsed;
+    tickStart   = performance.now();
+    sceneStartMs = baseElapsed;
+    loadScene(currentScene + 1);
+    if (isPlaying) scheduleNext(SCENES[currentScene+1].duration);
+  }
+}
+
+function jumpToScene(idx) {
+  baseElapsed = getSceneStart(idx);
+  elapsedMs   = baseElapsed;
+  tickStart   = performance.now();
+  loadScene(idx);
+  if (isPlaying) scheduleNext(SCENES[idx].duration);
+}
+
+function getSceneStart(idx = currentScene) {
+  let ms = 0;
+  for (let i = 0; i < idx; i++) ms += SCENES[i].duration;
+  return ms;
+}
+
+function seekProgress(e) {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const pct  = (e.clientX - rect.left) / rect.width;
+  const targetMs = pct * TOTAL_MS;
+  let ms = 0, sceneIdx = 0;
+  for (let i = 0; i < SCENES.length; i++) {
+    if (ms + SCENES[i].duration > targetMs) { sceneIdx = i; break; }
+    ms += SCENES[i].duration;
+  }
+  baseElapsed = ms;
+  elapsedMs   = targetMs;
+  tickStart   = performance.now();
+  loadScene(sceneIdx);
+  if (isPlaying) scheduleNext(SCENES[sceneIdx].duration - (targetMs - ms));
+}
+
+function cycleSpeed() {
+  speedIdx = (speedIdx + 1) % speeds.length;
+  speedMult = speeds[speedIdx];
+  document.getElementById('speedBtn').textContent = speedMult + '×';
+  if (isPlaying) {
+    clearAllTimers();
+    const s = SCENES[currentScene];
+    scheduleSubtitles(s);
+    scheduleNext(SCENES[currentScene].duration);
+  }
+}
+
+function restartDemo() {
+  clearAllTimers();
+  baseElapsed  = 0;
+  elapsedMs    = 0;
+  tickStart    = performance.now();
+  isPlaying    = true;
+  updatePlayBtn();
+  loadScene(0, true);
+}
+
+function clearAllTimers() {
+  if (nextTimer) clearTimeout(nextTimer);
+  clearSubTimers();
+  nextTimer = null;
+}
+
+function updateDots() {
+  document.querySelectorAll('.sdot').forEach((d,i) =>
+    d.classList.toggle('active', i === currentScene));
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile | FitTrack AI</title>
+  <meta name="description" content="Manage your FitTrack AI profile, BMI stats, achievements, and personal settings.">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/design-system.css">
+</head>
+<body>
+  <div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <i class="fas fa-heartbeat"></i>
+        <span>FitTrack AI</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Main</div>
+        <a href="dashboard.html" class="nav-item" data-page="dashboard"><i class="fas fa-home"></i><span>Dashboard</span></a>
+        <a href="workouts.html" class="nav-item" data-page="workouts"><i class="fas fa-dumbbell"></i><span>Workouts</span></a>
+        <a href="nutrition.html" class="nav-item" data-page="nutrition"><i class="fas fa-apple-alt"></i><span>Nutrition</span></a>
+        <a href="daily-logs.html" class="nav-item" data-page="daily-logs"><i class="fas fa-calendar-check"></i><span>Daily Logs</span></a>
+        <a href="goals.html" class="nav-item" data-page="goals"><i class="fas fa-bullseye"></i><span>Goals</span></a>
+
+        <div class="nav-section-label">Health</div>
+        <a href="heart-rate.html" class="nav-item" data-page="heart-rate"><i class="fas fa-heart-pulse"></i><span>Heart Rate</span></a>
+        <a href="bmi.html" class="nav-item" data-page="bmi"><i class="fas fa-weight"></i><span>BMI Tracker</span></a>
+
+        <div class="nav-section-label">AI & More</div>
+        <a href="analytics.html" class="nav-item" data-page="analytics"><i class="fas fa-chart-line"></i><span>Analytics</span></a>
+        <a href="ai-coach.html" class="nav-item" data-page="ai-coach"><i class="fas fa-robot"></i><span>AI Coach</span></a>
+        <a href="achievements.html" class="nav-item" data-page="achievements"><i class="fas fa-trophy"></i><span>Achievements</span></a>
+        <a href="schedule.html" class="nav-item" data-page="schedule"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+      </nav>
+      <div class="sidebar-bottom">
+        <a href="profile.html" class="nav-item" data-page="profile"><i class="fas fa-user"></i><span>Profile</span></a>
+        <button class="nav-item logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+      </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- Main Area -->
+    <div class="main">
+      <header class="topbar">
+        <button class="topbar-hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        <div class="topbar-title">My Profile</div>
+        <div class="topbar-right">
+          <button class="topbar-btn" id="themeToggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+          <div class="topbar-btn" onclick="toggleNotifications()">
+            <i class="fas fa-bell"></i>
+            <span class="topbar-notif-badge hidden" id="notifBadge">0</span>
+          </div>
+          <div class="topbar-user-btn" onclick="window.location.href='profile.html'">
+            <div class="topbar-avatar" id="userAvatar">U</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Notification Panel -->
+      <div class="notif-panel hidden" id="notifPanel" style="position:fixed; top:68px; right:24px;">
+        <div class="notif-header">
+          <span>Notifications</span>
+          <button onclick="markAllRead()">Mark all read</button>
+        </div>
+        <div class="notif-list" id="notifList">
+          <div class="notif-empty">No notifications yet</div>
+        </div>
+      </div>
+
+      <div class="page">
+
+        <!-- Profile Hero -->
+        <div class="profile-hero">
+          <div class="profile-avatar-large" id="profileAvatarLarge">U</div>
+          <div class="profile-hero-info">
+            <h2 class="profile-name" id="profileName">Loading...</h2>
+            <p class="profile-username" id="profileUsername">@username</p>
+            <div class="profile-level-badge" id="profileLevelBadge">
+              <i class="fas fa-trophy"></i> <span id="profileLevelText">Level 1</span>
+            </div>
+            <div class="profile-xp-bar-wrap">
+              <div class="profile-xp-bar" id="profileXpBar" style="width:0%"></div>
+            </div>
+            <p class="profile-xp-text" id="profileXpText">0 / 100 XP</p>
+          </div>
+          <button class="btn btn-primary profile-edit-btn" onclick="openEditModal()">
+            <i class="fas fa-edit"></i> Edit Profile
+          </button>
+        </div>
+
+        <!-- Personal Stats Row -->
+        <div class="personal-stats-row">
+          <div class="personal-stat">
+            <div class="personal-stat-val" id="pAge">—</div>
+            <div class="personal-stat-label">Age</div>
+          </div>
+          <div class="personal-stat">
+            <div class="personal-stat-val" id="pGender">—</div>
+            <div class="personal-stat-label">Gender</div>
+          </div>
+          <div class="personal-stat">
+            <div class="personal-stat-val" id="pHeight">—</div>
+            <div class="personal-stat-label">Height (cm)</div>
+          </div>
+          <div class="personal-stat">
+            <div class="personal-stat-val" id="pWeight">—</div>
+            <div class="personal-stat-label">Weight (kg)</div>
+          </div>
+        </div>
+
+        <!-- BMI Gauge + History -->
+        <div class="bmi-gauge-section">
+          <!-- BMI Gauge Card -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3 class="panel-title"><i class="fas fa-weight"></i> BMI Analysis</h3>
+            </div>
+            <div class="bmi-gauge-wrapper">
+              <svg id="bmiGauge" class="bmi-gauge-svg" viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg">
+                <!-- Drawn by JS -->
+              </svg>
+              <div class="bmi-value-display" id="bmiValueDisplay">—</div>
+              <div class="bmi-category" id="bmiCategoryDisplay" style="color: var(--accent-green);">Calculating...</div>
+              <div style="margin-top:16px; display:flex; justify-content:center; gap:16px; flex-wrap:wrap;">
+                <span style="font-size:0.72rem;color:var(--text-muted);display:flex;align-items:center;gap:4px;">
+                  <span style="width:10px;height:10px;border-radius:50%;background:#3b82f6;display:inline-block;"></span> Underweight
+                </span>
+                <span style="font-size:0.72rem;color:var(--text-muted);display:flex;align-items:center;gap:4px;">
+                  <span style="width:10px;height:10px;border-radius:50%;background:#10b981;display:inline-block;"></span> Normal
+                </span>
+                <span style="font-size:0.72rem;color:var(--text-muted);display:flex;align-items:center;gap:4px;">
+                  <span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;display:inline-block;"></span> Overweight
+                </span>
+                <span style="font-size:0.72rem;color:var(--text-muted);display:flex;align-items:center;gap:4px;">
+                  <span style="width:10px;height:10px;border-radius:50%;background:#ef4444;display:inline-block;"></span> Obese
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- BMI History -->
+          <div class="panel-card">
+            <div class="panel-header">
+              <h3 class="panel-title"><i class="fas fa-history"></i> BMI History</h3>
+            </div>
+            <div class="bmi-history-list" id="bmiHistoryList">
+              <div class="loading-spinner"><div class="spinner"></div> Loading...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Summary Stats -->
+        <div class="profile-stats-summary">
+          <div class="panel-card" style="text-align:center;">
+            <div style="font-size:2rem;margin-bottom:6px;" id="totalWorkouts">—</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Total Workouts</div>
+          </div>
+          <div class="panel-card" style="text-align:center;">
+            <div style="font-size:2rem;margin-bottom:6px;" id="totalDaysLogged">—</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Days Logged</div>
+          </div>
+          <div class="panel-card" style="text-align:center;">
+            <div style="font-size:2rem;margin-bottom:6px;" id="totalGoalsCompleted">—</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Goals Completed</div>
+          </div>
+        </div>
+
+        <!-- Achievements Gallery -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <h3 class="panel-title"><i class="fas fa-trophy"></i> Achievements</h3>
+            <span id="achievementCount" style="font-size:0.8rem;color:var(--text-muted);"></span>
+          </div>
+          <div class="achievements-gallery" id="achievementsGallery">
+            <div class="loading-spinner" style="grid-column:1/-1;"><div class="spinner"></div> Loading...</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div class="modal-overlay hidden" id="editModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fas fa-edit" style="color:var(--accent-purple);margin-right:8px;"></i>Edit Profile</h3>
+        <button class="modal-close" onclick="closeEditModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="editProfileForm" onsubmit="saveProfile(event)">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="editName" placeholder="Your full name" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Age</label>
+              <input type="number" id="editAge" placeholder="25" min="1" max="120">
+            </div>
+            <div class="form-group">
+              <label>Gender</label>
+              <select id="editGender">
+                <option value="">Select gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+                <option value="prefer_not_to_say">Prefer not to say</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Height (cm)</label>
+              <input type="number" id="editHeight" placeholder="170" min="50" max="300" step="0.5">
+            </div>
+            <div class="form-group">
+              <label>Weight (kg)</label>
+              <input type="number" id="editWeight" placeholder="70" min="10" max="500" step="0.1">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Fitness Goal</label>
+            <select id="editFitnessGoal">
+              <option value="">Select goal</option>
+              <option value="lose_weight">Lose Weight</option>
+              <option value="gain_muscle">Gain Muscle</option>
+              <option value="maintain">Maintain Weight</option>
+              <option value="improve_endurance">Improve Endurance</option>
+              <option value="general_fitness">General Fitness</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+        <button class="btn btn-primary" id="saveProfileBtn" onclick="saveProfile(event)">
+          <i class="fas fa-save"></i> Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script src="js/profile.js"></script>
+</body>
+</html>

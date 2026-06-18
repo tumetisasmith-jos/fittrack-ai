@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="FitTrack AI — The AI-powered health & fitness platform. Track workouts, monitor vitals, achieve goals, and get personalized AI coaching." />
+  <meta name="keywords" content="fitness tracker, workout tracking, health monitoring, AI fitness coach, nutrition tracking" />
+  <meta property="og:title" content="FitTrack AI — Unlock Your Peak Performance" />
+  <meta property="og:description" content="Track workouts, monitor health, achieve goals with AI-powered insights." />
+  <title>FitTrack AI — Unlock Your Peak Performance</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+  <link rel="stylesheet" href="css/cursor.css" />
+  <link rel="stylesheet" href="css/landing2.css" />
+</head>
+<body class="landing-page">
+
+  <!-- ══ NAVBAR ══ -->
+  <nav class="nav" id="mainNav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon"><i class="fas fa-heartbeat"></i></div>
+        <span class="nav-logo-text">FitTrack <span class="logo-accent">AI</span></span>
+      </a>
+
+      <div class="nav-links" id="navLinks">
+        <a href="#features">Features</a>
+        <a href="#ai-coach">AI Coach</a>
+        <a href="#showcase">Product</a>
+        <a href="#howitworks">How It Works</a>
+        <a href="#plans">Plans</a>
+        <a href="#testimonials">Stories</a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="theme-toggle-btn" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme">
+          <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+        <a href="login.html" class="nav-login">Sign In</a>
+        <a href="signup.html" class="nav-cta magnetic-btn">
+          <span>Get Started</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+
+      <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileNav()" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#features" onclick="closeMobileNav()">Features</a>
+    <a href="#ai-coach" onclick="closeMobileNav()">AI Coach</a>
+    <a href="#showcase" onclick="closeMobileNav()">Product</a>
+    <a href="#howitworks" onclick="closeMobileNav()">How It Works</a>
+    <a href="#plans" onclick="closeMobileNav()">Plans</a>
+    <a href="#testimonials" onclick="closeMobileNav()">Stories</a>
+    <a href="login.html" onclick="closeMobileNav()">Sign In</a>
+    <a href="signup.html" class="mobile-nav-cta" onclick="closeMobileNav()">Get Started Free</a>
+  </div>
+
+  <!-- ══ HERO ══ -->
+  <section class="hero" id="hero">
+    <!-- Three.js canvas background -->
+    <canvas id="heroCanvas"></canvas>
+
+    <div class="hero-inner">
+      <!-- LEFT -->
+      <div class="hero-left">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          AI-Powered Health Platform
+        </div>
+
+        <h1 class="hero-title">
+          Unlock Your<br />
+          <span class="hero-title-accent">Peak Performance</span>
+        </h1>
+
+        <p class="hero-subtitle">
+          Track workouts, monitor health metrics, achieve goals, and gain AI-powered fitness insights — all in one beautifully designed platform.
+        </p>
+
+        <div class="hero-cta-row">
+          <a href="signup.html" class="btn-primary-hero magnetic-btn">
+            <span>Get Started Free</span>
+            <i class="fas fa-arrow-right"></i>
+          </a>
+          <a href="#showcase" class="btn-ghost-hero">
+            <i class="fas fa-play-circle"></i>
+            <span>See the Product</span>
+          </a>
+        </div>
+
+        <div class="hero-trust">
+          <div class="trust-avatars">
+            <div class="trust-av" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">SM</div>
+            <div class="trust-av" style="background:linear-gradient(135deg,#06b6d4,#0891b2)">JR</div>
+            <div class="trust-av" style="background:linear-gradient(135deg,#c4f135,#84cc16)">AL</div>
+            <div class="trust-av" style="background:linear-gradient(135deg,#f59e0b,#d97706)">KN</div>
+            <div class="trust-av trust-av-more">+</div>
+          </div>
+          <div class="trust-text">
+            <div class="trust-stars">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            <span><strong>5,000+</strong> athletes trust FitTrack AI</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Animated Fitness Rings -->
+      <div class="hero-right">
+        <div class="rings-container">
+          <!-- Outer glow -->
+          <div class="ring-glow"></div>
+
+          <!-- SVG Rings -->
+          <svg class="rings-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Recovery Ring (outer) -->
+            <circle class="ring-track" cx="200" cy="200" r="170" />
+            <circle class="ring-fill ring-recovery" cx="200" cy="200" r="170"
+              stroke-dasharray="1068.14"
+              stroke-dashoffset="160.22" />
+
+            <!-- Strain Ring (middle) -->
+            <circle class="ring-track" cx="200" cy="200" r="130" />
+            <circle class="ring-fill ring-strain" cx="200" cy="200" r="130"
+              stroke-dasharray="816.81"
+              stroke-dashoffset="228.71" />
+
+            <!-- Sleep Ring (inner) -->
+            <circle class="ring-track" cx="200" cy="200" r="90" />
+            <circle class="ring-fill ring-sleep" cx="200" cy="200" r="90"
+              stroke-dasharray="565.49"
+              stroke-dashoffset="45.24" />
+          </svg>
+
+          <!-- Center Content -->
+          <div class="rings-center">
+            <div class="rings-center-icon"><i class="fas fa-heartbeat"></i></div>
+            <div class="rings-center-label">Today's Score</div>
+          </div>
+
+          <!-- Ring Labels -->
+          <div class="ring-label ring-label-recovery">
+            <div class="ring-label-dot" style="background:#c4f135"></div>
+            <div>
+              <div class="ring-label-name">Recovery</div>
+              <div class="ring-label-value" id="recoveryVal">85<span>%</span></div>
+            </div>
+          </div>
+
+          <div class="ring-label ring-label-strain">
+            <div class="ring-label-dot" style="background:#a78bfa"></div>
+            <div>
+              <div class="ring-label-name">Strain</div>
+              <div class="ring-label-value" id="strainVal">7.2<span>/10</span></div>
+            </div>
+          </div>
+
+          <div class="ring-label ring-label-sleep">
+            <div class="ring-label-dot" style="background:#06b6d4"></div>
+            <div>
+              <div class="ring-label-name">Sleep</div>
+              <div class="ring-label-value" id="sleepVal">8h<span>20m</span></div>
+            </div>
+          </div>
+
+          <!-- Floating metric cards -->
+          <div class="hero-metric-card hmc-1">
+            <i class="fas fa-fire" style="color:#f97316"></i>
+            <div>
+              <div class="hmc-value">2,840</div>
+              <div class="hmc-label">kcal burned</div>
+            </div>
+          </div>
+
+          <div class="hero-metric-card hmc-2">
+            <i class="fas fa-shoe-prints" style="color:#c4f135"></i>
+            <div>
+              <div class="hmc-value">11,240</div>
+              <div class="hmc-label">steps today</div>
+            </div>
+          </div>
+
+          <div class="hero-metric-card hmc-3">
+            <i class="fas fa-brain" style="color:#a78bfa"></i>
+            <div>
+              <div class="hmc-value">AI Ready</div>
+              <div class="hmc-label">coach active</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-indicator">
+      <div class="scroll-line"></div>
+      <span>Scroll to explore</span>
+    </div>
+  </section>
+
+  <!-- ══ LIVE METRICS TICKER ══ -->
+  <div class="metrics-ticker">
+    <div class="ticker-track">
+      <div class="ticker-item"><i class="fas fa-users"></i> <strong>5,247</strong> Active Athletes</div>
+      <div class="ticker-item"><i class="fas fa-dumbbell"></i> <strong>89,432</strong> Workouts Logged</div>
+      <div class="ticker-item"><i class="fas fa-chart-line"></i> <strong>94%</strong> Goal Achievement Rate</div>
+      <div class="ticker-item"><i class="fas fa-brain"></i> <strong>2.1M</strong> AI Insights Generated</div>
+      <div class="ticker-item"><i class="fas fa-fire"></i> <strong>12.4M</strong> Calories Tracked</div>
+      <div class="ticker-item"><i class="fas fa-moon"></i> <strong>7.8h</strong> Avg Sleep Improved</div>
+      <div class="ticker-item"><i class="fas fa-trophy"></i> <strong>31,847</strong> Achievements Earned</div>
+      <div class="ticker-item"><i class="fas fa-heart"></i> <strong>98%</strong> User Satisfaction</div>
+      <!-- Duplicate for seamless loop -->
+      <div class="ticker-item"><i class="fas fa-users"></i> <strong>5,247</strong> Active Athletes</div>
+      <div class="ticker-item"><i class="fas fa-dumbbell"></i> <strong>89,432</strong> Workouts Logged</div>
+      <div class="ticker-item"><i class="fas fa-chart-line"></i> <strong>94%</strong> Goal Achievement Rate</div>
+      <div class="ticker-item"><i class="fas fa-brain"></i> <strong>2.1M</strong> AI Insights Generated</div>
+      <div class="ticker-item"><i class="fas fa-fire"></i> <strong>12.4M</strong> Calories Tracked</div>
+      <div class="ticker-item"><i class="fas fa-moon"></i> <strong>7.8h</strong> Avg Sleep Improved</div>
+      <div class="ticker-item"><i class="fas fa-trophy"></i> <strong>31,847</strong> Achievements Earned</div>
+      <div class="ticker-item"><i class="fas fa-heart"></i> <strong>98%</strong> User Satisfaction</div>
+    </div>
+  </div>
+
+  <!-- ══ PROBLEM ══ -->
+  <section class="problem-section section-pad" id="problem">
+    <div class="container">
+      <div class="problem-grid">
+        <div class="problem-left" data-aos="fade-right">
+          <div class="section-tag tag-red">
+            <i class="fas fa-exclamation-triangle"></i> The Problem
+          </div>
+          <h2 class="section-headline">
+            Most fitness apps<br /><span class="text-red">set you up to fail</span>
+          </h2>
+          <p class="section-body">
+            You start strong, hit a plateau, and quit. Not because of willpower — but because your tools are scattered, generic, and give you zero real intelligence.
+          </p>
+        </div>
+
+        <div class="problem-cards" data-aos="fade-left" data-aos-delay="100">
+          <div class="problem-card">
+            <div class="problem-card-icon"><i class="fas fa-layer-group"></i></div>
+            <div>
+              <div class="problem-card-title">Too many disconnected apps</div>
+              <div class="problem-card-desc">One for workouts, one for nutrition, one for sleep. Nothing connects. You manage apps more than your health.</div>
+            </div>
+          </div>
+          <div class="problem-card">
+            <div class="problem-card-icon"><i class="fas fa-chart-bar"></i></div>
+            <div>
+              <div class="problem-card-title">Data without intelligence</div>
+              <div class="problem-card-desc">Raw numbers mean nothing without context. Generic charts won't tell you why you're plateauing or what to fix.</div>
+            </div>
+          </div>
+          <div class="problem-card">
+            <div class="problem-card-icon"><i class="fas fa-user-times"></i></div>
+            <div>
+              <div class="problem-card-title">Zero personalization</div>
+              <div class="problem-card-desc">Everyone gets the same generic plan. But your body, schedule, and goals are unique. Cookie-cutter fails 80% of users.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SOLUTION ══ -->
+  <section class="solution-section section-pad" id="solution">
+    <div class="container">
+      <div class="solution-grid">
+        <div class="solution-visual" data-aos="fade-right">
+          <div class="solution-card-stack">
+            <div class="sol-card sol-card-1">
+              <div class="sol-card-icon" style="background:rgba(196,241,53,0.12);color:#c4f135;"><i class="fas fa-brain"></i></div>
+              <div>
+                <div class="sol-card-label">AI Coach</div>
+                <div class="sol-card-value">Your plan is ready</div>
+              </div>
+              <div class="sol-card-badge live">Live</div>
+            </div>
+            <div class="sol-card sol-card-2">
+              <div class="sol-card-icon" style="background:rgba(124,58,237,0.15);color:#a78bfa;"><i class="fas fa-chart-line"></i></div>
+              <div>
+                <div class="sol-card-label">Weight Trend</div>
+                <div class="sol-card-value">−8.4 kg in 90 days</div>
+              </div>
+              <div class="sol-card-badge good">On Track</div>
+            </div>
+            <div class="sol-card sol-card-3">
+              <div class="sol-card-icon" style="background:rgba(6,182,212,0.15);color:#06b6d4;"><i class="fas fa-fire"></i></div>
+              <div>
+                <div class="sol-card-label">Weekly Calories</div>
+                <div class="sol-card-value">4,280 kcal avg</div>
+              </div>
+              <div class="sol-card-badge up">↑ +12%</div>
+            </div>
+            <div class="sol-card sol-card-4">
+              <div class="sol-card-icon" style="background:rgba(196,241,53,0.12);color:#c4f135;"><i class="fas fa-trophy"></i></div>
+              <div>
+                <div class="sol-card-label">New Achievement</div>
+                <div class="sol-card-value">🔥 Iron Will Unlocked</div>
+              </div>
+              <div class="sol-card-badge new">New</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="solution-right" data-aos="fade-left" data-aos-delay="100">
+          <div class="section-tag tag-green">
+            <i class="fas fa-lightbulb"></i> The Solution
+          </div>
+          <h2 class="section-headline">
+            One platform.<br /><span class="text-green">AI that knows you.</span>
+          </h2>
+          <div class="solution-points">
+            <div class="solution-point">
+              <div class="sol-check"><i class="fas fa-check"></i></div>
+              <div>
+                <div class="sol-point-title">Everything in one ecosystem</div>
+                <div class="sol-point-desc">Workouts, nutrition, sleep, vitals, goals — all connected and talking to each other in real time.</div>
+              </div>
+            </div>
+            <div class="solution-point">
+              <div class="sol-check"><i class="fas fa-check"></i></div>
+              <div>
+                <div class="sol-point-title">AI that learns your patterns</div>
+                <div class="sol-point-desc">Our AI analyzes your full history to give specific, personalized coaching — not generic advice.</div>
+              </div>
+            </div>
+            <div class="solution-point">
+              <div class="sol-check"><i class="fas fa-check"></i></div>
+              <div>
+                <div class="sol-point-title">Real progress you can see</div>
+                <div class="sol-point-desc">Real-time dashboards, trend charts, and weekly AI reports that show exactly what's working.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FEATURES BENTO GRID ══ -->
+  <section class="features-section section-pad" id="features">
+    <div class="container">
+      <div class="section-header-center" data-aos="fade-up">
+        <div class="section-tag tag-purple"><i class="fas fa-star"></i> Platform Features</div>
+        <h2 class="section-headline">Everything you need to<br /><span class="text-green">crush every goal</span></h2>
+        <p class="section-body" style="max-width:520px;margin:0 auto;">A complete fitness intelligence platform built for serious athletes and everyday achievers alike.</p>
+      </div>
+
+      <div class="bento-grid" data-aos="fade-up" data-aos-delay="100">
+        <!-- Large card: AI Coach -->
+        <div class="bento-card bento-large bento-ai">
+          <div class="bento-card-bg"></div>
+          <div class="bento-card-content">
+            <div class="bento-icon" style="background:rgba(196,241,53,0.12);color:#c4f135;">
+              <i class="fas fa-robot"></i>
+            </div>
+            <div class="bento-tag">Powered by AI</div>
+            <h3 class="bento-title">AI Fitness Coach</h3>
+            <p class="bento-desc">Get real-time coaching, personalised workout plans, nutrition advice, and recovery recommendations — available 24/7.</p>
+            <div class="bento-chat">
+              <div class="chat-bubble user">What should I eat after leg day?</div>
+              <div class="chat-bubble ai"><span class="ai-tag">AI</span> Based on your 847 kcal burn today, aim for 35g protein + complex carbs within 45 minutes. Try grilled chicken with quinoa. 💪</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Medium: Workout Tracking -->
+        <div class="bento-card bento-medium bento-workout">
+          <div class="bento-card-content">
+            <div class="bento-icon" style="background:rgba(124,58,237,0.15);color:#a78bfa;">
+              <i class="fas fa-dumbbell"></i>
+            </div>
+            <h3 class="bento-title">Workout Tracking</h3>
+            <p class="bento-desc">Log 100+ exercise types. Track sets, reps, duration, and calories with automatic progress analysis.</p>
+            <div class="bento-workout-types">
+              <span>🏃 Running</span>
+              <span>🚴 Cycling</span>
+              <span>🏋️ Strength</span>
+              <span>🧘 Yoga</span>
+              <span>🥊 Boxing</span>
+              <span>+95 more</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Medium: Analytics -->
+        <div class="bento-card bento-medium bento-analytics">
+          <div class="bento-card-content">
+            <div class="bento-icon" style="background:rgba(6,182,212,0.15);color:#06b6d4;">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h3 class="bento-title">Advanced Analytics</h3>
+            <p class="bento-desc">Deep trend analysis, weekly reports, and predictive insights to keep you progressing.</p>
+            <!-- Mini chart -->
+            <div class="mini-chart">
+              <div class="mini-bar" style="height:40%;background:#c4f135;opacity:0.6"></div>
+              <div class="mini-bar" style="height:55%;background:#c4f135;opacity:0.7"></div>
+              <div class="mini-bar" style="height:45%;background:#c4f135;opacity:0.6"></div>
+              <div class="mini-bar" style="height:70%;background:#c4f135;opacity:0.8"></div>
+              <div class="mini-bar" style="height:60%;background:#c4f135;opacity:0.7"></div>
+              <div class="mini-bar" style="height:85%;background:#c4f135"></div>
+              <div class="mini-bar" style="height:75%;background:#c4f135;opacity:0.9"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Small: Goal Management -->
+        <div class="bento-card bento-small bento-goals">
+          <div class="bento-card-content">
+            <div class="bento-icon" style="background:rgba(196,241,53,0.1);color:#c4f135;">
+              <i class="fas fa-bullseye"></i>
+            </div>
+            <h3 class="bento-title">Goal Management</h3>
+            <div class="goal-bars">
+              <div class="goal-bar-row">
+                <span>Weight</span>
+                <div class="goal-bar"><div class="goal-fill" style="width:72%;background:#c4f135"></div></div>
+                <span>72%</span>
+              </div>
+              <div class="goal-bar-row">
+                <span>Steps</span>
+                <div class="goal-bar"><div class="goal-fill" style="width:88%;background:#a78bfa"></div></div>
+                <span>88%</span>
+              </div>
+              <div class="goal-bar-row">
+                <span>Water</span>
+                <div class="goal-bar"><div class="goal-fill" style="width:55%;background:#06b6d4"></div></div>
+                <span>55%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Small: Sleep & Recovery -->
+        <div class="bento-card bento-small bento-sleep">
+          <div class="bento-card-content">
+            <div class="bento-icon" style="background:rgba(6,182,212,0.12);color:#06b6d4;">
+              <i class="fas fa-moon"></i>
+            </div>
+            <h3 class="bento-title">Sleep & Recovery</h3>
+            <div class="sleep-score">
+              <div class="sleep-big">8.2</div>
+              <div class="sleep-label">hrs avg sleep</div>
+            </div>
+            <div class="recovery-ring-mini">
+              <svg viewBox="0 0 80 80" width="60" height="60">
+                <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(196,241,53,0.15)" stroke-width="6"/>
+                <circle cx="40" cy="40" r="32" fill="none" stroke="#c4f135" stroke-width="6"
+                  stroke-dasharray="201.06" stroke-dashoffset="50.27"
+                  stroke-linecap="round" transform="rotate(-90 40 40)"/>
+              </svg>
+              <span>85%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Small: Nutrition -->
+        <div class="bento-card bento-small bento-nutrition">
+          <div class="bento-card-content">
+            <div class="bento-icon" style="background:rgba(249,115,22,0.12);color:#f97316;">
+              <i class="fas fa-apple-alt"></i>
+            </div>
+            <h3 class="bento-title">Nutrition Tracking</h3>
+            <div class="macro-row">
+              <div class="macro-item">
+                <div class="macro-val" style="color:#c4f135">142g</div>
+                <div class="macro-lbl">Protein</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val" style="color:#a78bfa">186g</div>
+                <div class="macro-lbl">Carbs</div>
+              </div>
+              <div class="macro-item">
+                <div class="macro-val" style="color:#f97316">64g</div>
+                <div class="macro-lbl">Fat</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Small: Achievements -->
+        <div class="bento-card bento-small bento-achieve">
+          <div class="bento-card-content">
+            <div class="bento-icon" style="background:rgba(245,158,11,0.12);color:#f59e0b;">
+              <i class="fas fa-trophy"></i>
+            </div>
+            <h3 class="bento-title">Achievements & XP</h3>
+            <div class="badge-row">
+              <span class="badge-chip">🔥 Iron Will</span>
+              <span class="badge-chip">💧 Hydrated</span>
+              <span class="badge-chip">👟 10K Steps</span>
+              <span class="badge-chip">🎯 Goal Crusher</span>
+            </div>
+            <div class="xp-bar-wrap">
+              <div class="xp-label">Level: Gold · 720 XP</div>
+              <div class="xp-bar"><div class="xp-fill" style="width:72%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Medium: BMI & Vitals -->
+        <div class="bento-card bento-medium bento-bmi">
+          <div class="bento-card-content">
+            <div class="bento-icon" style="background:rgba(196,241,53,0.1);color:#c4f135;">
+              <i class="fas fa-heartbeat"></i>
+            </div>
+            <h3 class="bento-title">Health Monitoring</h3>
+            <p class="bento-desc">Track BMI, heart rate, blood pressure, and all vital health metrics over time.</p>
+            <div class="vitals-row">
+              <div class="vital-chip">
+                <div class="vital-val">22.4</div>
+                <div class="vital-lbl">BMI</div>
+              </div>
+              <div class="vital-chip">
+                <div class="vital-val">68<span>bpm</span></div>
+                <div class="vital-lbl">Resting HR</div>
+              </div>
+              <div class="vital-chip">
+                <div class="vital-val">118/76</div>
+                <div class="vital-lbl">Blood Pressure</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ STATS ══ -->
+  <section class="stats-section section-pad" id="stats">
+    <div class="container">
+      <div class="stats-demo-badge" data-aos="fade-up">
+        <i class="fas fa-flask"></i>
+        Simulated Fitness Analytics — Demo Platform Data
+      </div>
+      <div class="stats-grid" data-aos="fade-up" data-aos-delay="80">
+        <div class="stat-item">
+          <div class="stat-number counter" data-target="5247">0</div>
+          <div class="stat-label">Sample Athletes</div>
+          <div class="stat-sublabel">50 seeded demo users</div>
+          <div class="stat-bar"><div class="stat-bar-fill" style="width:85%"></div></div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number counter" data-target="89432">0</div>
+          <div class="stat-label">Sample Workouts</div>
+          <div class="stat-sublabel">300+ seeded sessions</div>
+          <div class="stat-bar"><div class="stat-bar-fill" style="width:92%"></div></div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">94<span class="stat-unit">%</span></div>
+          <div class="stat-label">Goal Achievement Rate</div>
+          <div class="stat-sublabel">Across demo goals</div>
+          <div class="stat-bar"><div class="stat-bar-fill" style="width:94%"></div></div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">2.1<span class="stat-unit">M</span></div>
+          <div class="stat-label">AI Insights Capacity</div>
+          <div class="stat-sublabel">Projected at scale</div>
+          <div class="stat-bar"><div class="stat-bar-fill" style="width:78%"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ HOW IT WORKS ══ -->
+  <section class="howitworks-section section-pad" id="howitworks">
+    <div class="container">
+      <div class="section-header-center" data-aos="fade-up">
+        <div class="section-tag tag-purple"><i class="fas fa-route"></i> How It Works</div>
+        <h2 class="section-headline">Up and running in <span class="text-green">3 minutes</span></h2>
+      </div>
+
+      <div class="steps-row" data-aos="fade-up" data-aos-delay="100">
+        <div class="step-card">
+          <div class="step-number">01</div>
+          <div class="step-icon"><i class="fas fa-user-plus"></i></div>
+          <h3 class="step-title">Create Account</h3>
+          <p class="step-desc">Sign up free in 30 seconds. Enter your basic stats and fitness goals to personalise your experience.</p>
+        </div>
+        <div class="steps-arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="step-card">
+          <div class="step-number">02</div>
+          <div class="step-icon"><i class="fas fa-dumbbell"></i></div>
+          <h3 class="step-title">Log Your First Workout</h3>
+          <p class="step-desc">Track any exercise — running, lifting, yoga, cycling. The AI starts learning your patterns immediately.</p>
+        </div>
+        <div class="steps-arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="step-card">
+          <div class="step-number">03</div>
+          <div class="step-icon"><i class="fas fa-brain"></i></div>
+          <h3 class="step-title">Get AI Insights</h3>
+          <p class="step-desc">Receive personalised coaching, recovery recommendations, and weekly performance reports powered by AI.</p>
+        </div>
+        <div class="steps-arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="step-card">
+          <div class="step-number">04</div>
+          <div class="step-icon"><i class="fas fa-trophy"></i></div>
+          <h3 class="step-title">Achieve Your Goals</h3>
+          <p class="step-desc">Hit milestones, earn XP, unlock achievements, and see real, measurable transformation over time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ AI COACH SHOWCASE ══ -->
+  <section class="ai-coach-section section-pad" id="ai-coach">
+    <div class="container">
+      <div class="ai-coach-inner">
+        <!-- Left: explanation -->
+        <div class="ai-coach-left" data-aos="fade-right">
+          <div class="section-tag tag-green"><i class="fas fa-robot"></i> AI Coach — Live Demo</div>
+          <h2 class="section-headline">Your personal AI coach,<br /><span class="text-green">always on.</span></h2>
+          <p class="section-body">Ask anything about your fitness journey — from weight loss to recovery. FitTrack AI analyses your personal data and delivers science-backed, personalised coaching 24/7.</p>
+          <div class="ai-capabilities">
+            <div class="ai-cap-item">
+              <div class="ai-cap-icon"><i class="fas fa-dumbbell"></i></div>
+              <div>
+                <div class="ai-cap-title">Workout Planning</div>
+                <div class="ai-cap-desc">Personalised routines based on your history, goals, and recovery score</div>
+              </div>
+            </div>
+            <div class="ai-cap-item">
+              <div class="ai-cap-icon"><i class="fas fa-apple-alt"></i></div>
+              <div>
+                <div class="ai-cap-title">Nutrition Guidance</div>
+                <div class="ai-cap-desc">Calorie targets, macro splits, and meal timing recommendations</div>
+              </div>
+            </div>
+            <div class="ai-cap-item">
+              <div class="ai-cap-icon"><i class="fas fa-bed"></i></div>
+              <div>
+                <div class="ai-cap-title">Recovery Optimisation</div>
+                <div class="ai-cap-desc">Sleep quality analysis and rest day recommendations</div>
+              </div>
+            </div>
+            <div class="ai-cap-item">
+              <div class="ai-cap-icon"><i class="fas fa-bullseye"></i></div>
+              <div>
+                <div class="ai-cap-title">Goal Coaching</div>
+                <div class="ai-cap-desc">Weekly check-ins, milestone tracking, and strategy adjustments</div>
+              </div>
+            </div>
+          </div>
+          <a href="login.html" class="btn-primary-hero magnetic-btn" style="display:inline-flex;margin-top:8px;">
+            <span>Try AI Coach Free</span>
+            <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+
+        <!-- Right: Live Chat Demo -->
+        <div class="ai-coach-right" data-aos="fade-left" data-aos-delay="100">
+          <div class="ai-chat-window">
+            <div class="ai-chat-header">
+              <div class="ai-chat-av"><i class="fas fa-robot"></i></div>
+              <div class="ai-chat-info">
+                <div class="ai-chat-name">FitTrack AI Coach</div>
+                <div class="ai-chat-status"><span class="status-dot"></span> Online · Analysing your profile</div>
+              </div>
+              <div class="ai-chat-badge">LIVE DEMO</div>
+            </div>
+
+            <div class="ai-chat-body" id="aiChatBody">
+              <div class="ai-chat-msg ai-msg">
+                <div class="ai-msg-av"><i class="fas fa-robot"></i></div>
+                <div class="ai-msg-bubble">Hi Alex! 👋 I've reviewed your last 30 days. Your consistency is great — 24 workouts logged. What's your goal today?</div>
+              </div>
+
+              <div class="ai-chat-msg user-msg">
+                <div class="ai-msg-bubble user-bubble">How can I lose 5 kg?</div>
+              </div>
+
+              <div class="ai-chat-msg ai-msg">
+                <div class="ai-msg-av"><i class="fas fa-robot"></i></div>
+                <div class="ai-msg-bubble">
+                  Based on your profile (75kg, 178cm, moderately active), here's your personalised plan:
+                  <div class="ai-plan-cards">
+                    <div class="ai-plan-card">
+                      <div class="ai-plan-icon" style="color:#c4f135"><i class="fas fa-fire"></i></div>
+                      <div class="ai-plan-val">1,800</div>
+                      <div class="ai-plan-lbl">daily calories</div>
+                    </div>
+                    <div class="ai-plan-card">
+                      <div class="ai-plan-icon" style="color:#a78bfa"><i class="fas fa-heartbeat"></i></div>
+                      <div class="ai-plan-val">150 min</div>
+                      <div class="ai-plan-lbl">cardio / week</div>
+                    </div>
+                    <div class="ai-plan-card">
+                      <div class="ai-plan-icon" style="color:#06b6d4"><i class="fas fa-shoe-prints"></i></div>
+                      <div class="ai-plan-val">10,000+</div>
+                      <div class="ai-plan-lbl">steps daily</div>
+                    </div>
+                  </div>
+                  Aim for a 0.5–1 kg loss per week. At this rate, you'll hit your goal in <strong style="color:#c4f135">6–10 weeks</strong>. Want me to build your week-1 workout plan? 💪
+                </div>
+              </div>
+
+              <div class="ai-chat-msg user-msg">
+                <div class="ai-msg-bubble user-bubble">Yes, build my plan!</div>
+              </div>
+
+              <div class="ai-chat-msg ai-msg" id="aiTypingMsg">
+                <div class="ai-msg-av"><i class="fas fa-robot"></i></div>
+                <div class="ai-msg-bubble">
+                  <div class="ai-typing" id="aiTyping"><span></span><span></span><span></span></div>
+                  <div class="ai-plan-result" id="aiPlanResult" style="display:none">
+                    Here's your <strong style="color:#c4f135">Week 1 Plan</strong>:
+                    <div class="ai-week-plan">
+                      <div class="ai-day"><span class="ai-day-label">Mon</span><span>HIIT · 30 min + 10K steps</span></div>
+                      <div class="ai-day"><span class="ai-day-label">Tue</span><span>Strength · Upper body</span></div>
+                      <div class="ai-day"><span class="ai-day-label">Wed</span><span>Rest · Light walk</span></div>
+                      <div class="ai-day"><span class="ai-day-label">Thu</span><span>Running · 5km easy</span></div>
+                      <div class="ai-day"><span class="ai-day-label">Fri</span><span>Strength · Lower body</span></div>
+                      <div class="ai-day"><span class="ai-day-label">Sat</span><span>Cycling · 45 min</span></div>
+                      <div class="ai-day"><span class="ai-day-label">Sun</span><span>Active rest · Yoga</span></div>
+                    </div>
+                    Plan saved to your dashboard ✅
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ai-chat-input">
+              <input type="text" placeholder="Ask your AI coach anything..." id="aiDemoInput" />
+              <button onclick="sendDemoMessage()" id="aiSendBtn"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PRODUCT SHOWCASE ══ -->
+  <section class="showcase-section section-pad" id="showcase">
+    <div class="container">
+      <div class="section-header-center" data-aos="fade-up">
+        <div class="section-tag tag-green"><i class="fas fa-desktop"></i> Inside FitTrack AI</div>
+        <h2 class="section-headline">See the product <span class="text-green">in action</span></h2>
+        <p class="section-body" style="max-width:480px;margin:0 auto;">Every screen is designed to make your health data clear, beautiful, and actionable.</p>
+      </div>
+
+      <div class="showcase-tabs" data-aos="fade-up" data-aos-delay="50">
+        <button class="showcase-tab active" onclick="switchShowcase(0, this)"><i class="fas fa-chart-pie"></i> Dashboard</button>
+        <button class="showcase-tab" onclick="switchShowcase(1, this)"><i class="fas fa-dumbbell"></i> Workouts</button>
+        <button class="showcase-tab" onclick="switchShowcase(2, this)"><i class="fas fa-chart-line"></i> Analytics</button>
+        <button class="showcase-tab" onclick="switchShowcase(3, this)"><i class="fas fa-apple-alt"></i> Nutrition</button>
+        <button class="showcase-tab" onclick="switchShowcase(4, this)"><i class="fas fa-robot"></i> AI Coach</button>
+      </div>
+
+      <div class="showcase-panels" data-aos="fade-up" data-aos-delay="100">
+        <!-- Panel 0: Dashboard -->
+        <div class="showcase-panel active" id="panel-0">
+          <div class="showcase-left">
+            <h3 class="showcase-panel-title">Your Health at a Glance</h3>
+            <p class="showcase-panel-desc">The dashboard gives you a complete real-time view of all your health metrics — steps, calories, sleep, workouts, and more — in one beautiful interface.</p>
+            <ul class="showcase-features">
+              <li><i class="fas fa-check-circle"></i> Live step and calorie counters</li>
+              <li><i class="fas fa-check-circle"></i> Weekly activity chart</li>
+              <li><i class="fas fa-check-circle"></i> Goal progress bars</li>
+              <li><i class="fas fa-check-circle"></i> Notification centre</li>
+            </ul>
+            <a href="dashboard.html" class="btn-showcase">Open Dashboard <i class="fas fa-arrow-right"></i></a>
+          </div>
+          <div class="showcase-right">
+            <div class="showcase-mockup">
+              <div class="mockup-topbar">
+                <div class="mockup-dots"><span></span><span></span><span></span></div>
+                <div class="mockup-url"><i class="fas fa-lock"></i> app.fittrack.ai/dashboard</div>
+              </div>
+              <div class="mockup-content dash-preview">
+                <div class="dash-header-bar">
+                  <div class="dash-greeting">Good morning, Alex 👋</div>
+                  <div class="dash-date">Monday, June 8</div>
+                </div>
+                <div class="dash-metric-row">
+                  <div class="dash-metric"><div class="dm-val" style="color:#c4f135">11,240</div><div class="dm-lbl">Steps</div></div>
+                  <div class="dash-metric"><div class="dm-val" style="color:#f97316">2,840</div><div class="dm-lbl">kcal</div></div>
+                  <div class="dash-metric"><div class="dm-val" style="color:#06b6d4">8.2h</div><div class="dm-lbl">Sleep</div></div>
+                  <div class="dash-metric"><div class="dm-val" style="color:#a78bfa">85%</div><div class="dm-lbl">Recovery</div></div>
+                </div>
+                <div class="dash-chart-placeholder">
+                  <div class="dash-chart-label">Weekly Activity</div>
+                  <div class="dash-bars">
+                    <div class="dash-bar" style="height:45%"></div>
+                    <div class="dash-bar" style="height:65%"></div>
+                    <div class="dash-bar" style="height:55%"></div>
+                    <div class="dash-bar" style="height:80%"></div>
+                    <div class="dash-bar" style="height:70%"></div>
+                    <div class="dash-bar active" style="height:90%"></div>
+                    <div class="dash-bar" style="height:40%"></div>
+                  </div>
+                  <div class="dash-days"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+                </div>
+                <div class="dash-goals-preview">
+                  <div class="dash-goal-bar-row"><span>Weight Goal</span><div class="dgb"><div class="dgb-fill" style="width:72%"></div></div><span>72%</span></div>
+                  <div class="dash-goal-bar-row"><span>Daily Steps</span><div class="dgb"><div class="dgb-fill" style="width:88%;background:#a78bfa"></div></div><span>88%</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 1: Workouts -->
+        <div class="showcase-panel" id="panel-1">
+          <div class="showcase-left">
+            <h3 class="showcase-panel-title">Log Any Workout, Instantly</h3>
+            <p class="showcase-panel-desc">From HIIT to yoga, log any workout in seconds. Track reps, sets, duration, and calories with automatic XP rewards.</p>
+            <ul class="showcase-features">
+              <li><i class="fas fa-check-circle"></i> 100+ exercise types</li>
+              <li><i class="fas fa-check-circle"></i> Calorie auto-calculation</li>
+              <li><i class="fas fa-check-circle"></i> Workout history & trends</li>
+              <li><i class="fas fa-check-circle"></i> XP & achievement system</li>
+            </ul>
+            <a href="login.html" class="btn-showcase">Start Logging <i class="fas fa-arrow-right"></i></a>
+          </div>
+          <div class="showcase-right">
+            <div class="showcase-mockup">
+              <div class="mockup-topbar">
+                <div class="mockup-dots"><span></span><span></span><span></span></div>
+                <div class="mockup-url"><i class="fas fa-lock"></i> app.fittrack.ai/workouts</div>
+              </div>
+              <div class="mockup-content workout-preview">
+                <div class="wp-title">Recent Workouts</div>
+                <div class="wp-item">
+                  <div class="wp-icon" style="background:rgba(196,241,53,0.1);color:#c4f135"><i class="fas fa-running"></i></div>
+                  <div class="wp-info"><div class="wp-name">Running</div><div class="wp-detail">45 min · 520 kcal</div></div>
+                  <div class="wp-xp">+30 XP</div>
+                </div>
+                <div class="wp-item">
+                  <div class="wp-icon" style="background:rgba(124,58,237,0.1);color:#a78bfa"><i class="fas fa-dumbbell"></i></div>
+                  <div class="wp-info"><div class="wp-name">Strength Training</div><div class="wp-detail">60 min · 380 kcal</div></div>
+                  <div class="wp-xp">+30 XP</div>
+                </div>
+                <div class="wp-item">
+                  <div class="wp-icon" style="background:rgba(6,182,212,0.1);color:#06b6d4"><i class="fas fa-swimmer"></i></div>
+                  <div class="wp-info"><div class="wp-name">Swimming</div><div class="wp-detail">30 min · 310 kcal</div></div>
+                  <div class="wp-xp">+30 XP</div>
+                </div>
+                <div class="wp-add-btn"><i class="fas fa-plus"></i> Log New Workout</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 2: Analytics -->
+        <div class="showcase-panel" id="panel-2">
+          <div class="showcase-left">
+            <h3 class="showcase-panel-title">Deep Analytics & Insights</h3>
+            <p class="showcase-panel-desc">Understand your performance trends with detailed charts, weekly summaries, and AI-powered pattern recognition.</p>
+            <ul class="showcase-features">
+              <li><i class="fas fa-check-circle"></i> 30-day trend analysis</li>
+              <li><i class="fas fa-check-circle"></i> BMI tracking over time</li>
+              <li><i class="fas fa-check-circle"></i> Sleep quality trends</li>
+              <li><i class="fas fa-check-circle"></i> AI weekly performance report</li>
+            </ul>
+            <a href="login.html" class="btn-showcase">View Analytics <i class="fas fa-arrow-right"></i></a>
+          </div>
+          <div class="showcase-right">
+            <div class="showcase-mockup">
+              <div class="mockup-topbar">
+                <div class="mockup-dots"><span></span><span></span><span></span></div>
+                <div class="mockup-url"><i class="fas fa-lock"></i> app.fittrack.ai/analytics</div>
+              </div>
+              <div class="mockup-content analytics-preview">
+                <div class="ap-title">30-Day Overview</div>
+                <div class="ap-cards">
+                  <div class="ap-card"><div class="ap-val" style="color:#c4f135">↓ 2.8kg</div><div class="ap-lbl">Weight Lost</div></div>
+                  <div class="ap-card"><div class="ap-val" style="color:#a78bfa">24</div><div class="ap-lbl">Workouts</div></div>
+                  <div class="ap-card"><div class="ap-val" style="color:#06b6d4">7.9h</div><div class="ap-lbl">Avg Sleep</div></div>
+                </div>
+                <div class="ap-chart">
+                  <div class="ap-line-label">Weight (kg)</div>
+                  <svg viewBox="0 0 260 80" style="width:100%;overflow:visible">
+                    <polyline points="0,60 40,55 80,50 120,45 160,38 200,30 240,25"
+                      fill="none" stroke="#c4f135" stroke-width="2" stroke-linecap="round"/>
+                    <polyline points="0,60 40,55 80,50 120,45 160,38 200,30 240,25"
+                      fill="url(#lineGrad)" opacity="0.15"/>
+                    <defs>
+                      <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#c4f135"/>
+                        <stop offset="100%" stop-color="transparent"/>
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 3: Nutrition -->
+        <div class="showcase-panel" id="panel-3">
+          <div class="showcase-left">
+            <h3 class="showcase-panel-title">Smart Nutrition Tracking</h3>
+            <p class="showcase-panel-desc">Log meals, track macros, and get AI-powered nutrition recommendations tailored to your goals and workout schedule.</p>
+            <ul class="showcase-features">
+              <li><i class="fas fa-check-circle"></i> Calorie &amp; macro tracking</li>
+              <li><i class="fas fa-check-circle"></i> Protein, carbs, and fat goals</li>
+              <li><i class="fas fa-check-circle"></i> AI meal recommendations</li>
+              <li><i class="fas fa-check-circle"></i> Pre &amp; post-workout nutrition</li>
+              <li><i class="fas fa-check-circle"></i> Hydration tracking</li>
+            </ul>
+            <a href="login.html" class="btn-showcase">Track Nutrition <i class="fas fa-arrow-right"></i></a>
+          </div>
+          <div class="showcase-right">
+            <div class="showcase-mockup">
+              <div class="mockup-topbar">
+                <div class="mockup-dots"><span></span><span></span><span></span></div>
+                <div class="mockup-url"><i class="fas fa-lock"></i> app.fittrack.ai/nutrition</div>
+              </div>
+              <div class="mockup-content nutrition-preview">
+                <div class="np-title">Today's Nutrition</div>
+                <div class="np-cals">
+                  <div class="np-cal-circle">
+                    <svg viewBox="0 0 80 80" width="70" height="70">
+                      <circle cx="40" cy="40" r="30" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="8"/>
+                      <circle cx="40" cy="40" r="30" fill="none" stroke="#c4f135" stroke-width="8"
+                        stroke-dasharray="188.5" stroke-dashoffset="47.1"
+                        stroke-linecap="round" transform="rotate(-90 40 40)"/>
+                    </svg>
+                    <div class="np-cal-center">
+                      <div class="np-cal-val">1,840</div>
+                      <div class="np-cal-lbl">kcal</div>
+                    </div>
+                  </div>
+                  <div class="np-macro-bars">
+                    <div class="np-macro-row">
+                      <span style="color:#c4f135">Protein</span>
+                      <div class="np-bar"><div class="np-fill" style="width:78%;background:#c4f135"></div></div>
+                      <span>142g / 180g</span>
+                    </div>
+                    <div class="np-macro-row">
+                      <span style="color:#a78bfa">Carbs</span>
+                      <div class="np-bar"><div class="np-fill" style="width:62%;background:#a78bfa"></div></div>
+                      <span>186g / 300g</span>
+                    </div>
+                    <div class="np-macro-row">
+                      <span style="color:#f97316">Fat</span>
+                      <div class="np-bar"><div class="np-fill" style="width:71%;background:#f97316"></div></div>
+                      <span>64g / 90g</span>
+                    </div>
+                    <div class="np-macro-row">
+                      <span style="color:#06b6d4">Water</span>
+                      <div class="np-bar"><div class="np-fill" style="width:55%;background:#06b6d4"></div></div>
+                      <span>1.9L / 3.5L</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="np-ai-tip"><i class="fas fa-robot"></i> <strong>AI Tip:</strong> You need 38g more protein today. Consider a chicken breast or whey shake post-workout.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 4: AI Coach -->
+        <div class="showcase-panel" id="panel-4">
+          <div class="showcase-left">
+            <h3 class="showcase-panel-title">Your 24/7 AI Fitness Coach</h3>
+            <p class="showcase-panel-desc">Ask anything about workouts, nutrition, recovery, or goals. The AI coach knows your full history and delivers science-backed, personalised answers.</p>
+            <ul class="showcase-features">
+              <li><i class="fas fa-check-circle"></i> Personalised weekly workout plans</li>
+              <li><i class="fas fa-check-circle"></i> Calorie &amp; macro recommendations</li>
+              <li><i class="fas fa-check-circle"></i> Recovery &amp; sleep optimisation</li>
+              <li><i class="fas fa-check-circle"></i> Goal coaching &amp; check-ins</li>
+              <li><i class="fas fa-check-circle"></i> Context-aware chat interface</li>
+            </ul>
+            <a href="#ai-coach" class="btn-showcase">See AI in Action <i class="fas fa-arrow-right"></i></a>
+          </div>
+          <div class="showcase-right">
+            <div class="showcase-mockup">
+              <div class="mockup-topbar">
+                <div class="mockup-dots"><span></span><span></span><span></span></div>
+                <div class="mockup-url"><i class="fas fa-lock"></i> app.fittrack.ai/ai-coach</div>
+              </div>
+              <div class="mockup-content aicoach-preview">
+                <div class="acp-header">
+                  <div class="acp-avatar"><i class="fas fa-robot"></i></div>
+                  <div><div class="acp-name">FitTrack AI Coach</div><div class="acp-status">● Online · Ready to coach</div></div>
+                </div>
+                <div class="acp-messages">
+                  <div class="acp-msg ai">Hi Alex! Your recovery is at 85% today — perfect for intensity. 💪</div>
+                  <div class="acp-msg user">How can I lose 5 kg?</div>
+                  <div class="acp-msg ai">Based on your profile: aim for <strong>1,800 cal/day</strong>, complete <strong>150 min cardio/week</strong>, and maintain <strong>10,000+ daily steps</strong>. At 0.5–1 kg/week, you'll reach your goal in 6–10 weeks.</div>
+                  <div class="acp-msg user">Build my week 1 plan!</div>
+                  <div class="acp-msg ai">Mon: HIIT 30min · Tue: Strength · Wed: Rest · Thu: Run 5km · Fri: Strength · Sat: Cycling · Sun: Yoga ✅</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ TESTIMONIALS ══ -->
+  <section class="testimonials-section section-pad" id="testimonials">
+    <div class="container">
+      <div class="section-header-center" data-aos="fade-up">
+        <div class="section-tag tag-purple"><i class="fas fa-star"></i> Fitness Transformation Stories</div>
+        <h2 class="section-headline">Real journeys, <span class="text-green">real results</span></h2>
+        <p class="tcard-demo-note">Representative user journeys created for demonstration purposes.</p>
+      </div>
+
+      <div class="testimonials-track-wrap" data-aos="fade-up" data-aos-delay="100">
+        <div class="testimonials-track" id="testimonialsTrack">
+          <div class="tcard">
+            <div class="tcard-stars">★★★★★</div>
+            <p class="tcard-text">"FitTrack AI completely transformed my approach to fitness. The AI coach gives advice that actually works for my schedule. Lost 18 lbs in 3 months!"</p>
+            <div class="tcard-author">
+              <div class="tcard-av" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">SM</div>
+              <div><div class="tcard-name">Sarah Mitchell</div><div class="tcard-role">Graphic Designer · NYC</div></div>
+            </div>
+          </div>
+          <div class="tcard">
+            <div class="tcard-stars">★★★★★</div>
+            <p class="tcard-text">"The analytics are next level. Seeing how workouts correlate with sleep and nutrition helped me shave 18 minutes off my marathon time."</p>
+            <div class="tcard-author">
+              <div class="tcard-av" style="background:linear-gradient(135deg,#06b6d4,#0891b2)">JR</div>
+              <div><div class="tcard-name">James Rodriguez</div><div class="tcard-role">Software Engineer · Marathon Runner</div></div>
+            </div>
+          </div>
+          <div class="tcard">
+            <div class="tcard-stars">★★★★★</div>
+            <p class="tcard-text">"As a personal trainer I recommend FitTrack AI to all my clients. The goal tracking and achievement system keeps them motivated between sessions."</p>
+            <div class="tcard-author">
+              <div class="tcard-av" style="background:linear-gradient(135deg,#c4f135,#84cc16)">AK</div>
+              <div><div class="tcard-name">Aisha Khan</div><div class="tcard-role">Personal Trainer · London</div></div>
+            </div>
+          </div>
+          <div class="tcard">
+            <div class="tcard-stars">★★★★★</div>
+            <p class="tcard-text">"I've tried Strava, MyFitnessPal, and Fitbit. FitTrack AI is the only one that actually feels like a coach, not just a logger. The AI insights are genuinely useful."</p>
+            <div class="tcard-author">
+              <div class="tcard-av" style="background:linear-gradient(135deg,#f59e0b,#d97706)">MP</div>
+              <div><div class="tcard-name">Marcus Peters</div><div class="tcard-role">CrossFit Athlete · Dubai</div></div>
+            </div>
+          </div>
+          <div class="tcard">
+            <div class="tcard-stars">★★★★★</div>
+            <p class="tcard-text">"The BMI tracker and nutrition logging together with AI suggestions made me actually understand my body for the first time. Down 12kg in 4 months."</p>
+            <div class="tcard-author">
+              <div class="tcard-av" style="background:linear-gradient(135deg,#ec4899,#be185d)">PL</div>
+              <div><div class="tcard-name">Priya Lakshmanan</div><div class="tcard-role">UX Designer · Bangalore</div></div>
+            </div>
+          </div>
+          <div class="tcard">
+            <div class="tcard-stars">★★★★★</div>
+            <p class="tcard-text">"The gamification aspect is brilliant. Earning XP and unlocking badges actually keeps me going on days I don't feel like working out. Highly addictive — in a good way!"</p>
+            <div class="tcard-author">
+              <div class="tcard-av" style="background:linear-gradient(135deg,#10b981,#059669)">TW</div>
+              <div><div class="tcard-name">Tom Walsh</div><div class="tcard-role">Product Manager · Sydney</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tcard-nav">
+        <button class="tcard-nav-btn" onclick="scrollTestimonials(-1)"><i class="fas fa-arrow-left"></i></button>
+        <button class="tcard-nav-btn" onclick="scrollTestimonials(1)"><i class="fas fa-arrow-right"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PLANS (Journey Cards) ══ -->
+  <section class="plans-section section-pad" id="plans">
+    <div class="container">
+      <div class="section-header-center" data-aos="fade-up">
+        <div class="section-tag tag-green"><i class="fas fa-route"></i> Built For Every Fitness Journey</div>
+        <h2 class="section-headline">Find your <span class="text-green">perfect fit</span></h2>
+        <p class="section-body" style="max-width:480px;margin:0 auto;">Whether you're taking your first step or training like a pro, FitTrack AI adapts to your level.</p>
+      </div>
+
+      <div class="plans-grid" data-aos="fade-up" data-aos-delay="100">
+
+        <!-- Beginner -->
+        <div class="plan-card">
+          <div class="plan-icon-wrap" style="background:rgba(6,182,212,0.1);color:#06b6d4;">
+            <i class="fas fa-seedling"></i>
+          </div>
+          <div class="plan-badge" style="background:rgba(6,182,212,0.1);border-color:rgba(6,182,212,0.2);color:#06b6d4;">Beginner</div>
+          <h3 class="plan-title">Starting Out</h3>
+          <p class="plan-desc">Perfect if you're new to fitness tracking. Build healthy habits with guided workouts, daily logging, and goal setting.</p>
+          <div class="plan-divider"></div>
+          <ul class="plan-features">
+            <li><i class="fas fa-check"></i> Unlimited workout logging</li>
+            <li><i class="fas fa-check"></i> Step &amp; calorie counter</li>
+            <li><i class="fas fa-check"></i> Basic health metrics</li>
+            <li><i class="fas fa-check"></i> 3 active fitness goals</li>
+            <li><i class="fas fa-check"></i> Achievement badges &amp; XP</li>
+            <li><i class="fas fa-check"></i> Sleep quality tracking</li>
+            <li><i class="fas fa-check"></i> 7-day activity history</li>
+          </ul>
+          <div class="plan-use-case">
+            <i class="fas fa-lightbulb"></i>
+            <span>Best for: Office workers, beginners, casual exercisers</span>
+          </div>
+          <a href="signup.html" class="plan-btn plan-btn-outline">Start Your Journey</a>
+        </div>
+
+        <!-- Fitness Enthusiast (Featured) -->
+        <div class="plan-card plan-featured">
+          <div class="plan-popular-badge">Most Popular</div>
+          <div class="plan-icon-wrap" style="background:rgba(196,241,53,0.1);color:#c4f135;">
+            <i class="fas fa-dumbbell"></i>
+          </div>
+          <div class="plan-badge" style="background:rgba(196,241,53,0.1);border-color:rgba(196,241,53,0.25);color:#c4f135;">Fitness Enthusiast</div>
+          <h3 class="plan-title">Level Up</h3>
+          <p class="plan-desc">For dedicated fitness fans who want AI-powered coaching, advanced analytics, and full nutrition tracking to break plateaus.</p>
+          <div class="plan-divider"></div>
+          <ul class="plan-features">
+            <li><i class="fas fa-check"></i> Everything in Beginner</li>
+            <li><i class="fas fa-check"></i> <strong>AI Fitness Coach</strong> (24/7)</li>
+            <li><i class="fas fa-check"></i> Full nutrition &amp; macro tracking</li>
+            <li><i class="fas fa-check"></i> Advanced analytics &amp; trends</li>
+            <li><i class="fas fa-check"></i> Unlimited goals &amp; history</li>
+            <li><i class="fas fa-check"></i> Weekly AI performance reports</li>
+            <li><i class="fas fa-check"></i> Recovery &amp; sleep optimisation</li>
+          </ul>
+          <div class="plan-use-case" style="border-color:rgba(196,241,53,0.15);">
+            <i class="fas fa-lightbulb" style="color:#c4f135;"></i>
+            <span>Best for: Regular gym-goers, weight loss journeys, runners</span>
+          </div>
+          <a href="signup.html" class="plan-btn plan-btn-primary magnetic-btn">Get Full Access</a>
+          <div class="plan-note">Free to try · No payment required for demo</div>
+        </div>
+
+        <!-- Athlete -->
+        <div class="plan-card">
+          <div class="plan-icon-wrap" style="background:rgba(124,58,237,0.12);color:#a78bfa;">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <div class="plan-badge" style="background:rgba(124,58,237,0.1);border-color:rgba(167,139,250,0.25);color:#a78bfa;">Athlete</div>
+          <h3 class="plan-title">Elite Performance</h3>
+          <p class="plan-desc">Designed for coaches, competitive athletes, and teams who need multi-athlete management, team analytics, and priority insights.</p>
+          <div class="plan-divider"></div>
+          <ul class="plan-features">
+            <li><i class="fas fa-check"></i> Everything in Enthusiast</li>
+            <li><i class="fas fa-check"></i> Multi-athlete management</li>
+            <li><i class="fas fa-check"></i> Team performance dashboard</li>
+            <li><i class="fas fa-check"></i> Admin analytics panel</li>
+            <li><i class="fas fa-check"></i> Comparative athlete reports</li>
+            <li><i class="fas fa-check"></i> Priority AI coaching queue</li>
+            <li><i class="fas fa-check"></i> Full API access</li>
+          </ul>
+          <div class="plan-use-case">
+            <i class="fas fa-lightbulb"></i>
+            <span>Best for: Personal trainers, sports coaches, competitive athletes</span>
+          </div>
+          <a href="signup.html" class="plan-btn plan-btn-outline">Explore Athlete Plan</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FAQ ══ -->
+  <section class="faq-section section-pad" id="faq">
+    <div class="container">
+      <div class="section-header-center" data-aos="fade-up">
+        <div class="section-tag tag-purple"><i class="fas fa-question-circle"></i> FAQ</div>
+        <h2 class="section-headline">Common <span class="text-green">questions</span></h2>
+      </div>
+
+      <div class="faq-list" data-aos="fade-up" data-aos-delay="100">
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q"><span>Is FitTrack AI free to use?</span><i class="fas fa-plus faq-icon"></i></div>
+          <div class="faq-a">Yes — this is a fully functional demo platform. Create an account, log workouts, track your health, and use the AI coach completely free. The platform showcases a complete health-tech product built by Team Vitalis.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q"><span>How does the AI coach work?</span><i class="fas fa-plus faq-icon"></i></div>
+          <div class="faq-a">The AI coach analyses your workout history, health metrics, sleep data, nutrition logs, and goals to provide personalised recommendations. Ask it anything — from weight loss plans to recovery advice — and get science-backed, personalised answers.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q"><span>Is my health data secure?</span><i class="fas fa-plus faq-icon"></i></div>
+          <div class="faq-a">Absolutely. All data is encrypted with JWT authentication, stored securely, and never shared with third parties. You own your data and can delete it at any time.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q"><span>Can I cancel at any time?</span><i class="fas fa-plus faq-icon"></i></div>
+          <div class="faq-a">This is a demo platform with no payment or subscription required. You can create and delete your account freely. All demo data is seeded for demonstration purposes and can be reset at any time.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q"><span>Does it work on mobile?</span><i class="fas fa-plus faq-icon"></i></div>
+          <div class="faq-a">FitTrack AI is fully responsive and works beautifully on all devices — desktop, tablet, and mobile. A dedicated mobile app is on our roadmap.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q"><span>What makes it different from Strava or MyFitnessPal?</span><i class="fas fa-plus faq-icon"></i></div>
+          <div class="faq-a">FitTrack AI combines workout tracking, nutrition logging, health monitoring, and AI coaching in one unified platform. Unlike Strava (focused on running/cycling) or MyFitnessPal (nutrition only), we give you a complete health intelligence system powered by AI.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FINAL CTA ══ -->
+  <section class="cta-section section-pad" id="cta">
+    <div class="container">
+      <div class="cta-inner" data-aos="fade-up">
+        <div class="cta-glow"></div>
+        <div class="section-tag tag-green" style="justify-content:center;display:flex"><i class="fas fa-rocket"></i> Start Today</div>
+        <h2 class="cta-title">Ready to unlock your<br /><span class="text-green">peak performance?</span></h2>
+        <p class="cta-subtitle">Join 5,000+ athletes already transforming their fitness with AI-powered coaching. Free forever to start.</p>
+        <div class="cta-buttons">
+          <a href="signup.html" class="btn-primary-hero magnetic-btn">
+            <span>Create Free Account</span>
+            <i class="fas fa-arrow-right"></i>
+          </a>
+          <a href="login.html" class="btn-ghost-hero">
+            <span>Sign In</span>
+          </a>
+        </div>
+        <div class="cta-trust">
+          <span><i class="fas fa-shield-alt"></i> No credit card</span>
+          <span><i class="fas fa-lock"></i> Fully secure</span>
+          <span><i class="fas fa-bolt"></i> Live in 30 seconds</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ══ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-main">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo" style="margin-bottom:16px;display:inline-flex">
+            <div class="nav-logo-icon"><i class="fas fa-heartbeat"></i></div>
+            <span class="nav-logo-text">FitTrack <span class="logo-accent">AI</span></span>
+          </a>
+          <p class="footer-desc">The AI-powered fitness platform built for serious athletes and everyday achievers.</p>
+          <div class="footer-social">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-github"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">Product</div>
+          <a href="#features">Features</a>
+          <a href="#showcase">Product Tour</a>
+          <a href="#plans">User Plans</a>
+          <a href="#ai-coach">AI Coach</a>
+          <a href="dashboard.html">Dashboard</a>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">Account</div>
+          <a href="login.html">Sign In</a>
+          <a href="signup.html">Create Account</a>
+          <a href="forgot-password.html">Reset Password</a>
+        </div>
+
+        <div class="footer-col">
+          <div class="footer-col-title">Testing</div>
+          <a href="#">Python Test Suite</a>
+          <a href="#">Security Scanner</a>
+          <a href="#">nmap Guide</a>
+          <a href="#">API Docs</a>
+        </div>
+      </div>
+
+      <!-- Team Vitalis Banner -->
+      <div class="team-vitalis-bar">
+        <div class="vitalis-left">
+          <div class="vitalis-logo"><i class="fas fa-leaf"></i></div>
+          <div>
+            <div class="vitalis-title">Built by Team Vitalis</div>
+            <div class="vitalis-subtitle">Health &amp; Fitness Tracking System</div>
+          </div>
+        </div>
+        <div class="vitalis-right">
+          <span class="vitalis-badge"><i class="fas fa-code"></i> Full Stack</span>
+          <span class="vitalis-badge"><i class="fas fa-brain"></i> AI Powered</span>
+          <span class="vitalis-badge"><i class="fas fa-shield-alt"></i> Secure</span>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 FitTrack AI · Built by <strong>Team Vitalis</strong> · Health &amp; Fitness Tracking System</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="js/cursor.js"></script>
+  <script src="js/landing2.js"></script>
+
+  <script>
+    // ── AOS ──
+    AOS.init({ duration: 700, easing: 'ease-out-cubic', once: true, offset: 50 });
+
+    // ── Theme ──
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('fittrack-theme', next);
+      document.getElementById('themeIcon').className = next === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+    }
+    (function() {
+      const saved = localStorage.getItem('fittrack-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', saved);
+      const icon = document.getElementById('themeIcon');
+      if (icon) icon.className = saved === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+    })();
+
+    // ── Mobile Nav ──
+    function toggleMobileNav() {
+      document.getElementById('mobileNav').classList.toggle('open');
+      document.getElementById('navHamburger').classList.toggle('open');
+    }
+    function closeMobileNav() {
+      document.getElementById('mobileNav').classList.remove('open');
+      document.getElementById('navHamburger').classList.remove('open');
+    }
+
+    // ── Sticky Nav ──
+    window.addEventListener('scroll', () => {
+      document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // ── FAQ ──
+    function toggleFaq(el) {
+      el.classList.toggle('open');
+    }
+
+    // ── Showcase tabs ──
+    function switchShowcase(index, btn) {
+      document.querySelectorAll('.showcase-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.showcase-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('panel-' + index).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    // ── Testimonials scroll ──
+    function scrollTestimonials(dir) {
+      const track = document.getElementById('testimonialsTrack');
+      const card = track.querySelector('.tcard');
+      const cardW = card ? card.offsetWidth + 24 : 340;
+      track.scrollBy({ left: dir * cardW * 2, behavior: 'smooth' });
+    }
+
+    // ── Pricing toggle ──
+    let isAnnual = false;
+    function togglePricing() {
+      isAnnual = !isAnnual;
+      document.getElementById('priceSwitchThumb').style.transform = isAnnual ? 'translateX(24px)' : '';
+      document.getElementById('priceLabelMonthly').classList.toggle('active', !isAnnual);
+      document.getElementById('priceLabelAnnual').classList.toggle('active', isAnnual);
+      document.querySelectorAll('.monthly-price').forEach(el => el.style.display = isAnnual ? 'none' : '');
+      document.querySelectorAll('.annual-price').forEach(el => el.style.display = isAnnual ? '' : 'none');
+    }
+
+    // ── Counter animation ──
+    function animateCounter(el) {
+      const target = parseInt(el.dataset.target);
+      const duration = 2000;
+      const start = Date.now();
+      const tick = () => {
+        const progress = Math.min((Date.now() - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(eased * target);
+        el.textContent = current.toLocaleString();
+        if (progress < 1) requestAnimationFrame(tick);
+      };
+      tick();
+    }
+
+    const counterObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          counterObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
+
+    // ── AI Demo typing effect ──
+    setTimeout(() => {
+      const typing = document.getElementById('aiTyping');
+      const result = document.getElementById('aiPlanResult');
+      if (typing && result) {
+        typing.style.display = 'flex';
+        setTimeout(() => {
+          typing.style.display = 'none';
+          result.style.display = 'block';
+          result.style.animation = 'fadeInUp 0.5s ease forwards';
+        }, 2800);
+      }
+    }, 1800);
+
+    // ── Demo AI send ──
+    function sendDemoMessage() {
+      const input = document.getElementById('aiDemoInput');
+      const body  = document.getElementById('aiChatBody');
+      const val   = (input.value || '').trim();
+      if (!val) return;
+      // User bubble
+      const u = document.createElement('div');
+      u.className = 'ai-chat-msg user-msg';
+      u.innerHTML = `<div class="ai-msg-bubble user-bubble">${val}</div>`;
+      body.appendChild(u);
+      input.value = '';
+      // AI typing
+      const t = document.createElement('div');
+      t.className = 'ai-chat-msg ai-msg';
+      t.innerHTML = `<div class="ai-msg-av"><i class="fas fa-robot"></i></div><div class="ai-msg-bubble"><div class="ai-typing"><span></span><span></span><span></span></div></div>`;
+      body.appendChild(t);
+      body.scrollTop = body.scrollHeight;
+      setTimeout(() => {
+        const replies = [
+          'Great question! Based on your current metrics, I recommend increasing your daily protein intake to 140g and adding a 20-minute morning walk. 🚶',
+          'Your recovery score today is 85% — perfect for a high-intensity session. Try a 45-minute HIIT workout followed by adequate hydration. 💪',
+          'Looking at your sleep data, you average 7.2 hours. Aim for 8 hours to optimise muscle recovery and fat loss. Try a 10pm bedtime. 🌙',
+          'Your step count is on track! You\'re at 11,240 steps today. Keep this consistency and you\'ll hit your monthly goal ahead of schedule. 👟',
+        ];
+        const reply = replies[Math.floor(Math.random() * replies.length)];
+        t.querySelector('.ai-msg-bubble').innerHTML = reply;
+        body.scrollTop = body.scrollHeight;
+      }, 1400);
+    }
+    document.getElementById('aiDemoInput')?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') sendDemoMessage();
+    });
+
+    // ── Showcase 5th tab (Nutrition + AI Coach panels) ──
+    // Already handled by switchShowcase
+  </script>
+</body>
+</html>

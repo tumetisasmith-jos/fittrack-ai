@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Coach – FitTrack AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --green:#c4f135; --green-dim:rgba(196,241,53,0.07); --green-glow:rgba(196,241,53,0.22);
+      --purple:#7c3aed; --purple-l:#a78bfa; --cyan:#06b6d4; --orange:#f97316; --red:#ef4444;
+      --bg:#080808; --bg2:#0d0d0d; --sidebar-bg:#090909;
+      --card:rgba(255,255,255,0.04); --card-border:rgba(255,255,255,0.07);
+      --border:rgba(255,255,255,0.05); --hover:rgba(255,255,255,0.06);
+      --text:#f8fafc; --text-muted:#a1a1aa; --text-dim:#52525b;
+      --sidebar-w:240px; --header-h:64px; --radius:14px;
+      --transition:all 0.22s cubic-bezier(0.4,0,0.2,1);
+    }
+    [data-theme="light"] {
+      --bg:#f0f4f8; --bg2:#e6ecf2; --sidebar-bg:#ffffff;
+      --card:rgba(255,255,255,0.9); --card-border:rgba(0,0,0,0.07);
+      --border:rgba(0,0,0,0.05); --hover:rgba(0,0,0,0.03);
+      --text:#09090b; --text-muted:#52525b; --text-dim:#a1a1aa;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    .app { display: flex; min-height: 100vh; }
+    .sidebar { width: var(--sidebar-w); background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 200; overflow-y: auto; scrollbar-width: none; transition: transform 0.3s; }
+    .sidebar::-webkit-scrollbar { display: none; }
+    .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 20px 20px 14px; border-bottom: 1px solid var(--border); }
+    .sidebar-brand-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--green); display: flex; align-items: center; justify-content: center; font-size: 0.95rem; color: #080808; box-shadow: 0 0 14px var(--green-glow); flex-shrink: 0; }
+    .sidebar-brand-text { font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 900; letter-spacing: -0.03em; color: var(--text); }
+    .sidebar-brand-text span { color: var(--green); }
+    .sidebar-nav { flex: 1; padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; }
+    .nav-section-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); padding: 12px 10px 4px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; color: var(--text-muted); transition: var(--transition); position: relative; width: 100%; text-align: left; }
+    .nav-item:hover { background: var(--hover); color: var(--text); }
+    .nav-item.active { background: var(--green-dim); color: var(--green); font-weight: 700; }
+    .nav-item.active::before { content: ''; position: absolute; left: 0; top: 20%; bottom: 20%; width: 3px; border-radius: 0 3px 3px 0; background: var(--green); }
+    .nav-item i { width: 18px; text-align: center; font-size: 0.88rem; }
+    .sidebar-footer { padding: 10px; border-top: 1px solid var(--border); }
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 199; }
+    .sidebar-overlay.show { display: block; }
+    .main { flex: 1; margin-left: var(--sidebar-w); display: flex; flex-direction: column; }
+    .topbar { position: sticky; top: 0; height: var(--header-h); background: var(--bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; gap: 14px; z-index: 100; backdrop-filter: blur(12px); }
+    .topbar-hamburger { display: none; width: 36px; height: 36px; border-radius: 9px; border: 1px solid var(--card-border); background: var(--card); color: var(--text-muted); align-items: center; justify-content: center; font-size: 0.9rem; }
+    .topbar-title { font-family: 'Outfit'; font-size: 1.05rem; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
+    .demo-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; background: var(--green-dim); border: 1px solid rgba(196,241,53,0.18); border-radius: 100px; font-size: 0.65rem; font-weight: 700; color: var(--green); letter-spacing: 0.06em; text-transform: uppercase; }
+    .demo-badge i { font-size: 0.58rem; }
+    .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    .topbar-btn { width: 36px; height: 36px; border-radius: 9px; border: 1px solid var(--card-border); background: var(--card); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 0.88rem; transition: var(--transition); cursor: pointer; }
+    .topbar-btn:hover { background: var(--hover); color: var(--text); }
+    .topbar-user-btn { display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 5px; border-radius: 100px; border: 1px solid var(--card-border); background: var(--card); transition: var(--transition); }
+    .topbar-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, var(--green), #84cc16); display: flex; align-items: center; justify-content: center; font-family: 'Outfit'; font-size: 0.68rem; font-weight: 900; color: #080808; }
+    .topbar-username { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+    .page { padding: 24px; flex: 1; padding-bottom: 50px; }
+    .data-note { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; font-size: 0.68rem; color: var(--text-dim); margin-top: 24px; }
+    .data-note i { color: var(--green); flex-shrink: 0; }
+    .prog-bar { height: 6px; background: rgba(255,255,255,0.07); border-radius: 100px; overflow: hidden; }
+    .prog-fill { height: 100%; border-radius: 100px; }
+    @media (max-width: 768px) {
+      :root { --sidebar-w: 0px; }
+      .sidebar { transform: translateX(-240px); width: 240px; }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; }
+      .topbar-hamburger { display: flex; }
+      .page { padding: 14px; }
+      .coach-layout { grid-template-columns: 1fr !important; }
+    }
+    [data-theme='light'] .sidebar { box-shadow: 2px 0 12px rgba(0,0,0,0.08); }
+
+    /* Page-specific */
+    .coach-layout { display: grid; grid-template-columns: 3fr 2fr; gap: 18px; }
+    .chat-window { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); display: flex; flex-direction: column; height: calc(100vh - 180px); min-height: 520px; }
+    .chat-header { display: flex; align-items: center; gap: 12px; padding: 16px 18px; border-bottom: 1px solid var(--border); }
+    .coach-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg,#c4f135,#7c3aed); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: #fff; flex-shrink:0; box-shadow: 0 0 14px var(--green-glow); }
+    .coach-info h3 { font-family: 'Outfit'; font-size: 0.95rem; font-weight: 800; }
+    .coach-info p { font-size: 0.72rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+    .online-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.08) transparent; }
+    .msg { display: flex; gap: 10px; max-width: 85%; }
+    .msg.user { flex-direction: row-reverse; align-self: flex-end; }
+    .msg-avatar { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; }
+    .msg-avatar.ai { background: linear-gradient(135deg,#c4f135,#7c3aed); color: #fff; }
+    .msg-avatar.user { background: linear-gradient(135deg,var(--green),#84cc16); color: #080808; font-family: 'Outfit'; }
+    .msg-bubble { padding: 10px 14px; border-radius: 14px; font-size: 0.83rem; line-height: 1.55; }
+    .msg.ai .msg-bubble { background: var(--hover); border: 1px solid var(--card-border); color: var(--text); border-radius: 4px 14px 14px 14px; }
+    .msg.user .msg-bubble { background: var(--green-dim); border: 1px solid rgba(196,241,53,0.15); color: var(--text); border-radius: 14px 4px 14px 14px; }
+    .msg-time { font-size: 0.65rem; color: var(--text-dim); margin-top: 3px; }
+    .msg.user .msg-time { text-align: right; }
+    .chat-input-area { padding: 12px 14px; border-top: 1px solid var(--border); }
+    .chat-input-row { display: flex; gap: 8px; }
+    .chat-input { flex: 1; padding: 9px 14px; background: var(--bg); border: 1px solid var(--card-border); border-radius: 10px; color: var(--text); font-family: 'Inter'; font-size: 0.84rem; outline: none; transition: var(--transition); }
+    .chat-input:focus { border-color: rgba(196,241,53,0.4); }
+    .send-btn { width: 40px; height: 40px; border-radius: 10px; background: var(--green); color: #080808; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; cursor: pointer; transition: var(--transition); flex-shrink: 0; border: none; }
+    .send-btn:hover { background: #d4f535; transform: scale(1.05); }
+    .quick-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .quick-chip { padding: 4px 10px; background: var(--card); border: 1px solid var(--card-border); border-radius: 100px; font-size: 0.72rem; color: var(--text-muted); cursor: pointer; transition: var(--transition); }
+    .quick-chip:hover { background: var(--green-dim); color: var(--green); border-color: rgba(196,241,53,0.3); }
+    /* Right column */
+    .right-col { display: flex; flex-direction: column; gap: 14px; }
+    .side-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 16px; }
+    .side-card-title { font-family: 'Outfit'; font-size: 0.88rem; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+    .side-card-title i { font-size: 0.8rem; }
+    .plan-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .plan-item:last-child { border-bottom: none; }
+    .plan-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
+    .plan-text { font-size: 0.8rem; font-weight: 600; color: var(--text); }
+    .plan-sub { font-size: 0.7rem; color: var(--text-muted); margin-top: 1px; }
+    .weekly-row { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; margin-bottom: 6px; }
+    .day-dot { height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 700; flex-direction: column; gap: 2px; }
+    .day-dot.done { background: var(--green-dim); color: var(--green); }
+    .day-dot.rest { background: rgba(255,255,255,0.03); color: var(--text-dim); }
+    .day-dot.today { background: rgba(196,241,53,0.15); color: var(--green); border: 1px solid rgba(196,241,53,0.3); }
+    .day-letter { font-size: 0.58rem; color: var(--text-dim); }
+    .quote-card { background: linear-gradient(135deg,rgba(124,58,237,0.12),rgba(196,241,53,0.06)); border: 1px solid rgba(124,58,237,0.2); border-radius: var(--radius); padding: 16px; }
+    .quote-text { font-size: 0.82rem; font-style: italic; color: var(--text); line-height: 1.55; }
+    .quote-author { font-size: 0.7rem; color: var(--text-dim); margin-top: 6px; }
+    .style-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+    .style-btn { padding: 5px 12px; border-radius: 8px; font-size: 0.74rem; font-weight: 700; border: 1px solid var(--card-border); background: transparent; color: var(--text-muted); cursor: pointer; transition: var(--transition); }
+    .style-btn.active { background: var(--green-dim); color: var(--green); border-color: rgba(196,241,53,0.3); }
+    .style-btn:hover { background: var(--hover); color: var(--text); }
+    .typing-dots { display: flex; gap: 4px; padding: 4px 0; }
+    .typing-dots span { width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted); animation: bounce 1.2s infinite; }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <a href="index.html" class="sidebar-brand-icon"><i class="fas fa-heartbeat"></i></a>
+      <a href="index.html" style="text-decoration:none;"><span class="sidebar-brand-text">FitTrack <span>AI</span></span></a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><i class="fas fa-home"></i><span>Dashboard</span></a>
+      <a href="workouts.html" class="nav-item"><i class="fas fa-dumbbell"></i><span>Workouts</span></a>
+      <a href="nutrition.html" class="nav-item"><i class="fas fa-apple-alt"></i><span>Nutrition</span></a>
+      <a href="daily-logs.html" class="nav-item"><i class="fas fa-calendar-check"></i><span>Daily Logs</span></a>
+      <a href="goals.html" class="nav-item"><i class="fas fa-bullseye"></i><span>Goals</span></a>
+      <div class="nav-section-label">Health</div>
+      <a href="heart-rate.html" class="nav-item"><i class="fas fa-heart-pulse"></i><span>Heart Rate</span></a>
+      <a href="bmi.html" class="nav-item"><i class="fas fa-weight"></i><span>BMI Tracker</span></a>
+      <a href="analytics.html" class="nav-item"><i class="fas fa-chart-line"></i><span>Analytics</span></a>
+      <div class="nav-section-label">AI &amp; More</div>
+      <a href="ai-coach.html" class="nav-item active"><i class="fas fa-robot"></i><span>AI Coach</span></a>
+      <a href="achievements.html" class="nav-item"><i class="fas fa-trophy"></i><span>Achievements</span></a>
+      <a href="schedule.html" class="nav-item"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      
+      <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+      <button class="nav-item" onclick="localStorage.removeItem('fittrack-token');window.location.href='login.html'" style="width:100%;text-align:left;"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="document.getElementById('sidebar').classList.remove('open');this.classList.remove('show');"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="topbar-hamburger" onclick="document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('show');"><i class="fas fa-bars"></i></button>
+      <span class="topbar-title">AI Coach</span>
+      <div class="demo-badge"><i class="fas fa-flask"></i> Demo Environment</div>
+      <div class="topbar-right">
+        <button onclick="toggleTheme()" class="topbar-btn"><i class="fas fa-moon" id="themeIcon"></i></button>
+        <a href="profile.html" class="topbar-user-btn">
+          <div class="topbar-avatar" id="userAvatar">U</div>
+        </a>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="coach-layout">
+        <!-- LEFT: Chat -->
+        <div class="chat-window">
+          <div class="chat-header">
+            <div class="coach-avatar"><i class="fas fa-robot"></i></div>
+            <div class="coach-info">
+              <h3>FitTrack AI Coach</h3>
+              <p><span class="online-dot"></span> Online · Powered by AI</p>
+            </div>
+            <button style="margin-left:auto;width:32px;height:32px;border-radius:8px;background:var(--hover);border:1px solid var(--card-border);color:var(--text-muted);display:flex;align-items:center;justify-content:center;cursor:pointer;"><i class="fas fa-ellipsis-v" style="font-size:0.8rem"></i></button>
+          </div>
+          <div class="chat-messages" id="chatMessages">
+            <!-- Pre-populated by JS -->
+          </div>
+          <div class="chat-input-area">
+            <div class="chat-input-row">
+              <input class="chat-input" id="chatInput" type="text" placeholder="Ask your AI coach anything..." onkeydown="if(event.key==='Enter')sendMessage()"/>
+              <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+            <div class="quick-chips">
+              <span class="quick-chip" onclick="quickSend(this)">💪 Today's workout?</span>
+              <span class="quick-chip" onclick="quickSend(this)">🥗 Meal suggestions</span>
+              <span class="quick-chip" onclick="quickSend(this)">😴 Improve my sleep</span>
+              <span class="quick-chip" onclick="quickSend(this)">📊 My progress?</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Coach Dashboard -->
+        <div class="right-col">
+          <div class="side-card">
+            <div class="side-card-title"><i class="fas fa-list-check" style="color:var(--green)"></i> Today's Plan</div>
+            <div class="plan-item">
+              <div class="plan-icon" style="background:rgba(196,241,53,0.1)"><i class="fas fa-running" style="color:var(--green)"></i></div>
+              <div><div class="plan-text">Morning Run — 30 min</div><div class="plan-sub">Zone 2 cardio, 5.5 km target</div></div>
+            </div>
+            <div class="plan-item">
+              <div class="plan-icon" style="background:rgba(249,115,22,0.1)"><i class="fas fa-apple-alt" style="color:var(--orange)"></i></div>
+              <div><div class="plan-text">Nutrition — 1,800 kcal</div><div class="plan-sub">High protein day: 150g target</div></div>
+            </div>
+            <div class="plan-item">
+              <div class="plan-icon" style="background:rgba(167,139,250,0.1)"><i class="fas fa-moon" style="color:var(--purple-l)"></i></div>
+              <div><div class="plan-text">Sleep by 10:00 PM</div><div class="plan-sub">Target 7.5h for recovery</div></div>
+            </div>
+          </div>
+
+          <div class="side-card">
+            <div class="side-card-title"><i class="fas fa-calendar-week" style="color:var(--cyan)"></i> Weekly Progress</div>
+            <div class="weekly-row">
+              <div style="text-align:center">
+                <div class="day-letter">M</div>
+                <div class="day-dot done"><i class="fas fa-check" style="font-size:0.55rem"></i></div>
+              </div>
+              <div style="text-align:center">
+                <div class="day-letter">T</div>
+                <div class="day-dot done"><i class="fas fa-check" style="font-size:0.55rem"></i></div>
+              </div>
+              <div style="text-align:center">
+                <div class="day-letter">W</div>
+                <div class="day-dot rest">—</div>
+              </div>
+              <div style="text-align:center">
+                <div class="day-letter">T</div>
+                <div class="day-dot done"><i class="fas fa-check" style="font-size:0.55rem"></i></div>
+              </div>
+              <div style="text-align:center">
+                <div class="day-letter">F</div>
+                <div class="day-dot done"><i class="fas fa-check" style="font-size:0.55rem"></i></div>
+              </div>
+              <div style="text-align:center">
+                <div class="day-letter">S</div>
+                <div class="day-dot today"><i class="fas fa-star" style="font-size:0.5rem"></i></div>
+              </div>
+              <div style="text-align:center">
+                <div class="day-letter">S</div>
+                <div class="day-dot rest">—</div>
+              </div>
+            </div>
+            <div style="font-size:0.72rem;color:var(--text-muted);margin-top:6px">4/5 workouts this week · On track 🎯</div>
+          </div>
+
+          <div class="quote-card">
+            <div class="quote-text">"The only bad workout is the one that didn't happen. Every step forward, no matter how small, is progress."</div>
+            <div class="quote-author">— FitTrack AI Coach</div>
+          </div>
+
+          <div class="side-card">
+            <div class="side-card-title"><i class="fas fa-sliders" style="color:var(--orange)"></i> Coach Style</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:8px">Response personality</div>
+            <div class="style-btns">
+              <button class="style-btn active">💪 Motivational</button>
+              <button class="style-btn">⚙️ Technical</button>
+              <button class="style-btn">⚖️ Balanced</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="data-note" style="margin-top:18px"><i class="fas fa-info-circle"></i> AI Coach is a demo. Responses are pre-scripted and do not use real AI inference. No data is sent to any server.</div>
+    </div>
+  </div>
+</div>
+<script>
+const conversation = [
+  { role:'ai', text:'Hello Alex! 👋 I\'m your FitTrack AI Coach. I\'ve analyzed your data and you\'re doing great this week! How can I help you today?', time:'2:30 PM' },
+  { role:'user', text:'How can I lose 5 kg safely?', time:'2:31 PM' },
+  { role:'ai', text:'Based on your profile (74.2 kg, BMI 22.9), aim for a 400-calorie daily deficit. Here\'s your plan:\n\n• 1,800 kcal/day with 150g protein\n• Cardio 3× per week\n• Strength training 2× per week\n\nTarget: 5 kg in 8-10 weeks. 💪', time:'2:31 PM' },
+  { role:'user', text:'What should I eat before a workout?', time:'2:35 PM' },
+  { role:'ai', text:'30-60 minutes before training, aim for 30-40g carbs + 10-15g protein. Great options:\n\n🍌 Banana + protein shake\n🥣 Oats + Greek yogurt\n🍞 Whole grain toast + peanut butter\n\nAvoid heavy fats — they slow digestion. Hydrate with 300-500ml water!', time:'2:35 PM' },
+  { role:'user', text:'My sleep has been poor this week. Any tips?', time:'2:42 PM' },
+  { role:'ai', text:'Your average sleep is 6.8h this week vs your usual 7.3h — that\'s impacting recovery! Try:\n\n🌙 Consistent 10pm bedtime\n📵 No screens 1h before sleep\n🚶 15-min walk post-dinner\n🌡️ Keep bedroom below 19°C\n\nYour recovery score will bounce back in 3-4 days! 🌙', time:'2:42 PM' },
+];
+
+const aiResponses = [
+  'Great question! Based on your current stats, I recommend increasing your protein intake to 160g daily and adding one more strength session per week. This will help preserve muscle while burning fat. 🏋️',
+  'Looking at your workout history, your performance peaks on Tuesday and Thursday. Try scheduling your hardest sessions then. Wednesday is perfect for active recovery! 📈',
+  'Your hydration has been below target this week at 2.8L vs your 3.5L goal. Try keeping a water bottle at your desk and setting hourly reminders. Proper hydration boosts performance by up to 15%! 💧',
+  'For today, I\'d suggest a 35-minute Zone 2 run at a pace where you can still hold a conversation. This builds your aerobic base without overtraining. Pair it with a cool-down stretch. 🏃',
+  'Your consistency score is 82% this month — excellent! You\'re in the top 15% of FitTrack users. Keep pushing and you\'ll unlock the "Iron Will" badge this week! 🏆',
+  'Recovery is just as important as training. Take tomorrow as a rest day or light yoga. Your body repairs and grows stronger during rest periods. Sleep 7.5+ hours tonight! 😴',
+];
+let aiIdx = 0;
+
+function renderMessages(msgs) {
+  const container = document.getElementById('chatMessages');
+  container.innerHTML = '';
+  msgs.forEach(m => addMsgToDOM(m));
+  container.scrollTop = container.scrollHeight;
+}
+
+function addMsgToDOM(m) {
+  const container = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = `msg ${m.role}`;
+  div.innerHTML = `
+    <div class="msg-avatar ${m.role}">${m.role==='ai'?'<i class="fas fa-robot"></i>':'AJ'}</div>
+    <div>
+      <div class="msg-bubble">${m.text.replace(/\n/g,'<br>')}</div>
+      <div class="msg-time">${m.time}</div>
+    </div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if(!text) return;
+  const now = new Date(); const time = now.toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'});
+  addMsgToDOM({role:'user', text, time});
+  input.value = '';
+  // Typing indicator
+  const container = document.getElementById('chatMessages');
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'msg ai'; typingDiv.id = 'typing';
+  typingDiv.innerHTML = `<div class="msg-avatar ai"><i class="fas fa-robot"></i></div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  container.appendChild(typingDiv);
+  container.scrollTop = container.scrollHeight;
+  setTimeout(()=>{
+    typingDiv.remove();
+    addMsgToDOM({role:'ai', text:aiResponses[aiIdx%aiResponses.length], time:new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'})});
+    aiIdx++;
+  },1400);
+}
+
+function quickSend(el) {
+  document.getElementById('chatInput').value = el.textContent.trim();
+  sendMessage();
+}
+
+document.querySelectorAll('.style-btn').forEach(b=>b.addEventListener('click',function(){
+  document.querySelectorAll('.style-btn').forEach(x=>x.classList.remove('active'));
+  this.classList.add('active');
+}));
+
+renderMessages(conversation);
+
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('fittrack-theme', next);
+  document.getElementById('themeIcon').className = next === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+}
+(function(){
+  const s = localStorage.getItem('fittrack-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', s);
+  const i = document.getElementById('themeIcon');
+  if(i) i.className = s==='light' ? 'fas fa-sun' : 'fas fa-moon';
+})();
+</script>
+<script src="js/storage.js"></script>
+</body>
+</html>

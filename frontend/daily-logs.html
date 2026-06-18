@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daily Logs – FitTrack AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --green:#c4f135; --green-dim:rgba(196,241,53,0.07); --green-glow:rgba(196,241,53,0.22);
+      --purple:#7c3aed; --purple-l:#a78bfa; --cyan:#06b6d4; --orange:#f97316; --red:#ef4444;
+      --bg:#080808; --bg2:#0d0d0d; --sidebar-bg:#090909;
+      --card:rgba(255,255,255,0.04); --card-border:rgba(255,255,255,0.07);
+      --border:rgba(255,255,255,0.05); --hover:rgba(255,255,255,0.06);
+      --text:#f8fafc; --text-muted:#a1a1aa; --text-dim:#52525b;
+      --sidebar-w:240px; --header-h:64px; --radius:14px;
+      --transition:all 0.22s cubic-bezier(0.4,0,0.2,1);
+    }
+    [data-theme="light"] {
+      --bg:#f0f4f8; --bg2:#e6ecf2; --sidebar-bg:#ffffff;
+      --card:rgba(255,255,255,0.9); --card-border:rgba(0,0,0,0.07);
+      --border:rgba(0,0,0,0.05); --hover:rgba(0,0,0,0.03);
+      --text:#09090b; --text-muted:#52525b; --text-dim:#a1a1aa;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    .app { display: flex; min-height: 100vh; }
+    .sidebar { width: var(--sidebar-w); background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 200; overflow-y: auto; scrollbar-width: none; transition: transform 0.3s; }
+    .sidebar::-webkit-scrollbar { display: none; }
+    .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 20px 20px 14px; border-bottom: 1px solid var(--border); }
+    .sidebar-brand-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--green); display: flex; align-items: center; justify-content: center; font-size: 0.95rem; color: #080808; box-shadow: 0 0 14px var(--green-glow); flex-shrink: 0; }
+    .sidebar-brand-text { font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 900; letter-spacing: -0.03em; color: var(--text); }
+    .sidebar-brand-text span { color: var(--green); }
+    .sidebar-nav { flex: 1; padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; }
+    .nav-section-label { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); padding: 12px 10px 4px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; font-size: 0.85rem; font-weight: 500; color: var(--text-muted); transition: var(--transition); position: relative; width: 100%; text-align: left; }
+    .nav-item:hover { background: var(--hover); color: var(--text); }
+    .nav-item.active { background: var(--green-dim); color: var(--green); font-weight: 700; }
+    .nav-item.active::before { content: ''; position: absolute; left: 0; top: 20%; bottom: 20%; width: 3px; border-radius: 0 3px 3px 0; background: var(--green); }
+    .nav-item i { width: 18px; text-align: center; font-size: 0.88rem; }
+    .sidebar-footer { padding: 10px; border-top: 1px solid var(--border); }
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 199; }
+    .sidebar-overlay.show { display: block; }
+    .main { flex: 1; margin-left: var(--sidebar-w); display: flex; flex-direction: column; }
+    .topbar { position: sticky; top: 0; height: var(--header-h); background: var(--bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; gap: 14px; z-index: 100; backdrop-filter: blur(12px); }
+    .topbar-hamburger { display: none; width: 36px; height: 36px; border-radius: 9px; border: 1px solid var(--card-border); background: var(--card); color: var(--text-muted); align-items: center; justify-content: center; font-size: 0.9rem; }
+    .topbar-title { font-family: 'Outfit'; font-size: 1.05rem; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
+    .demo-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; background: var(--green-dim); border: 1px solid rgba(196,241,53,0.18); border-radius: 100px; font-size: 0.65rem; font-weight: 700; color: var(--green); letter-spacing: 0.06em; text-transform: uppercase; }
+    .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    .topbar-btn { width: 36px; height: 36px; border-radius: 9px; border: 1px solid var(--card-border); background: var(--card); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 0.88rem; transition: var(--transition); cursor: pointer; }
+    .topbar-btn:hover { background: var(--hover); color: var(--text); }
+    .topbar-user-btn { display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 5px; border-radius: 100px; border: 1px solid var(--card-border); background: var(--card); transition: var(--transition); }
+    .topbar-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, var(--green), #84cc16); display: flex; align-items: center; justify-content: center; font-family: 'Outfit'; font-size: 0.68rem; font-weight: 900; color: #080808; }
+    .topbar-username { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+    .page { padding: 24px; flex: 1; padding-bottom: 50px; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 10px; font-size: 0.84rem; font-weight: 700; transition: var(--transition); cursor: pointer; border: none; font-family: 'Inter'; }
+    .btn-green { background: var(--green); color: #080808; }
+    .btn-green:hover { background: #d4f535; transform: translateY(-1px); }
+    .data-note { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; font-size: 0.68rem; color: var(--text-dim); margin-top: 24px; }
+    .data-note i { color: var(--green); flex-shrink: 0; }
+    .prog-bar { height: 6px; background: rgba(255,255,255,0.07); border-radius: 100px; overflow: hidden; }
+    .prog-fill { height: 100%; border-radius: 100px; }
+    @media (max-width: 768px) {
+      :root { --sidebar-w: 0px; }
+      .sidebar { transform: translateX(-240px); width: 240px; }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; }
+      .topbar-hamburger { display: flex; }
+      .page { padding: 14px; }
+      .log-form-grid { grid-template-columns: 1fr 1fr !important; }
+    }
+    [data-theme='light'] .sidebar { box-shadow: 2px 0 12px rgba(0,0,0,0.08); }
+    [data-theme='light'] .prog-bar { background: rgba(0,0,0,0.07); }
+
+    /* Page */
+    .page-title { font-family: 'Outfit'; font-size: 1.6rem; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 4px; }
+    .page-sub { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 20px; }
+    .section-title { font-family: 'Outfit'; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; gap: 8px; margin-bottom: 14px; margin-top: 24px; }
+    .section-title i { color: var(--green); font-size: 0.85rem; }
+    .today-log-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 22px; }
+    .log-form-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+    .log-field { }
+    .log-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+    .log-input { width: 100%; padding: 9px 12px; background: var(--bg); border: 1px solid var(--card-border); border-radius: 10px; color: var(--text); font-family: 'Inter'; font-size: 0.9rem; font-weight: 600; outline: none; transition: var(--transition); }
+    .log-input:focus { border-color: rgba(196,241,53,0.4); }
+    .mood-row { display: flex; gap: 8px; margin-top: 6px; }
+    .mood-btn { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--card-border); background: var(--card); font-size: 1.1rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); }
+    .mood-btn:hover, .mood-btn.active { background: var(--green-dim); border-color: rgba(196,241,53,0.3); transform: scale(1.1); }
+    .energy-dots { display: flex; gap: 6px; margin-top: 6px; }
+    .energy-dot { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--card-border); background: var(--card); cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: var(--text-muted); }
+    .energy-dot:hover, .energy-dot.active { background: var(--green-dim); border-color: rgba(196,241,53,0.3); color: var(--green); }
+    .save-btn-row { display: flex; align-items: center; gap: 12px; margin-top: 18px; }
+    .save-success { display: none; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; color: var(--green); }
+    /* Heatmap */
+    .heatmap-wrap { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 18px; overflow-x: auto; }
+    .heatmap-grid { display: grid; grid-template-rows: repeat(7,1fr); grid-auto-flow: column; gap: 3px; }
+    .heat-cell { width: 14px; height: 14px; border-radius: 3px; }
+    .heat-0 { background: rgba(255,255,255,0.04); }
+    .heat-1 { background: rgba(196,241,53,0.15); }
+    .heat-2 { background: rgba(196,241,53,0.35); }
+    .heat-3 { background: rgba(196,241,53,0.6); }
+    .heat-4 { background: rgba(196,241,53,0.85); }
+    .heatmap-legend { display: flex; align-items: center; gap: 4px; margin-top: 8px; font-size: 0.65rem; color: var(--text-dim); }
+    .heatmap-legend .heat-cell { width: 12px; height: 12px; flex-shrink: 0; }
+    /* Recent Logs */
+    .log-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .log-table th { text-align: left; padding: 8px 12px; color: var(--text-dim); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--border); }
+    .log-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); }
+    .log-table td:first-child { color: var(--text); font-weight: 600; }
+    .log-table tr:last-child td { border-bottom: none; }
+    .log-card { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius); overflow: hidden; }
+    .steps-prog { width: 60px; height: 4px; background: rgba(255,255,255,0.07); border-radius:100px; overflow:hidden; display:inline-block; vertical-align:middle; margin-left:4px; }
+    .steps-fill { height: 100%; border-radius:100px; background:var(--green); }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <a href="index.html" class="sidebar-brand-icon"><i class="fas fa-heartbeat"></i></a>
+      <a href="index.html" style="text-decoration:none;"><span class="sidebar-brand-text">FitTrack <span>AI</span></span></a>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><i class="fas fa-home"></i><span>Dashboard</span></a>
+      <a href="workouts.html" class="nav-item"><i class="fas fa-dumbbell"></i><span>Workouts</span></a>
+      <a href="nutrition.html" class="nav-item"><i class="fas fa-apple-alt"></i><span>Nutrition</span></a>
+      <a href="daily-logs.html" class="nav-item active"><i class="fas fa-calendar-check"></i><span>Daily Logs</span></a>
+      <a href="goals.html" class="nav-item"><i class="fas fa-bullseye"></i><span>Goals</span></a>
+      <div class="nav-section-label">Health</div>
+      <a href="heart-rate.html" class="nav-item"><i class="fas fa-heart-pulse"></i><span>Heart Rate</span></a>
+      <a href="bmi.html" class="nav-item"><i class="fas fa-weight"></i><span>BMI Tracker</span></a>
+      <a href="analytics.html" class="nav-item"><i class="fas fa-chart-line"></i><span>Analytics</span></a>
+      <div class="nav-section-label">AI &amp; More</div>
+      <a href="ai-coach.html" class="nav-item"><i class="fas fa-robot"></i><span>AI Coach</span></a>
+      <a href="achievements.html" class="nav-item"><i class="fas fa-trophy"></i><span>Achievements</span></a>
+      <a href="schedule.html" class="nav-item"><i class="fas fa-calendar-alt"></i><span>Schedule</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      
+      <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+      <button class="nav-item" onclick="localStorage.removeItem('fittrack-token');window.location.href='login.html'" style="width:100%;text-align:left;"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="document.getElementById('sidebar').classList.remove('open');this.classList.remove('show');"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="topbar-hamburger" onclick="document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('show');"><i class="fas fa-bars"></i></button>
+      <span class="topbar-title">Daily Logs</span>
+      <div class="demo-badge"><i class="fas fa-flask"></i> Demo Environment</div>
+      <div class="topbar-right">
+        <button onclick="toggleTheme()" class="topbar-btn"><i class="fas fa-moon" id="themeIcon"></i></button>
+        <a href="profile.html" class="topbar-user-btn">
+          <div class="topbar-avatar" id="userAvatar">U</div>
+        </a>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="page-title">Daily Health Logs</div>
+      <div class="page-sub">Track your daily health metrics and build lasting habits</div>
+
+      <!-- Today's Log -->
+      <div class="today-log-card">
+        <div style="font-family:'Outfit';font-size:1rem;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);display:inline-block"></span>
+          Today's Log — June 10, 2026
+        </div>
+        <div class="log-form-grid">
+          <div class="log-field">
+            <div class="log-label"><i class="fas fa-shoe-prints"></i> Steps</div>
+            <input class="log-input" type="number" value="8800" placeholder="0"/>
+            <div style="font-size:0.68rem;color:var(--text-dim);margin-top:4px">Goal: 10,000 steps</div>
+          </div>
+          <div class="log-field">
+            <div class="log-label"><i class="fas fa-tint"></i> Water (ml)</div>
+            <input class="log-input" type="number" value="2800" placeholder="0"/>
+            <div style="font-size:0.68rem;color:var(--text-dim);margin-top:4px">Goal: 3,500 ml</div>
+          </div>
+          <div class="log-field">
+            <div class="log-label"><i class="fas fa-moon"></i> Sleep (hrs)</div>
+            <input class="log-input" type="number" value="7.3" step="0.1" placeholder="0"/>
+            <div style="font-size:0.68rem;color:var(--text-dim);margin-top:4px">Goal: 8 hours</div>
+          </div>
+          <div class="log-field">
+            <div class="log-label"><i class="fas fa-fire"></i> Calories Burned</div>
+            <input class="log-input" type="number" value="2840" placeholder="0"/>
+            <div style="font-size:0.68rem;color:var(--text-dim);margin-top:4px">Yesterday: 2,100</div>
+          </div>
+          <div class="log-field">
+            <div class="log-label"><i class="fas fa-smile"></i> Mood</div>
+            <div class="mood-row">
+              <button class="mood-btn" data-mood="1" title="Sad">😞</button>
+              <button class="mood-btn" data-mood="2" title="Neutral">😐</button>
+              <button class="mood-btn" data-mood="3" title="Good">🙂</button>
+              <button class="mood-btn active" data-mood="4" title="Happy">😊</button>
+              <button class="mood-btn" data-mood="5" title="Excellent">😄</button>
+            </div>
+          </div>
+          <div class="log-field">
+            <div class="log-label"><i class="fas fa-bolt"></i> Energy Level</div>
+            <div class="energy-dots">
+              <button class="energy-dot active" data-e="1">1</button>
+              <button class="energy-dot active" data-e="2">2</button>
+              <button class="energy-dot active" data-e="3">3</button>
+              <button class="energy-dot" data-e="4">4</button>
+              <button class="energy-dot" data-e="5">5</button>
+            </div>
+          </div>
+        </div>
+        <div class="save-btn-row">
+          <button class="btn btn-green" onclick="saveLog()"><i class="fas fa-check"></i> Save Today's Log</button>
+          <div class="save-success" id="saveSuccess"><i class="fas fa-check-circle"></i> Saved successfully!</div>
+        </div>
+      </div>
+
+      <!-- Activity Heatmap -->
+      <div class="section-title"><i class="fas fa-th"></i> Activity Heatmap (12 weeks)</div>
+      <div class="heatmap-wrap">
+        <div style="font-size:0.65rem;color:var(--text-dim);margin-bottom:6px;display:flex;gap:18px">
+          <span>Mar</span><span>Apr</span><span>May</span><span>Jun</span>
+        </div>
+        <div class="heatmap-grid" id="heatmapGrid"></div>
+        <div class="heatmap-legend">
+          <span>Less</span>
+          <div class="heat-cell heat-0"></div>
+          <div class="heat-cell heat-1"></div>
+          <div class="heat-cell heat-2"></div>
+          <div class="heat-cell heat-3"></div>
+          <div class="heat-cell heat-4"></div>
+          <span>More</span>
+        </div>
+      </div>
+
+      <!-- Recent Logs -->
+      <div class="section-title"><i class="fas fa-history"></i> Recent Logs</div>
+      <div class="log-card">
+        <table class="log-table">
+          <thead>
+            <tr><th>Date</th><th>Steps</th><th>Water</th><th>Sleep</th><th>Calories</th><th>Mood</th></tr>
+          </thead>
+          <tbody id="logsBody"></tbody>
+        </table>
+      </div>
+
+      <div class="data-note"><i class="fas fa-info-circle"></i> All daily log data is simulated demo data for illustration purposes.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const logs = [
+  { date:'2026-06-09', steps:11240, water:3200, sleep:7.3, cals:2840, mood:4 },
+  { date:'2026-06-08', steps:8900, water:2800, sleep:8.1, cals:2100, mood:5 },
+  { date:'2026-06-07', steps:12340, water:3500, sleep:6.8, cals:3100, mood:3 },
+  { date:'2026-06-06', steps:7800, water:2100, sleep:7.5, cals:1900, mood:4 },
+  { date:'2026-06-05', steps:10500, water:3000, sleep:8.0, cals:2600, mood:5 },
+  { date:'2026-06-04', steps:9200, water:2600, sleep:7.1, cals:2400, mood:3 },
+  { date:'2026-06-03', steps:6500, water:1800, sleep:5.5, cals:1700, mood:2 },
+];
+const moods = ['','😞','😐','🙂','😊','😄'];
+const tbody = document.getElementById('logsBody');
+logs.forEach(l=>{
+  const d=new Date(l.date);
+  const ds=d.toLocaleDateString('en',{weekday:'short',month:'short',day:'numeric'});
+  const stepPct=Math.min(100,Math.round(l.steps/10000*100));
+  tbody.innerHTML+=`<tr>
+    <td>${ds}</td>
+    <td>${l.steps.toLocaleString()} <div class="steps-prog"><div class="steps-fill" style="width:${stepPct}%"></div></div></td>
+    <td>${(l.water/1000).toFixed(1)}L</td>
+    <td>${l.sleep}h</td>
+    <td>${l.cals.toLocaleString()} kcal</td>
+    <td style="font-size:1.1rem">${moods[l.mood]}</td>
+  </tr>`;
+});
+
+// Heatmap — 12 weeks = 84 days
+const heatGrid = document.getElementById('heatmapGrid');
+const seed = [0,2,3,4,1,3,2,4,3,1,2,4,2,3,1,0,2,3,4,2,1,3,4,2,0,3,2,4,3,1,2,4,3,2,1,3,4,2,3,1,2,4,3,2,1,0,2,4,3,1,2,3,4,2,1,3,2,4,3,1,2,0,3,4,2,1,3,4,2,3,1,2,4,3,2,1,3,4,2,1,3,2,4,1];
+seed.forEach((v,i)=>{
+  const cell=document.createElement('div');
+  cell.className=`heat-cell heat-${v}`;
+  cell.title=`${v*3000} steps`;
+  heatGrid.appendChild(cell);
+});
+
+// Mood buttons
+document.querySelectorAll('.mood-btn').forEach(b=>b.addEventListener('click',function(){
+  document.querySelectorAll('.mood-btn').forEach(x=>x.classList.remove('active'));
+  this.classList.add('active');
+}));
+// Energy dots
+let energyLevel=3;
+document.querySelectorAll('.energy-dot').forEach(b=>b.addEventListener('click',function(){
+  energyLevel=+this.dataset.e;
+  document.querySelectorAll('.energy-dot').forEach(x=>x.classList.toggle('active',+x.dataset.e<=energyLevel));
+}));
+
+function saveLog() {
+  const s=document.getElementById('saveSuccess');
+  s.style.display='flex';
+  setTimeout(()=>s.style.display='none',3000);
+}
+
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('fittrack-theme', next);
+  document.getElementById('themeIcon').className = next === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+}
+(function(){
+  const s = localStorage.getItem('fittrack-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', s);
+  const i = document.getElementById('themeIcon');
+  if(i) i.className = s==='light' ? 'fas fa-sun' : 'fas fa-moon';
+})();
+</script>
+<script src="js/storage.js"></script>
+</body>
+</html>
