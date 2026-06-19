@@ -8,6 +8,19 @@ node_modules/
 *.db
 *.db-shm
 *.db-wal
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# One-off helper/fix scripts (not part of the app)
+backend/check_users.js
+backend/remove_sample_users.js
+frontend/add_storage_js.js
+frontend/fix_ui.js
+frontend/remove_sidebar_user.js
+frontend/rewrite_signup.js
+frontend/update_ui.js
+frontend/update_ui.py
 
 # Logs
 logs/

@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Sign in to FitTrack AI — AI-powered health and fitness tracking platform by Team Vitalis." />
-  <title>Sign In — FitTrack AI</title>
+  <meta name="description" content="Sign in to FitTrack AI â€” AI-powered health and fitness tracking platform by Team Vitalis." />
+  <title>Sign In â€” FitTrack AI</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="css/auth2.css" />
@@ -25,7 +25,7 @@
 
   <div class="auth-page">
 
-    <!-- ══ LEFT PANEL ══ -->
+    <!-- â•â• LEFT PANEL â•â• -->
     <div class="auth-left" aria-hidden="true">
       <a href="index.html" class="auth-logo">
         <div class="auth-logo-icon"><i class="fas fa-heartbeat"></i></div>
@@ -46,31 +46,31 @@
             <div class="auth-feature-icon" style="background:rgba(196,241,53,0.1);color:#c4f135;">
               <i class="fas fa-robot"></i>
             </div>
-            <div class="auth-feature-text"><strong>AI Fitness Coach</strong> — personalised advice 24/7</div>
+            <div class="auth-feature-text"><strong>AI Fitness Coach</strong> â€” personalised advice 24/7</div>
           </div>
           <div class="auth-feature-row">
             <div class="auth-feature-icon" style="background:rgba(6,182,212,0.1);color:#06b6d4;">
               <i class="fas fa-chart-line"></i>
             </div>
-            <div class="auth-feature-text"><strong>Advanced Analytics</strong> — trends, patterns, insights</div>
+            <div class="auth-feature-text"><strong>Advanced Analytics</strong> â€” trends, patterns, insights</div>
           </div>
           <div class="auth-feature-row">
             <div class="auth-feature-icon" style="background:rgba(167,139,250,0.1);color:#a78bfa;">
               <i class="fas fa-bullseye"></i>
             </div>
-            <div class="auth-feature-text"><strong>Goal Tracking</strong> — milestones and XP rewards</div>
+            <div class="auth-feature-text"><strong>Goal Tracking</strong> â€” milestones and XP rewards</div>
           </div>
           <div class="auth-feature-row">
             <div class="auth-feature-icon" style="background:rgba(249,115,22,0.1);color:#f97316;">
               <i class="fas fa-apple-alt"></i>
             </div>
-            <div class="auth-feature-text"><strong>Nutrition Monitoring</strong> — calories, macros, hydration</div>
+            <div class="auth-feature-text"><strong>Nutrition Monitoring</strong> â€” calories, macros, hydration</div>
           </div>
           <div class="auth-feature-row">
             <div class="auth-feature-icon" style="background:rgba(16,185,129,0.1);color:#10b981;">
               <i class="fas fa-sparkles fa-star"></i>
             </div>
-            <div class="auth-feature-text"><strong>Personalised Recommendations</strong> — built for your body</div>
+            <div class="auth-feature-text"><strong>Personalised Recommendations</strong> â€” built for your body</div>
           </div>
         </div>
 
@@ -94,7 +94,7 @@
           <div class="auth-metric-card">
             <div class="amc-label">Active Streak</div>
             <div class="amc-val" style="color:#f97316;">14</div>
-            <div class="amc-sub">days in a row 🔥</div>
+            <div class="amc-sub">days in a row ðŸ”¥</div>
           </div>
         </div>
       </div>
@@ -102,7 +102,7 @@
 
     </div>
 
-    <!-- ══ RIGHT PANEL — FORM ══ -->
+    <!-- â•â• RIGHT PANEL â€” FORM â•â• -->
     <div class="auth-right">
       <div class="auth-right-inner">
 
@@ -189,7 +189,7 @@
         </div>
 
         <div style="text-align:center;margin-top:28px;font-size:0.7rem;color:var(--text-dim);">
-          Built by <strong style="color:var(--green)">Team Vitalis</strong> · Health &amp; Fitness Tracking System
+          Built by <strong style="color:var(--green)">Team Vitalis</strong> Â· Health &amp; Fitness Tracking System
         </div>
       </div>
     </div>
@@ -217,6 +217,10 @@
       document.documentElement.setAttribute('data-theme', saved);
       const icon = document.getElementById('themeIcon');
       if (icon) icon.className = saved === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+    // Show session expired message if redirected from token expiry guard
+      if (new URLSearchParams(window.location.search).get('expired') === '1') {
+        setTimeout(function() { showToast('Your session has expired. Please sign in again.', 'error'); }, 600);
+      }
     })();
 
     // Fill demo credentials
@@ -224,7 +228,7 @@
       document.getElementById('loginEmail').value = email;
       document.getElementById('loginPassword').value = pw;
       validateEmail(document.getElementById('loginEmail'));
-      showToast('Demo credentials filled — click Sign In!', 'success');
+      showToast('Demo credentials filled â€” click Sign In!', 'success');
     }
 
     // Email validation
@@ -234,7 +238,7 @@
       const msg  = document.getElementById('loginEmailMsg');
       if (!val) { resetValidation(el, icon, msg); return; }
       const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
-      setValidation(el, icon, msg, ok, ok ? '✓ Valid email' : 'Please enter a valid email address');
+      setValidation(el, icon, msg, ok, ok ? 'âœ“ Valid email' : 'Please enter a valid email address');
     }
 
     function setValidation(input, icon, msg, ok, text) {
@@ -286,3 +290,4 @@
   </script>
 </body>
 </html>
+

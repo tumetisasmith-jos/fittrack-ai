@@ -225,56 +225,8 @@ function seedDatabase(database) {
   };
 
   const userProfiles = [
-    { full_name: 'Admin User', username: 'admin', email: 'admin@fittrack.ai', password: 'admin123', role: 'admin', age: 30, gender: 'male', height_cm: 178, weight_kg: 75 },
-    { full_name: 'Demo User', username: 'demo', email: 'demo@fittrack.ai', password: 'demo123', role: 'user', age: 28, gender: 'female', height_cm: 165, weight_kg: 62 },
-    { full_name: 'James Carter', username: 'jcarter', email: 'james.carter@email.com', password: 'pass123', role: 'user', age: 34, gender: 'male', height_cm: 182, weight_kg: 84 },
-    { full_name: 'Sophia Lee', username: 'sophialee', email: 'sophia.lee@email.com', password: 'pass123', role: 'user', age: 26, gender: 'female', height_cm: 162, weight_kg: 57 },
-    { full_name: 'Marcus Williams', username: 'marcusw', email: 'marcus.williams@email.com', password: 'pass123', role: 'user', age: 41, gender: 'male', height_cm: 188, weight_kg: 92 },
-    { full_name: 'Priya Sharma', username: 'priyasharma', email: 'priya.sharma@email.com', password: 'pass123', role: 'user', age: 29, gender: 'female', height_cm: 160, weight_kg: 55 },
-    { full_name: 'Ethan Brown', username: 'ethanbrown', email: 'ethan.brown@email.com', password: 'pass123', role: 'user', age: 22, gender: 'male', height_cm: 175, weight_kg: 70 },
-    { full_name: 'Aisha Okonkwo', username: 'aishao', email: 'aisha.okonkwo@email.com', password: 'pass123', role: 'user', age: 33, gender: 'female', height_cm: 168, weight_kg: 65 },
-    { full_name: 'Luca Ferrari', username: 'lucaf', email: 'luca.ferrari@email.com', password: 'pass123', role: 'user', age: 38, gender: 'male', height_cm: 180, weight_kg: 79 },
-    { full_name: 'Yuna Kim', username: 'yunakim', email: 'yuna.kim@email.com', password: 'pass123', role: 'user', age: 24, gender: 'female', height_cm: 158, weight_kg: 52 },
-    { full_name: 'David Osei', username: 'davidosei', email: 'david.osei@email.com', password: 'pass123', role: 'user', age: 45, gender: 'male', height_cm: 185, weight_kg: 88 },
-    { full_name: 'Camille Dupont', username: 'camilled', email: 'camille.dupont@email.com', password: 'pass123', role: 'user', age: 31, gender: 'female', height_cm: 167, weight_kg: 61 },
-    { full_name: 'Ryan O\'Brien', username: 'ryano', email: 'ryan.obrien@email.com', password: 'pass123', role: 'user', age: 27, gender: 'male', height_cm: 177, weight_kg: 73 },
-    { full_name: 'Fatima Al-Rashid', username: 'fatimar', email: 'fatima.alrashid@email.com', password: 'pass123', role: 'user', age: 35, gender: 'female', height_cm: 163, weight_kg: 59 },
-    { full_name: 'Noah Jensen', username: 'noahj', email: 'noah.jensen@email.com', password: 'pass123', role: 'user', age: 19, gender: 'male', height_cm: 183, weight_kg: 76 },
-    { full_name: 'Isabella Cruz', username: 'isabellacruz', email: 'isabella.cruz@email.com', password: 'pass123', role: 'user', age: 28, gender: 'female', height_cm: 170, weight_kg: 64 },
-    { full_name: 'Kevin Park', username: 'kevinpark', email: 'kevin.park@email.com', password: 'pass123', role: 'user', age: 37, gender: 'male', height_cm: 172, weight_kg: 68 },
-    { full_name: 'Zara Ahmed', username: 'zaraahmed', email: 'zara.ahmed@email.com', password: 'pass123', role: 'user', age: 23, gender: 'female', height_cm: 156, weight_kg: 50 },
-    { full_name: 'Daniel Müller', username: 'danielm', email: 'daniel.muller@email.com', password: 'pass123', role: 'user', age: 42, gender: 'male', height_cm: 179, weight_kg: 82 },
-    { full_name: 'Grace Thompson', username: 'gracet', email: 'grace.thompson@email.com', password: 'pass123', role: 'user', age: 30, gender: 'female', height_cm: 164, weight_kg: 58 },
-    { full_name: 'Samuel Nguyen', username: 'samuelng', email: 'samuel.nguyen@email.com', password: 'pass123', role: 'user', age: 25, gender: 'male', height_cm: 171, weight_kg: 67 },
-    { full_name: 'Leila Hosseini', username: 'leilah', email: 'leila.hosseini@email.com', password: 'pass123', role: 'user', age: 32, gender: 'female', height_cm: 166, weight_kg: 60 },
-    { full_name: 'Tom Mitchell', username: 'tommitch', email: 'tom.mitchell@email.com', password: 'pass123', role: 'user', age: 48, gender: 'male', height_cm: 176, weight_kg: 86 },
-    { full_name: 'Amara Diallo', username: 'amarad', email: 'amara.diallo@email.com', password: 'pass123', role: 'user', age: 21, gender: 'female', height_cm: 171, weight_kg: 63 },
-    { full_name: 'Chris Evans', username: 'chrisevans', email: 'chris.evans@email.com', password: 'pass123', role: 'user', age: 36, gender: 'male', height_cm: 186, weight_kg: 91 },
-    { full_name: 'Elena Popescu', username: 'elenap', email: 'elena.popescu@email.com', password: 'pass123', role: 'user', age: 27, gender: 'female', height_cm: 169, weight_kg: 62 },
-    { full_name: 'Raj Patel', username: 'rajpatel', email: 'raj.patel@email.com', password: 'pass123', role: 'user', age: 39, gender: 'male', height_cm: 174, weight_kg: 74 },
-    { full_name: 'Nadia Kowalski', username: 'nadiak', email: 'nadia.kowalski@email.com', password: 'pass123', role: 'user', age: 29, gender: 'female', height_cm: 161, weight_kg: 56 },
-    { full_name: 'Oliver Smith', username: 'olivers', email: 'oliver.smith@email.com', password: 'pass123', role: 'user', age: 44, gender: 'male', height_cm: 181, weight_kg: 88 },
-    { full_name: 'Mei Chen', username: 'meichen', email: 'mei.chen@email.com', password: 'pass123', role: 'user', age: 26, gender: 'female', height_cm: 157, weight_kg: 51 },
-    { full_name: 'Aaron Johnson', username: 'aaronj', email: 'aaron.johnson@email.com', password: 'pass123', role: 'user', age: 20, gender: 'male', height_cm: 184, weight_kg: 78 },
-    { full_name: 'Sara Eriksson', username: 'sarae', email: 'sara.eriksson@email.com', password: 'pass123', role: 'user', age: 34, gender: 'female', height_cm: 173, weight_kg: 66 },
-    { full_name: 'Diego Hernandez', username: 'diegoh', email: 'diego.hernandez@email.com', password: 'pass123', role: 'user', age: 31, gender: 'male', height_cm: 178, weight_kg: 76 },
-    { full_name: 'Alyssa Turner', username: 'alyssat', email: 'alyssa.turner@email.com', password: 'pass123', role: 'user', age: 22, gender: 'female', height_cm: 165, weight_kg: 59 },
-    { full_name: 'Hassan Al-Farsi', username: 'hassanf', email: 'hassan.alfarsi@email.com', password: 'pass123', role: 'user', age: 40, gender: 'male', height_cm: 183, weight_kg: 85 },
-    { full_name: 'Chloe Martin', username: 'chloem', email: 'chloe.martin@email.com', password: 'pass123', role: 'user', age: 25, gender: 'female', height_cm: 162, weight_kg: 54 },
-    { full_name: 'Victor Santos', username: 'victors', email: 'victor.santos@email.com', password: 'pass123', role: 'user', age: 33, gender: 'male', height_cm: 177, weight_kg: 72 },
-    { full_name: 'Yuki Tanaka', username: 'yukitanaka', email: 'yuki.tanaka@email.com', password: 'pass123', role: 'user', age: 28, gender: 'female', height_cm: 155, weight_kg: 48 },
-    { full_name: 'Patrick O\'Sullivan', username: 'patricks', email: 'patrick.osullivan@email.com', password: 'pass123', role: 'user', age: 52, gender: 'male', height_cm: 175, weight_kg: 90 },
-    { full_name: 'Bianca Rossi', username: 'biancar', email: 'bianca.rossi@email.com', password: 'pass123', role: 'user', age: 30, gender: 'female', height_cm: 168, weight_kg: 61 },
-    { full_name: 'Mohamed Ibrahim', username: 'mohamedi', email: 'mohamed.ibrahim@email.com', password: 'pass123', role: 'user', age: 37, gender: 'male', height_cm: 180, weight_kg: 78 },
-    { full_name: 'Nia Williams', username: 'niaw', email: 'nia.williams@email.com', password: 'pass123', role: 'user', age: 24, gender: 'female', height_cm: 172, weight_kg: 65 },
-    { full_name: 'Aleksei Volkov', username: 'alekseiv', email: 'aleksei.volkov@email.com', password: 'pass123', role: 'user', age: 43, gender: 'male', height_cm: 185, weight_kg: 93 },
-    { full_name: 'Luna Garcia', username: 'lunag', email: 'luna.garcia@email.com', password: 'pass123', role: 'user', age: 18, gender: 'female', height_cm: 160, weight_kg: 55 },
-    { full_name: 'Ben Clarke', username: 'benc', email: 'ben.clarke@email.com', password: 'pass123', role: 'user', age: 46, gender: 'male', height_cm: 179, weight_kg: 84 },
-    { full_name: 'Anjali Mehta', username: 'anjalim', email: 'anjali.mehta@email.com', password: 'pass123', role: 'user', age: 32, gender: 'female', height_cm: 158, weight_kg: 53 },
-    { full_name: 'Jordan Taylor', username: 'jordant', email: 'jordan.taylor@email.com', password: 'pass123', role: 'user', age: 27, gender: 'other', height_cm: 170, weight_kg: 68 },
-    { full_name: 'Nina Petrov', username: 'ninap', email: 'nina.petrov@email.com', password: 'pass123', role: 'user', age: 35, gender: 'female', height_cm: 167, weight_kg: 62 },
-    { full_name: 'Caleb Anderson', username: 'caleba', email: 'caleb.anderson@email.com', password: 'pass123', role: 'user', age: 21, gender: 'male', height_cm: 186, weight_kg: 80 },
-    { full_name: 'Freya Hansen', username: 'freyah', email: 'freya.hansen@email.com', password: 'pass123', role: 'user', age: 29, gender: 'female', height_cm: 171, weight_kg: 64 }
+    { full_name: 'Admin User', username: 'admin', email: 'admin@fittrack.ai', password: 'admin123', role: 'admin', age: 30, gender: 'male',   height_cm: 178, weight_kg: 75 },
+    { full_name: 'Demo User',  username: 'demo',  email: 'demo@fittrack.ai',  password: 'demo123',  role: 'user',  age: 28, gender: 'female', height_cm: 165, weight_kg: 62 }
   ];
 
   const insertUser = database.prepare(`
@@ -459,7 +411,7 @@ function seedDatabase(database) {
   seedHeartRate(database, sampleUsers.map(u => u.id));
   seedSchedules(database, sampleUsers.map(u => u.id));
 
-  console.log('✅ Database seeded successfully with 50 users, workouts, logs, goals, achievements, notifications, exercises, meals, heart-rate logs, and schedules!');
+  console.log('✅ Database initialized with admin + demo accounts and exercise library.');
 }
 
 function seedExerciseLibrary(database) {

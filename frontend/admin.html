@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Administrator Dashboard — FitTrack AI</title>
+  <title>Administrator Dashboard â€” FitTrack AI</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="css/design-system.css">
@@ -175,37 +175,37 @@
       <div class="kpi-grid" id="kpiGrid">
         <div class="kpi-card" style="--kpi-color:var(--accent-purple);--kpi-bg:rgba(196,241,53,0.1)">
           <div class="kpi-top"><div class="kpi-icon"><i class="fas fa-users"></i></div></div>
-          <div class="kpi-value" id="kpi-users">—</div>
+          <div class="kpi-value" id="kpi-users">â€”</div>
           <div class="kpi-label">Total Users</div>
           <div class="kpi-sub up"><i class="fas fa-arrow-up"></i> +2 this week</div>
         </div>
         <div class="kpi-card" style="--kpi-color:var(--accent-green);--kpi-bg:rgba(16,185,129,0.1)">
           <div class="kpi-top"><div class="kpi-icon" style="color:var(--accent-green)"><i class="fas fa-bolt"></i></div></div>
-          <div class="kpi-value" id="kpi-active">—</div>
+          <div class="kpi-value" id="kpi-active">â€”</div>
           <div class="kpi-label">Active Users (7d)</div>
           <div class="kpi-sub up"><i class="fas fa-arrow-up"></i> +4 online now</div>
         </div>
         <div class="kpi-card" style="--kpi-color:var(--accent-cyan);--kpi-bg:rgba(6,182,212,0.1)">
           <div class="kpi-top"><div class="kpi-icon" style="color:var(--accent-cyan)"><i class="fas fa-dumbbell"></i></div></div>
-          <div class="kpi-value" id="kpi-workouts">—</div>
+          <div class="kpi-value" id="kpi-workouts">â€”</div>
           <div class="kpi-label">Total Workouts</div>
           <div class="kpi-sub up"><i class="fas fa-arrow-up"></i> +6 workouts</div>
         </div>
         <div class="kpi-card" style="--kpi-color:var(--accent-orange);--kpi-bg:rgba(245,158,11,0.1)">
           <div class="kpi-top"><div class="kpi-icon" style="color:var(--accent-orange)"><i class="fas fa-weight"></i></div></div>
-          <div class="kpi-value" id="kpi-bmi">—</div>
+          <div class="kpi-value" id="kpi-bmi">â€”</div>
           <div class="kpi-label">Average BMI</div>
           <div class="kpi-sub down"><i class="fas fa-arrow-down"></i> -1% overall</div>
         </div>
         <div class="kpi-card" style="--kpi-color:#3b82f6;--kpi-bg:rgba(59,130,246,0.1)">
           <div class="kpi-top"><div class="kpi-icon" style="color:#3b82f6"><i class="fas fa-shoe-prints"></i></div></div>
-          <div class="kpi-value" id="kpi-steps">—</div>
+          <div class="kpi-value" id="kpi-steps">â€”</div>
           <div class="kpi-label">Avg Daily Steps</div>
           <div class="kpi-sub up"><i class="fas fa-arrow-up"></i> +450 steps</div>
         </div>
         <div class="kpi-card" style="--kpi-color:var(--accent-pink);--kpi-bg:rgba(236,72,153,0.1)">
           <div class="kpi-top"><div class="kpi-icon" style="color:var(--accent-pink)"><i class="fas fa-bullseye"></i></div></div>
-          <div class="kpi-value" id="kpi-goals">—</div>
+          <div class="kpi-value" id="kpi-goals">â€”</div>
           <div class="kpi-label">Goal Completion</div>
           <div class="kpi-sub up"><i class="fas fa-arrow-up"></i> +8%</div>
         </div>
@@ -346,13 +346,13 @@
               </tr>
             </thead>
             <tbody id="usersTableBody">
-              <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text-muted)"><i class="fas fa-spinner fa-spin"></i> Loading users…</td></tr>
+              <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text-muted)"><i class="fas fa-spinner fa-spin"></i> Loading usersâ€¦</td></tr>
             </tbody>
           </table>
         </div>
 
         <div class="pagination">
-          <div class="pagination-info" id="pageInfo">—</div>
+          <div class="pagination-info" id="pageInfo">â€”</div>
           <div class="pagination-btns" id="pageBtns"></div>
         </div>
       </div>
@@ -361,6 +361,19 @@
   </div>
 </div>
 
+
+<!-- View User Modal -->
+<div id="userModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:var(--bg-secondary);border:1px solid var(--glass-border);border-radius:16px;padding:28px;width:100%;max-width:440px;position:relative;margin:16px;">
+    <button onclick="closeUserModal()" style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.05);border:none;color:var(--text-muted);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;"><i class="fas fa-times"></i></button>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+      <div id="modalAvatar" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--green),#0ea5e9);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#000;"></div>
+      <div><div id="modalName" style="font-size:18px;font-weight:700;color:var(--text-primary);"></div><div id="modalEmail" style="font-size:13px;color:var(--text-muted);"></div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;" id="modalGrid"></div>
+  </div>
+</div>
 <script src="js/admin.js"></script>
 </body>
 </html>
+

@@ -365,7 +365,7 @@ function renderTable() {
         </td>
         <td>
           <div class="action-btns">
-            <button class="btn-icon" title="View"><i class="fas fa-eye"></i></button>
+            <button class="btn-icon" title="View" onclick="viewUser(${JSON.stringify(u).replace(/"/g, '&quot;')})"><i class="fas fa-eye"></i></button>
             <button class="btn-icon edit" title="Edit"><i class="fas fa-pen"></i></button>
           </div>
         </td>
@@ -392,4 +392,65 @@ function goToPage(page) {
   currentPage = page;
   renderTable();
   document.getElementById('usersSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ─── View User Modal ──────────────────────────────────────────────────────────
+function viewUser(u) {
+  const nameStr = u.full_name || u.name || 'Unknown';
+  const initials = nameStr.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  document.getElementById('modalAvatar').textContent = initials;
+  document.getElementById('modalName').textContent = nameStr;
+  document.getElementById('modalEmail').textContent = u.email || '—';
+
+  const bmi = computeBmi(u);
+  const fields = [
+    { label: 'Age',      value: u.age ? u.age + ' yrs' : '—' },
+    { label: 'Gender',   value: u.gender ? u.gender.charAt(0).toUpperCase() + u.gender.slice(1) : '—' },
+    { label: 'Height',   value: u.height_cm ? u.height_cm + ' cm' : '—' },
+    { label: 'Weight',   value: u.weight_kg ? u.weight_kg + ' kg' : '—' },
+    { label: 'BMI',      value: bmi ? bmi.toFixed(1) : '—' },
+    { label: 'Workouts', value: (+(u.workout_count || 0)).toString() },
+    { label: 'Status',   value: u.mockStatus === 'active' ? '🟢 Active' : '🌙 Inactive' },
+    { label: 'Role',     value: u.role === 'admin' ? '🛡 Admin' : '👤 User' },
+  ];
+
+  document.getElementById('modalGrid').innerHTML = fields.map(f => `
+    <div style="background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);border-radius:8px;padding:10px 12px;">
+      <div style="font-size:11px;color:var(--text-muted);font-weight:600;margin-bottom:2px;">${f.label}</div>
+      <div style="font-size:14px;color:var(--text-primary);font-weight:600;">${f.value}</div>
+    </div>
+  `).join('');
+
+  const modal = document.getElementById('userModal');
+  modal.style.display = 'flex';
+}
+
+function closeUserModal() {
+  document.getElementById('userModal').style.display = 'none';
+}
+
+// Close modal on backdrop click
+document.getElementById('userModal').addEventListener('click', function(e) {
+  if (e.target === this) closeUserModal();
+});
+
+// ─── Broadcast Announcement ───────────────────────────────────────────────────
+function sendAnnouncement() {
+  const msg = document.getElementById('announcementMsg')?.value?.trim();
+  if (!msg) { toast('Please write an announcement first.', 'error'); return; }
+
+  // Store in localStorage as a simple admin broadcast (no backend endpoint needed for demo)
+  const announcements = JSON.parse(localStorage.getItem('fittrack_announcements') || '[]');
+  announcements.unshift({ message: msg, date: new Date().toISOString(), from: 'Admin' });
+  localStorage.setItem('fittrack_announcements', JSON.stringify(announcements.slice(0, 10)));
+  document.getElementById('announcementMsg').value = '';
+  toast('Announcement broadcast to all users!', 'success');
+}
+
+function toast(msg, type = 'success') {
+  const t = document.createElement('div');
+  t.style.cssText = `position:fixed;bottom:24px;right:24px;background:${type==='success'?'var(--green)':'var(--accent-red)'};color:#000;padding:12px 20px;border-radius:10px;font-weight:600;font-size:13px;z-index:99999;box-shadow:0 8px 24px rgba(0,0,0,0.4);transition:all 0.3s;`;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
 }
