@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
@@ -238,7 +238,7 @@
       const msg  = document.getElementById('loginEmailMsg');
       if (!val) { resetValidation(el, icon, msg); return; }
       const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
-      setValidation(el, icon, msg, ok, ok ? 'âœ“ Valid email' : 'Please enter a valid email address');
+      setValidation(el, icon, msg, ok, ok ? '✓ Valid email' : 'Please enter a valid email address');
     }
 
     function setValidation(input, icon, msg, ok, text) {

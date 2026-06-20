@@ -407,7 +407,7 @@
       const v = el.value.trim();
       if (!v) { clearV(el, iconId, msgId); return; }
       const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-      setV(el, iconId, msgId, ok, ok ? '✓ Valid email address' : 'Please enter a valid email address');
+      setV(el, iconId, msgId, ok, ok ? '✓ Valid email' : 'Please enter a valid email address');
     }
 
     // ── Password Strength ──
