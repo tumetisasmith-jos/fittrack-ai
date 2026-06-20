@@ -177,13 +177,9 @@ function initializeDatabase() {
   if (userCount.count === 0) {
     seedDatabase(database);
   }
-}
 
-function calcBMICategory(bmi) {
-  if (bmi < 18.5) return 'Underweight';
-  if (bmi < 25) return 'Normal';
-  if (bmi < 30) return 'Overweight';
-  return 'Obese';
+  // Always ensure exercise library is populated
+  seedExerciseLibrary(database);
 }
 
 function calcLevel(xp) {
@@ -195,206 +191,24 @@ function calcLevel(xp) {
   return 'Beginner';
 }
 
-function randomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function randomFloat(min, max, decimals = 1) {
-  return parseFloat((Math.random() * (max - min) + min).toFixed(decimals));
-}
-
-function dateOffset(daysAgo) {
-  const d = new Date();
-  d.setDate(d.getDate() - daysAgo);
-  return d.toISOString().split('T')[0];
-}
-
 function seedDatabase(database) {
-  console.log('🌱 Seeding database with demo data...');
-
-  const workoutTypes = ['Running', 'Cycling', 'Yoga', 'Strength Training', 'Swimming', 'HIIT', 'Walking', 'Pilates', 'Boxing', 'Basketball'];
-
-  const BADGES = {
-    first_workout: { name: '🏃 First Workout', icon: '🏃', xp: 50 },
-    streak_7: { name: '🔥 7-Day Streak', icon: '🔥', xp: 100 },
-    streak_30: { name: '💫 30-Day Streak', icon: '💫', xp: 300 },
-    hydration_master: { name: '💧 Hydration Master', icon: '💧', xp: 75 },
-    goal_crusher: { name: '🎯 Goal Crusher', icon: '🎯', xp: 100 },
-    step_master: { name: '👟 Step Master', icon: '👟', xp: 75 },
-    iron_will: { name: '💪 Iron Will', icon: '💪', xp: 150 }
-  };
-
-  const userProfiles = [
-    { full_name: 'Admin User', username: 'admin', email: 'admin@fittrack.ai', password: 'admin123', role: 'admin', age: 30, gender: 'male',   height_cm: 178, weight_kg: 75 },
-    { full_name: 'Demo User',  username: 'demo',  email: 'demo@fittrack.ai',  password: 'demo123',  role: 'user',  age: 28, gender: 'female', height_cm: 165, weight_kg: 62 }
-  ];
+  console.log('Creating default accounts...');
 
   const insertUser = database.prepare(`
     INSERT INTO users (full_name, username, email, password_hash, height_cm, weight_kg, age, gender, role, xp_points, level)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
-  const insertWorkout = database.prepare(`
-    INSERT INTO workouts (user_id, type, duration_minutes, calories_burned, notes, date)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `);
-
-  const insertLog = database.prepare(`
-    INSERT OR IGNORE INTO daily_logs (user_id, date, steps, water_ml, sleep_hours, calories_burned, mood, energy_level, weight_kg)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
-
-  const insertGoal = database.prepare(`
-    INSERT INTO goals (user_id, type, target_value, current_value, unit, deadline, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `);
-
-  const insertBMI = database.prepare(`
-    INSERT INTO bmi_records (user_id, weight_kg, height_cm, bmi, category)
-    VALUES (?, ?, ?, ?, ?)
-  `);
-
-  const insertAchievement = database.prepare(`
-    INSERT OR IGNORE INTO achievements (user_id, badge_key, badge_name, badge_icon, xp_awarded)
-    VALUES (?, ?, ?, ?, ?)
-  `);
-
-  const insertNotification = database.prepare(`
-    INSERT INTO notifications (user_id, type, title, message, is_read)
-    VALUES (?, ?, ?, ?, ?)
-  `);
-
-  const updateUserXP = database.prepare(`UPDATE users SET xp_points = ?, level = ? WHERE id = ?`);
-
-  const workoutNotes = [
-    'Felt great today!', 'Tough session but worth it', 'Personal best!', 'Easy recovery session',
-    'Pushed through the wall', 'Great cardio day', 'Legs feeling heavy but kept going',
-    'Morning workout - energized all day', 'Evening session after work', 'Weekend warrior mode',
-    'Tried a new route', 'Group class was fun', 'Solo training day', 'Beat my previous time',
-    null, null, null
-  ];
-
-  const goalTemplates = [
-    { type: 'weight_loss', target_value: 5, unit: 'kg', offset: 90 },
-    { type: 'steps_daily', target_value: 10000, unit: 'steps', offset: 60 },
-    { type: 'water_intake', target_value: 2500, unit: 'ml', offset: 30 },
-    { type: 'workouts_weekly', target_value: 4, unit: 'workouts', offset: 60 },
-    { type: 'sleep_hours', target_value: 8, unit: 'hours', offset: 30 },
-    { type: 'calories_burned', target_value: 500, unit: 'kcal', offset: 60 },
-    { type: 'weight_gain', target_value: 3, unit: 'kg', offset: 90 }
+  const accounts = [
+    { full_name: 'Admin User', username: 'admin', email: 'admin@fittrack.ai', password: 'admin123', role: 'admin', age: 30, gender: 'male',   height_cm: 178, weight_kg: 75 },
+    { full_name: 'Demo User',  username: 'demo',  email: 'demo@fittrack.ai',  password: 'demo123',  role: 'user',  age: 28, gender: 'female', height_cm: 165, weight_kg: 62 }
   ];
 
   database.exec('BEGIN TRANSACTION');
   try {
-    for (const profile of userProfiles) {
-      const hash = bcrypt.hashSync(profile.password, 10);
-      const bmi = parseFloat((profile.weight_kg / Math.pow(profile.height_cm / 100, 2)).toFixed(1));
-      const xp = randomInt(0, 1800);
-      const level = calcLevel(xp);
-
-      const result = insertUser.run(
-        profile.full_name,
-        profile.username,
-        profile.email,
-        hash,
-        profile.height_cm,
-        profile.weight_kg,
-        profile.age,
-        profile.gender,
-        profile.role,
-        xp,
-        level
-      );
-      const userId = result.lastInsertRowid;
-
-      // BMI record
-      const category = calcBMICategory(bmi);
-      insertBMI.run(userId, profile.weight_kg, profile.height_cm, bmi, category);
-
-      // Daily logs for last 30 days
-      const baseWeight = profile.weight_kg;
-      const weightTrend = Math.random() > 0.5 ? -0.05 : 0.05;
-      for (let d = 30; d >= 0; d--) {
-        const dateStr = dateOffset(d);
-        const dayOfWeek = new Date(dateStr).getDay();
-        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-
-        const steps = isWeekend ? randomInt(3000, 8000) : randomInt(5000, 12000);
-        const water = randomInt(1500, 3500);
-        const sleep = randomFloat(5.5, 8.5);
-        const calories = randomInt(300, 800);
-        const mood = randomInt(2, 5);
-        const energy = Math.max(1, Math.min(5, mood + randomInt(-1, 1)));
-        const logWeight = parseFloat((baseWeight + (weightTrend * (30 - d))).toFixed(1));
-
-        insertLog.run(userId, dateStr, steps, water, sleep, calories, mood, energy, logWeight);
-      }
-
-      // Workouts - 6 to 15 workouts per user over 30 days
-      const workoutCount = randomInt(6, 15);
-      const usedDays = new Set();
-      for (let w = 0; w < workoutCount; w++) {
-        let day;
-        do { day = randomInt(0, 29); } while (usedDays.has(day));
-        usedDays.add(day);
-
-        const type = workoutTypes[randomInt(0, workoutTypes.length - 1)];
-        const duration = randomInt(20, 90);
-        const caloriesMap = {
-          'Running': randomInt(300, 600),
-          'Cycling': randomInt(250, 500),
-          'Yoga': randomInt(100, 250),
-          'Strength Training': randomInt(200, 450),
-          'Swimming': randomInt(300, 600),
-          'HIIT': randomInt(350, 600),
-          'Walking': randomInt(100, 250),
-          'Pilates': randomInt(150, 300),
-          'Boxing': randomInt(350, 600),
-          'Basketball': randomInt(300, 500)
-        };
-        const burned = caloriesMap[type] || randomInt(200, 500);
-        const note = workoutNotes[randomInt(0, workoutNotes.length - 1)];
-        const dateStr = dateOffset(day);
-        insertWorkout.run(userId, type, duration, burned, note, dateStr);
-      }
-
-      // Goals (1-3 per user)
-      const numGoals = randomInt(1, 3);
-      const shuffled = [...goalTemplates].sort(() => Math.random() - 0.5);
-      for (let g = 0; g < numGoals; g++) {
-        const tmpl = shuffled[g];
-        const deadline = dateOffset(-tmpl.offset);
-        const progress = randomFloat(0, tmpl.target_value * 0.9, 0);
-        const status = Math.random() > 0.8 ? 'completed' : 'active';
-        const currentVal = status === 'completed' ? tmpl.target_value : progress;
-        insertGoal.run(userId, tmpl.type, tmpl.target_value, currentVal, tmpl.unit, deadline, status);
-      }
-
-      // Achievements (random subset)
-      const badgeKeys = Object.keys(BADGES);
-      const earnedCount = randomInt(1, badgeKeys.length);
-      const shuffledBadges = [...badgeKeys].sort(() => Math.random() - 0.5);
-      for (let b = 0; b < earnedCount; b++) {
-        const key = shuffledBadges[b];
-        const badge = BADGES[key];
-        insertAchievement.run(userId, key, badge.name, badge.icon, badge.xp);
-      }
-
-      // Notifications (2-4 per user)
-      const notifTemplates = [
-        { type: 'achievement', title: '🏆 Achievement Unlocked!', message: 'You earned a new badge. Keep it up!', is_read: randomInt(0, 1) },
-        { type: 'goal', title: '🎯 Goal Progress Update', message: "You're making great progress on your goal!", is_read: randomInt(0, 1) },
-        { type: 'reminder', title: '💧 Hydration Reminder', message: "Don't forget to log your water intake today!", is_read: 1 },
-        { type: 'milestone', title: '🎉 Milestone Reached', message: 'Congratulations on reaching a new fitness milestone!', is_read: randomInt(0, 1) },
-        { type: 'tip', title: '💡 Fitness Tip', message: 'Try adding interval training to boost your cardio fitness.', is_read: 1 }
-      ];
-      const numNotifs = randomInt(2, 4);
-      for (let n = 0; n < numNotifs; n++) {
-        const tmpl = notifTemplates[randomInt(0, notifTemplates.length - 1)];
-        insertNotification.run(userId, tmpl.type, tmpl.title, tmpl.message, tmpl.is_read);
-      }
-
-      updateUserXP.run(xp, level, userId);
+    for (const a of accounts) {
+      const hash = bcrypt.hashSync(a.password, 10);
+      insertUser.run(a.full_name, a.username, a.email, hash, a.height_cm, a.weight_kg, a.age, a.gender, a.role, 0, 'Beginner');
     }
     database.exec('COMMIT');
   } catch (err) {
@@ -402,16 +216,7 @@ function seedDatabase(database) {
     throw err;
   }
 
-  // Seed exercise library
-  seedExerciseLibrary(database);
-
-  // Seed extended data for first 10 users (demo + admin + 8 regular)
-  const sampleUsers = database.prepare('SELECT id FROM users LIMIT 10').all();
-  seedMeals(database, sampleUsers.map(u => u.id));
-  seedHeartRate(database, sampleUsers.map(u => u.id));
-  seedSchedules(database, sampleUsers.map(u => u.id));
-
-  console.log('✅ Database initialized with admin + demo accounts and exercise library.');
+  console.log('Default accounts created: admin@fittrack.ai / admin123  |  demo@fittrack.ai / demo123');
 }
 
 function seedExerciseLibrary(database) {
@@ -464,7 +269,7 @@ function seedExerciseLibrary(database) {
     // Recovery
     { name: 'Active Recovery Walk', category: 'Recovery', description: 'Light walking for muscle recovery', muscle_groups: 'Full Body', difficulty: 'beginner', calories_per_minute: 3, equipment: 'none', instructions: 'Walk at comfortable pace for 20-30 min. Focus on deep breathing.' },
     { name: 'Meditation', category: 'Recovery', description: 'Mindfulness and breathing exercises', muscle_groups: 'Mind, Core (breathing)', difficulty: 'beginner', calories_per_minute: 1, equipment: 'mat', instructions: 'Sit comfortably. Focus on breath. Allow thoughts to pass without judgment.' },
-    { name: 'Ice Bath', category: 'Recovery', description: 'Cold water immersion for recovery', muscle_groups: 'Full Body', difficulty: 'intermediate', calories_per_minute: 1, equipment: 'ice, tub', instructions: 'Immerse in 10-15°C water for 10-15 min. Limit to post-intense training.' },
+    { name: 'Ice Bath', category: 'Recovery', description: 'Cold water immersion for recovery', muscle_groups: 'Full Body', difficulty: 'intermediate', calories_per_minute: 1, equipment: 'ice, tub', instructions: 'Immerse in 10-15C water for 10-15 min. Limit to post-intense training.' },
     { name: 'Contrast Therapy', category: 'Recovery', description: 'Alternating hot/cold for recovery', muscle_groups: 'Full Body', difficulty: 'beginner', calories_per_minute: 1, equipment: 'shower', instructions: '3 min hot, 1 min cold. Repeat 3-5 cycles. End with cold.' }
   ];
 
@@ -475,116 +280,7 @@ function seedExerciseLibrary(database) {
   for (const ex of exercises) {
     stmt.run(ex.name, ex.category, ex.description, ex.muscle_groups, ex.difficulty, ex.calories_per_minute, ex.equipment, ex.instructions);
   }
-}
-
-function seedMeals(database, userIds) {
-  const count = database.prepare('SELECT COUNT(*) as c FROM meals').get();
-  if (count.c > 0) return;
-
-  const mealTemplates = {
-    breakfast: [
-      { food_name: 'Oatmeal with Berries', calories: 320, protein_g: 12, carbs_g: 58, fat_g: 6 },
-      { food_name: 'Scrambled Eggs & Toast', calories: 380, protein_g: 24, carbs_g: 32, fat_g: 16 },
-      { food_name: 'Greek Yogurt Parfait', calories: 280, protein_g: 18, carbs_g: 40, fat_g: 5 },
-      { food_name: 'Protein Smoothie', calories: 340, protein_g: 32, carbs_g: 38, fat_g: 6 },
-      { food_name: 'Avocado Toast', calories: 360, protein_g: 10, carbs_g: 35, fat_g: 20 }
-    ],
-    lunch: [
-      { food_name: 'Grilled Chicken Salad', calories: 420, protein_g: 38, carbs_g: 22, fat_g: 14 },
-      { food_name: 'Quinoa Power Bowl', calories: 480, protein_g: 22, carbs_g: 62, fat_g: 12 },
-      { food_name: 'Turkey Wrap', calories: 440, protein_g: 30, carbs_g: 44, fat_g: 14 },
-      { food_name: 'Salmon Rice Bowl', calories: 520, protein_g: 36, carbs_g: 52, fat_g: 16 },
-      { food_name: 'Lentil Soup', calories: 360, protein_g: 22, carbs_g: 54, fat_g: 4 }
-    ],
-    dinner: [
-      { food_name: 'Baked Salmon & Veggies', calories: 520, protein_g: 42, carbs_g: 28, fat_g: 22 },
-      { food_name: 'Chicken Stir-Fry', calories: 460, protein_g: 36, carbs_g: 38, fat_g: 14 },
-      { food_name: 'Beef & Broccoli', calories: 540, protein_g: 40, carbs_g: 34, fat_g: 22 },
-      { food_name: 'Pasta with Turkey Meatballs', calories: 620, protein_g: 38, carbs_g: 68, fat_g: 16 },
-      { food_name: 'Grilled Steak & Sweet Potato', calories: 580, protein_g: 46, carbs_g: 42, fat_g: 18 }
-    ],
-    snack: [
-      { food_name: 'Protein Bar', calories: 210, protein_g: 20, carbs_g: 24, fat_g: 6 },
-      { food_name: 'Mixed Nuts', calories: 180, protein_g: 6, carbs_g: 8, fat_g: 16 },
-      { food_name: 'Apple & Peanut Butter', calories: 240, protein_g: 8, carbs_g: 30, fat_g: 10 },
-      { food_name: 'Cottage Cheese', calories: 160, protein_g: 22, carbs_g: 6, fat_g: 4 }
-    ]
-  };
-
-  const stmt = database.prepare(`
-    INSERT INTO meals (user_id, date, meal_type, food_name, calories, protein_g, carbs_g, fat_g, quantity_g)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
-
-  for (const userId of userIds) {
-    for (let d = 30; d >= 0; d--) {
-      const dateStr = dateOffset(d);
-      const types = ['breakfast', 'lunch', 'dinner'];
-      if (Math.random() > 0.4) types.push('snack');
-      for (const mType of types) {
-        const opts = mealTemplates[mType];
-        const meal = opts[randomInt(0, opts.length - 1)];
-        stmt.run(userId, dateStr, mType, meal.food_name, meal.calories, meal.protein_g, meal.carbs_g, meal.fat_g, 100);
-      }
-    }
-  }
-}
-
-function seedHeartRate(database, userIds) {
-  const count = database.prepare('SELECT COUNT(*) as c FROM heart_rate_logs').get();
-  if (count.c > 0) return;
-
-  const stmt = database.prepare(`
-    INSERT INTO heart_rate_logs (user_id, bpm, context, recorded_at)
-    VALUES (?, ?, ?, ?)
-  `);
-
-  const contexts = ['resting', 'active', 'post-workout', 'sleeping'];
-  const bpmRanges = { resting: [55, 80], active: [110, 160], 'post-workout': [90, 130], sleeping: [45, 65] };
-
-  for (const userId of userIds) {
-    for (let d = 29; d >= 0; d--) {
-      const dateStr = dateOffset(d);
-      const numReadings = randomInt(1, 3);
-      for (let r = 0; r < numReadings; r++) {
-        const ctx = contexts[randomInt(0, contexts.length - 1)];
-        const range = bpmRanges[ctx];
-        const bpm = randomInt(range[0], range[1]);
-        const ts  = `${dateStr} ${String(randomInt(6, 22)).padStart(2, '0')}:${String(randomInt(0, 59)).padStart(2, '0')}:00`;
-        stmt.run(userId, bpm, ctx, ts);
-      }
-    }
-  }
-}
-
-function seedSchedules(database, userIds) {
-  const count = database.prepare('SELECT COUNT(*) as c FROM workout_schedules').get();
-  if (count.c > 0) return;
-
-  const stmt = database.prepare(`
-    INSERT INTO workout_schedules (user_id, title, workout_type, scheduled_date, scheduled_time, duration_minutes, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `);
-
-  const workoutTypes = ['Running', 'Cycling', 'Yoga', 'Strength Training', 'Swimming', 'HIIT', 'Walking'];
-  const times = ['06:00', '07:00', '08:00', '12:00', '17:00', '18:00', '19:00'];
-
-  for (const userId of userIds) {
-    for (let d = 1; d <= 7; d++) {
-      if (Math.random() > 0.5) {
-        const wType = workoutTypes[randomInt(0, workoutTypes.length - 1)];
-        const futureDate = dateOffset(-d);
-        stmt.run(userId, `${wType} Session`, wType, futureDate, times[randomInt(0, times.length - 1)], randomInt(30, 60), 'pending');
-      }
-    }
-    // Add 2 past completed
-    for (let d = 1; d <= 7; d++) {
-      if (Math.random() > 0.6) {
-        const wType = workoutTypes[randomInt(0, workoutTypes.length - 1)];
-        stmt.run(userId, `${wType} Session`, wType, dateOffset(d), times[randomInt(0, times.length - 1)], randomInt(30, 60), 'completed');
-      }
-    }
-  }
+  console.log('Exercise library seeded with', exercises.length, 'exercises.');
 }
 
 module.exports = { getDB, initializeDatabase };

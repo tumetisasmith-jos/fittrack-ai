@@ -1,4 +1,4 @@
-const _token = localStorage.getItem('fittrack_token');
+﻿const _token = localStorage.getItem('fittrack_token');
 let _user = null;
 try { _user = JSON.parse(localStorage.getItem('fittrack_user')); } catch (e) { }
 
@@ -83,7 +83,7 @@ async function loadStats() {
 function showFallbackKpis() {
   ['kpi-users','kpi-active','kpi-workouts','kpi-bmi','kpi-steps','kpi-goals'].forEach(id => {
     const el = document.getElementById(id);
-    if (el && el.textContent === '—') el.textContent = 'N/A';
+    if (el && el.textContent === 'â€”') el.textContent = 'N/A';
   });
 }
 
@@ -109,23 +109,15 @@ async function loadAnalytics() {
     const data = await apiCall('/admin/analytics');
     const analytics = data.analytics || data;
 
-    buildGrowthChart(analytics.user_growth || analytics.userGrowth || generateFallbackGrowth());
+    buildGrowthChart(analytics.user_growth || analytics.userGrowth || []);
     buildWorkoutDonutChart(analytics.workout_distribution || analytics.workoutDistribution || {});
   } catch (err) {
     console.error('Analytics error:', err);
-    buildGrowthChart(generateFallbackGrowth());
-    buildWorkoutDonutChart({ Running: 40, Strength: 30, Yoga: 15, HIIT: 10, Swimming: 3, Cycling: 2 });
+    buildGrowthChart([]);
+    buildWorkoutDonutChart({});
   }
 }
 
-function generateFallbackGrowth() {
-  const data = [];
-  for (let i = 29; i >= 0; i--) {
-    const d = new Date(); d.setDate(d.getDate() - i);
-    data.push({ date: d.toISOString().slice(0, 10), count: Math.floor(Math.random() * 3) });
-  }
-  return data;
-}
 
 function shortDate(dateStr) {
   const d = new Date(dateStr + 'T00:00:00');
@@ -238,9 +230,7 @@ async function loadUsers() {
       .filter(u => u.role !== 'admin') // Exclude admin users
       .map(u => ({
       ...u,
-      mockStatus: (+(u.workout_count || 0) > 0) ? 'active' : 'inactive',
-      mockGoals: Math.floor(Math.random() * 5),
-      mockLastActive: (+(u.workout_count || 0) > 0) ? 'Today' : '3 days ago'
+      mockStatus: (+(u.workout_count || 0) > 0) ? 'active' : 'inactive'
     }));
 
     filterUsers();
@@ -309,7 +299,7 @@ function computeBmi(u) {
 
 function bmiChip(u) {
   const bmi = computeBmi(u);
-  if (!bmi) return '—';
+  if (!bmi) return 'â€”';
   const val = bmi.toFixed(1);
   if (bmi < 18.5) return `<span class="bmi-chip bmi-under">${val}</span>`;
   if (bmi < 25) return `<span class="bmi-chip bmi-normal">${val}</span>`;
@@ -347,16 +337,16 @@ function renderTable() {
             <div class="user-avatar-sm">${initials}</div>
             <div>
               <div class="user-name">${nameStr}</div>
-              <div class="user-email">${u.email || '—'}</div>
+              <div class="user-email">${u.email || 'â€”'}</div>
             </div>
           </div>
         </td>
         <td><span class="status-badge ${statusClass}">${statusIcon}</span></td>
-        <td>${u.age || '—'}</td>
+        <td>${u.age || 'â€”'}</td>
         <td>${bmiChip(u)}</td>
         <td style="font-weight:600;color:var(--text-primary)">${workoutCount.toLocaleString()}</td>
-        <td>${u.mockGoals}</td>
-        <td>${u.mockLastActive}</td>
+        <td>${+(u.goal_count || 0)}</td>
+<td>${u.created_at ? new Date(u.created_at).toLocaleDateString() : `—`}</td>
         <td>
           <span class="role-badge ${isAdmin ? 'role-admin' : 'role-user'}">
             <i class="fas fa-${isAdmin ? 'shield-alt' : 'user'}"></i>
@@ -372,7 +362,7 @@ function renderTable() {
       </tr>`;
   }).join('');
 
-  document.getElementById('pageInfo').textContent = `Showing ${start + 1}—${end} of ${total} users`;
+  document.getElementById('pageInfo').textContent = `Showing ${start + 1}â€”${end} of ${total} users`;
 
   const pageBtns = document.getElementById('pageBtns');
   const pages = [];
@@ -394,24 +384,24 @@ function goToPage(page) {
   document.getElementById('usersSection').scrollIntoView({ behavior: 'smooth' });
 }
 
-// ─── View User Modal ──────────────────────────────────────────────────────────
+// â”€â”€â”€ View User Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function viewUser(u) {
   const nameStr = u.full_name || u.name || 'Unknown';
   const initials = nameStr.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   document.getElementById('modalAvatar').textContent = initials;
   document.getElementById('modalName').textContent = nameStr;
-  document.getElementById('modalEmail').textContent = u.email || '—';
+  document.getElementById('modalEmail').textContent = u.email || 'â€”';
 
   const bmi = computeBmi(u);
   const fields = [
-    { label: 'Age',      value: u.age ? u.age + ' yrs' : '—' },
-    { label: 'Gender',   value: u.gender ? u.gender.charAt(0).toUpperCase() + u.gender.slice(1) : '—' },
-    { label: 'Height',   value: u.height_cm ? u.height_cm + ' cm' : '—' },
-    { label: 'Weight',   value: u.weight_kg ? u.weight_kg + ' kg' : '—' },
-    { label: 'BMI',      value: bmi ? bmi.toFixed(1) : '—' },
+    { label: 'Age',      value: u.age ? u.age + ' yrs' : 'â€”' },
+    { label: 'Gender',   value: u.gender ? u.gender.charAt(0).toUpperCase() + u.gender.slice(1) : 'â€”' },
+    { label: 'Height',   value: u.height_cm ? u.height_cm + ' cm' : 'â€”' },
+    { label: 'Weight',   value: u.weight_kg ? u.weight_kg + ' kg' : 'â€”' },
+    { label: 'BMI',      value: bmi ? bmi.toFixed(1) : 'â€”' },
     { label: 'Workouts', value: (+(u.workout_count || 0)).toString() },
-    { label: 'Status',   value: u.mockStatus === 'active' ? '🟢 Active' : '🌙 Inactive' },
-    { label: 'Role',     value: u.role === 'admin' ? '🛡 Admin' : '👤 User' },
+    { label: 'Status',   value: u.mockStatus === 'active' ? 'ðŸŸ¢ Active' : 'ðŸŒ™ Inactive' },
+    { label: 'Role',     value: u.role === 'admin' ? 'ðŸ›¡ Admin' : 'ðŸ‘¤ User' },
   ];
 
   document.getElementById('modalGrid').innerHTML = fields.map(f => `
@@ -434,7 +424,7 @@ document.getElementById('userModal').addEventListener('click', function(e) {
   if (e.target === this) closeUserModal();
 });
 
-// ─── Broadcast Announcement ───────────────────────────────────────────────────
+// â”€â”€â”€ Broadcast Announcement â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function sendAnnouncement() {
   const msg = document.getElementById('announcementMsg')?.value?.trim();
   if (!msg) { toast('Please write an announcement first.', 'error'); return; }
@@ -454,3 +444,5 @@ function toast(msg, type = 'success') {
   document.body.appendChild(t);
   setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
 }
+
+
