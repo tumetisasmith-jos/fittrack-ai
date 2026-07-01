@@ -357,13 +357,13 @@ body.landing-page {
 .hero-left {
   min-width: 0;
   max-width: 100%;
-  overflow: hidden;
 }
 .hero-title-accent {
   background: linear-gradient(135deg, var(--green) 0%, #84cc16 50%, #65a30d 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  padding-right: 0.1em;
 }
 
 .hero-subtitle {
@@ -2518,7 +2518,7 @@ body.landing-page { overflow-x: hidden; }
     padding: 60px 0 40px;
   }
   .hero-title {
-    font-size: clamp(1.4rem, 6.5vw, 2rem) !important;
+    font-size: clamp(1.4rem, 6vw, 2rem) !important;
     letter-spacing: -0.01em !important;
     word-break: break-word;
     overflow-wrap: anywhere;
