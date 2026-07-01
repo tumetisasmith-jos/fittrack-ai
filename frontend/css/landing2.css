@@ -598,9 +598,9 @@ body.landing-page {
   color: var(--text-muted);
   margin-left: 2px;
 }
-.ring-label-recovery { top: 10px; left: -60px; animation: floatBob 3.5s ease-in-out infinite; }
-.ring-label-strain   { bottom: 60px; right: -55px; animation: floatBob 4s ease-in-out infinite 0.6s; }
-.ring-label-sleep    { bottom: 10px; left: -50px; animation: floatBob 3.8s ease-in-out infinite 1.2s; }
+.ring-label-recovery { top: 25px; left: -10px; animation: floatBob 3.5s ease-in-out infinite; }
+.ring-label-strain   { bottom: 120px; right: 10px; animation: floatBob 4s ease-in-out infinite 0.6s; }
+.ring-label-sleep    { bottom: 95px; left: 60px; animation: floatBob 3.8s ease-in-out infinite 1.2s; }
 
 @keyframes floatBob {
   0%, 100% { transform: translateY(0); }
@@ -1561,9 +1561,9 @@ body.landing-page {
   .hero-trust { justify-content: center; }
   .rings-container { width: 300px; height: 300px; }
   .rings-svg { width: 260px; height: 260px; }
-  .ring-label-recovery { top: 0; left: -40px; }
-  .ring-label-strain   { right: -40px; }
-  .ring-label-sleep    { left: -40px; }
+  .ring-label-recovery { top: 15px; left: -10px; }
+  .ring-label-strain   { bottom: 90px; right: 0px; }
+  .ring-label-sleep    { bottom: 70px; left: 45px; }
   .hmc-2 { right: -10px; }
   .problem-grid { grid-template-columns: 1fr; gap: 40px; }
   .solution-grid { grid-template-columns: 1fr; gap: 40px; }
