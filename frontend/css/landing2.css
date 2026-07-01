@@ -61,7 +61,7 @@ body.landing-page {
   padding: 0 24px;
 }
 
-.section-pad { padding: 100px 0; }
+.section-pad { padding: 60px 0; }
 
 /* ══════════════════════════════════════════
    SHARED TYPOGRAPHY
@@ -100,7 +100,7 @@ body.landing-page {
 .tag-purple { background: rgba(124,58,237,0.12); border: 1px solid rgba(167,139,250,0.25); color: var(--purple-light); }
 .tag-red    { background: var(--red-dim); border: 1px solid rgba(239,68,68,0.25); color: #fca5a5; }
 
-.section-header-center { text-align: center; margin-bottom: 64px; }
+.section-header-center { text-align: center; margin-bottom: 40px; }
 .section-header-center .section-tag { margin-bottom: 16px; }
 
 /* ══════════════════════════════════════════
@@ -311,7 +311,7 @@ body.landing-page {
   grid-template-columns: 1fr 1fr;
   gap: 64px;
   align-items: center;
-  padding: 80px 0 40px;
+  padding: 60px 0 20px;
 }
 
 /* Hero Left */
@@ -379,7 +379,7 @@ body.landing-page {
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 48px;
+  margin-bottom: 24px;
 }
 
 .btn-primary-hero {
@@ -1437,7 +1437,7 @@ body.landing-page {
 .cta-inner {
   text-align: center;
   position: relative;
-  padding: 80px 32px;
+  padding: 48px 24px;
   background: rgba(196,241,53,0.02);
   border: 1px solid rgba(196,241,53,0.08);
   border-radius: 32px;
@@ -2291,7 +2291,7 @@ body.landing-page { overflow-x: hidden; }
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
-  margin-bottom: 48px;
+  margin-bottom: 24px;
 }
 
 .team-card {
