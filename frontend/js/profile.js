@@ -6,7 +6,7 @@
 
 const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? `http://localhost:${window.location.port || 4000}/api`
-  : window.location.origin + '/api';
+  : 'https://fittrack-ai.onrender.com/api';
 
 async function apiCall(endpoint, method = 'GET', data = null) {
   const options = {

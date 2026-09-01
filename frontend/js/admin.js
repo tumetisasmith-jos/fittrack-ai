@@ -1,4 +1,4 @@
-﻿const _token = localStorage.getItem('fittrack_token');
+const _token = localStorage.getItem('fittrack_token');
 let _user = null;
 try { _user = JSON.parse(localStorage.getItem('fittrack_user')); } catch (e) { }
 
@@ -83,7 +83,7 @@ async function loadStats() {
 function showFallbackKpis() {
   ['kpi-users','kpi-active','kpi-workouts','kpi-bmi','kpi-steps','kpi-goals'].forEach(id => {
     const el = document.getElementById(id);
-    if (el && el.textContent === 'â€”') el.textContent = 'N/A';
+    if (el && el.textContent === '—') el.textContent = 'N/A';
   });
 }
 
@@ -299,7 +299,7 @@ function computeBmi(u) {
 
 function bmiChip(u) {
   const bmi = computeBmi(u);
-  if (!bmi) return 'â€”';
+  if (!bmi) return '—';
   const val = bmi.toFixed(1);
   if (bmi < 18.5) return `<span class="bmi-chip bmi-under">${val}</span>`;
   if (bmi < 25) return `<span class="bmi-chip bmi-normal">${val}</span>`;
@@ -337,16 +337,16 @@ function renderTable() {
             <div class="user-avatar-sm">${initials}</div>
             <div>
               <div class="user-name">${nameStr}</div>
-              <div class="user-email">${u.email || 'â€”'}</div>
+              <div class="user-email">${u.email || '—'}</div>
             </div>
           </div>
         </td>
         <td><span class="status-badge ${statusClass}">${statusIcon}</span></td>
-        <td>${u.age || 'â€”'}</td>
+        <td>${u.age || '—'}</td>
         <td>${bmiChip(u)}</td>
         <td style="font-weight:600;color:var(--text-primary)">${workoutCount.toLocaleString()}</td>
         <td>${+(u.goal_count || 0)}</td>
-<td>${u.created_at ? new Date(u.created_at).toLocaleDateString() : `—`}</td>
+<td>${u.created_at ? new Date(u.created_at).toLocaleDateString() : `�`}</td>
         <td>
           <span class="role-badge ${isAdmin ? 'role-admin' : 'role-user'}">
             <i class="fas fa-${isAdmin ? 'shield-alt' : 'user'}"></i>
@@ -362,7 +362,7 @@ function renderTable() {
       </tr>`;
   }).join('');
 
-  document.getElementById('pageInfo').textContent = `Showing ${start + 1}â€”${end} of ${total} users`;
+  document.getElementById('pageInfo').textContent = `Showing ${start + 1}—${end} of ${total} users`;
 
   const pageBtns = document.getElementById('pageBtns');
   const pages = [];
@@ -384,24 +384,24 @@ function goToPage(page) {
   document.getElementById('usersSection').scrollIntoView({ behavior: 'smooth' });
 }
 
-// â”€â”€â”€ View User Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── View User Modal ──────────────────────────────────────────────────────────
 function viewUser(u) {
   const nameStr = u.full_name || u.name || 'Unknown';
   const initials = nameStr.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   document.getElementById('modalAvatar').textContent = initials;
   document.getElementById('modalName').textContent = nameStr;
-  document.getElementById('modalEmail').textContent = u.email || 'â€”';
+  document.getElementById('modalEmail').textContent = u.email || '—';
 
   const bmi = computeBmi(u);
   const fields = [
-    { label: 'Age',      value: u.age ? u.age + ' yrs' : 'â€”' },
-    { label: 'Gender',   value: u.gender ? u.gender.charAt(0).toUpperCase() + u.gender.slice(1) : 'â€”' },
-    { label: 'Height',   value: u.height_cm ? u.height_cm + ' cm' : 'â€”' },
-    { label: 'Weight',   value: u.weight_kg ? u.weight_kg + ' kg' : 'â€”' },
-    { label: 'BMI',      value: bmi ? bmi.toFixed(1) : 'â€”' },
+    { label: 'Age',      value: u.age ? u.age + ' yrs' : '—' },
+    { label: 'Gender',   value: u.gender ? u.gender.charAt(0).toUpperCase() + u.gender.slice(1) : '—' },
+    { label: 'Height',   value: u.height_cm ? u.height_cm + ' cm' : '—' },
+    { label: 'Weight',   value: u.weight_kg ? u.weight_kg + ' kg' : '—' },
+    { label: 'BMI',      value: bmi ? bmi.toFixed(1) : '—' },
     { label: 'Workouts', value: (+(u.workout_count || 0)).toString() },
-    { label: 'Status',   value: u.mockStatus === 'active' ? 'ðŸŸ¢ Active' : 'ðŸŒ™ Inactive' },
-    { label: 'Role',     value: u.role === 'admin' ? 'ðŸ›¡ Admin' : 'ðŸ‘¤ User' },
+    { label: 'Status',   value: u.mockStatus === 'active' ? '🟢 Active' : '🌙 Inactive' },
+    { label: 'Role',     value: u.role === 'admin' ? '🛡 Admin' : '👤 User' },
   ];
 
   document.getElementById('modalGrid').innerHTML = fields.map(f => `
@@ -424,7 +424,7 @@ document.getElementById('userModal').addEventListener('click', function(e) {
   if (e.target === this) closeUserModal();
 });
 
-// â”€â”€â”€ Broadcast Announcement â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Broadcast Announcement ───────────────────────────────────────────────────
 function sendAnnouncement() {
   const msg = document.getElementById('announcementMsg')?.value?.trim();
   if (!msg) { toast('Please write an announcement first.', 'error'); return; }

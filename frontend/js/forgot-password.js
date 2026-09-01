@@ -1,4 +1,4 @@
-const API_BASE=window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1'?'http://localhost:3000/api':window.location.origin+'/api';
+const API_BASE=window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1'?'http://localhost:3000/api':'https://fittrack-ai.onrender.com/api';
 function showError(id,msg){const el=document.getElementById(id);if(!el)return;el.textContent=msg;el.classList.remove('hidden');}
 function hideError(id){const el=document.getElementById(id);if(el)el.classList.add('hidden');}
 function togglePwd(id){const inp=document.getElementById(id);if(!inp)return;inp.type=inp.type==='password'?'text':'password';}

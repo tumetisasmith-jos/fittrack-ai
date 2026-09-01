@@ -1,8 +1,8 @@
-﻿const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://localhost:3000/api'
-  : window.location.origin + '/api';
+  : 'https://fittrack-ai.onrender.com/api';
 
-// â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Helpers ────────────────────────────────────────────────────────────────
 function getToken() {
   migrateStorageKeys();
   return localStorage.getItem('fittrack_token') || localStorage.getItem('fittrack-token');
@@ -76,7 +76,7 @@ function setLoading(btn, loading) {
   }
 }
 
-// â”€â”€â”€ Password strength â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Password strength ───────────────────────────────────────────────────────
 function checkPasswordStrength(password) {
   let score = 0;
   if (password.length >= 8)  score++;
@@ -100,7 +100,7 @@ function updateStrengthBar(password) {
   text.style.color = colors[score] || '';
 }
 
-// â”€â”€â”€ Toggle password visibility â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Toggle password visibility ──────────────────────────────────────────────
 function togglePassword(inputId, btnId) {
   const input = document.getElementById(inputId);
   const btn   = document.getElementById(btnId);
@@ -114,7 +114,7 @@ function togglePassword(inputId, btnId) {
   }
 }
 
-// â”€â”€â”€ LOGIN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── LOGIN ───────────────────────────────────────────────────────────────────
 function initLoginPage() {
   // Redirect if already logged in
   if (getToken()) { window.location.href = 'dashboard.html'; return; }
@@ -145,7 +145,7 @@ function initLoginPage() {
 
       localStorage.setItem('fittrack_token', data.token);
       localStorage.setItem('fittrack_user', JSON.stringify(data.user));
-      showToast('Login successful! Redirectingâ€¦');
+      showToast('Login successful! Redirecting…');
       setTimeout(() => {
         window.location.href = data.user.role === 'admin' ? 'admin.html' : 'dashboard.html';
       }, 800);
@@ -160,7 +160,7 @@ function initLoginPage() {
   });
 }
 
-// â”€â”€â”€ SIGNUP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── SIGNUP ──────────────────────────────────────────────────────────────────
 function initSignupPage() {
   if (getToken()) { window.location.href = 'dashboard.html'; return; }
 
@@ -239,7 +239,7 @@ function initSignupPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Signup failed');
 
-      showToast('Account created! Please log in. ðŸŽ‰');
+      showToast('Account created! Please log in. 🎉');
       setTimeout(() => { window.location.href = 'login.html'; }, 900);
     } catch (err) {
       showError('signupError', err.message);
@@ -251,20 +251,20 @@ function initSignupPage() {
   });
 }
 
-// â”€â”€â”€ Logout (global) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Logout (global) ─────────────────────────────────────────────────────────
 function logout() {
   localStorage.removeItem('fittrack_token');
   localStorage.removeItem('fittrack_user');
   window.location.href = 'index.html';
 }
 
-// â”€â”€â”€ Boot â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Boot ────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('loginForm'))  initLoginPage();
   if (document.getElementById('signupForm')) initSignupPage();
 });
 
-// â”€â”€â”€ Toggle password visibility â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Toggle password visibility ──────────────────────────────────────────────
 function togglePwd(inputId, btn) {
   const input = document.getElementById(inputId);
   if (!input) return;
@@ -274,7 +274,7 @@ function togglePwd(inputId, btn) {
   if (icon) icon.className = isText ? 'fas fa-eye' : 'fas fa-eye-slash';
 }
 
-// â”€â”€â”€ Password strength meter â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Password strength meter ──────────────────────────────────────────────────
 function checkPasswordStrength(password) {
   let strength = 0;
   if (password.length >= 6)  strength++;
@@ -305,7 +305,7 @@ function checkPasswordStrength(password) {
   }
 }
 
-// â”€â”€â”€ Toggle optional fields (signup) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Toggle optional fields (signup) ─────────────────────────────────────────
 function toggleOptional() {
   const fields = document.getElementById('optionalFields');
   const toggle = document.getElementById('optionalToggle');
@@ -317,16 +317,16 @@ function toggleOptional() {
   fields.classList.toggle('open', !isOpen);
   if (toggle) toggle.classList.toggle('open', !isOpen);
   if (icon)   icon.style.transform = isOpen ? '' : 'rotate(180deg)';
-  if (span)   span.textContent = isOpen ? '+ Add profile info (optional)' : 'âˆ’ Hide profile info';
+  if (span)   span.textContent = isOpen ? '+ Add profile info (optional)' : '− Hide profile info';
 }
 
-// â”€â”€â”€ Show forgot-password error â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Show forgot-password error ───────────────────────────────────────────────
 function showFpError(msg) {
   const el = document.getElementById('fpError');
   if (el) { el.textContent = msg; el.style.display = 'flex'; }
 }
 
-// â”€â”€â”€ Forgot Password â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Forgot Password ──────────────────────────────────────────────────────────
 async function handleForgotPassword(event) {
   event.preventDefault();
   const emailInput = document.getElementById('fpEmail');
@@ -373,7 +373,7 @@ async function handleForgotPassword(event) {
   }
 }
 
-// â”€â”€â”€ Reset Password â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Reset Password ───────────────────────────────────────────────────────────
 async function handleResetPassword(event) {
   event.preventDefault();
   const token           = new URLSearchParams(window.location.search).get('token');

@@ -1,4 +1,4 @@
-const API_BASE=window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1'?'http://localhost:3000/api':window.location.origin+'/api';
+const API_BASE=window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1'?'http://localhost:3000/api':'https://fittrack-ai.onrender.com/api';
 function getToken(){return localStorage.getItem('fittrack_token');}
 function getUser(){return JSON.parse(localStorage.getItem('fittrack_user')||'{}');}
 function logout(){localStorage.removeItem('fittrack_token');localStorage.removeItem('fittrack_user');window.location.href='index.html';}
